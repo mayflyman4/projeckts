@@ -1,66 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Projects</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
     <style>
+        :root {
+            color-scheme: dark;
+            background: #1a1b2d;
+            color: #f6f7ff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            min-height: 100vh;
+            font-family: Inter, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #2c3e8f 0%, #6d2fa5 60%, #181a2c 100%);
         }
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
+        .page-shell {
+            width: 100%;
+            max-width: 720px;
+            padding: 36px;
+            border-radius: 28px;
+            background: rgba(13, 15, 33, 0.92);
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: clamp(36px, 6vw, 64px);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
             text-align: center;
+            color: #f8fbff;
         }
 
-        section {
-            padding: 20px;
+        .intro {
+            margin: 0 auto 32px;
+            max-width: 620px;
+            color: #d7dbf5;
+            text-align: center;
+            font-size: 1.05rem;
+            line-height: 1.7;
         }
 
-        h2 {
-            color: #333;
+        .nav-container {
+            display: grid;
+            gap: 16px;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
+        .card-link {
+            display: block;
+            padding: 20px 24px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #eef2ff;
+            text-decoration: none;
+            font-size: clamp(18px, 3vw, 22px);
+            font-weight: 700;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
         }
 
-        li {
-            margin-bottom: 10px;
+        .card-link:hover,
+        .card-link:focus-visible {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 18px 34px rgba(0, 0, 0, 0.24);
+        }
+
+        .card-link span {
+            display: block;
+            margin-top: 8px;
+            color: #c3c9ff;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .footer {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #9aa0c6;
         }
     </style>
 </head>
 
 <body>
+    <div class="page-shell">
+        <h1>Welcome to My Projects</h1>
+        <p class="intro">Browse small experiments, demos, and mini-apps. Click any card below to explore the live
+            project page.</p>
 
-    <header>
-        <h1>My Projects</h1>
-        <p>Explore my mini projects</p>
-    </header>
+        <div class="nav-container" id="navContainer">
+            <a class="card-link" href="projects/helloworld/">
+                Hello World
+                <span>Simple starter project with a friendly greeting.</span>
+            </a>
+            <a class="card-link" href="projects/moneylens/">
+                Money Lens
+                <span>Upload a CSV and see where your money went.</span>
+            </a>
+        </div>
 
-    <section>
-        <h2>Projects</h2>
-        <ul>
-            <li><strong>Hello World</strong> - A simple "Hello, World!" project.</li>
-        </ul>
-    </section>
+        <div class="footer">Powered by static HTML and GitHub Pages.</div>
+    </div>
 
     <script>
-        fetch('/projects.json')
-            .then(response => response.json())
+        fetch('projects.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load projects');
+                return response.json();
+            })
             .then(data => {
-                const ul = document.querySelector('ul');
+                const nav = document.getElementById('navContainer');
+                nav.innerHTML = '';
                 data.projects.forEach(project => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>${project.name}</strong> - ${project.description}`;
-                    ul.appendChild(li);
+                    const link = document.createElement('a');
+                    link.className = 'card-link';
+                    link.href = project.url || `projects/${project.slug}/`;
+                    link.innerHTML = `<strong>${project.name}</strong><span>${project.description}</span>`;
+                    nav.appendChild(link);
                 });
+            })
+            .catch(() => {
+                console.warn('Using fallback project links.');
             });
     </script>
+</body>
+
+</html>

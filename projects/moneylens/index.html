@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Lens — see where your money went</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 24px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: clamp(28px, 6vw, 48px);
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 12px 0 8px;
+            text-align: center;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.92);
+            font-size: clamp(14px, 2.5vw, 17px);
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto 28px;
+            line-height: 1.5;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 24px;
+        }
+
+        /* Upload screen */
+        #uploadScreen {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #uploadCard {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .drop-zone {
+            width: 100%;
+            border: 2px dashed #b9b3df;
+            border-radius: 14px;
+            padding: 32px 16px;
+            text-align: center;
+            color: #555;
+            font-size: clamp(14px, 3vw, 16px);
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            background: #f0edff;
+            border-color: #764ba2;
+            color: #333;
+        }
+
+        .choose-btn {
+            padding: 12px 28px;
+            font-size: clamp(15px, 3.5vw, 18px);
+            font-weight: bold;
+            color: white;
+            background: #764ba2;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .choose-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .privacy-note {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            line-height: 1.5;
+            background: #f0edff;
+            border-radius: 8px;
+            padding: 10px 14px;
+            width: 100%;
+        }
+
+        .error {
+            color: #c0392b;
+            background: #fdecea;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            width: 100%;
+            text-align: center;
+            display: none;
+        }
+
+        .error.visible {
+            display: block;
+        }
+
+        /* Dashboard screen */
+        #dashboardScreen {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: white;
+        }
+
+        .file-name {
+            font-size: clamp(14px, 3vw, 18px);
+            opacity: 0.95;
+            word-break: break-all;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .reload-btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #764ba2;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .reload-btn:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .cat-assign {
+            font-size: 12px;
+            padding: 4px 6px;
+            border: 1px solid #d6ccef;
+            border-radius: 6px;
+            background: white;
+            color: #333;
+            max-width: 140px;
+        }
+
+        .cat-assign:focus {
+            outline: 2px solid #764ba2;
+            outline-offset: 1px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .widget h2 {
+            margin: 0 0 16px;
+            font-size: clamp(16px, 3vw, 20px);
+            color: #444;
+            border-bottom: 2px solid #f0edff;
+            padding-bottom: 10px;
+        }
+
+        .range-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .range-row span:last-child {
+            color: #222;
+            font-weight: 600;
+        }
+
+        .span-pill {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: #f0edff;
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .currency-block {
+            padding: 12px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .currency-block:first-of-type {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .currency-tag {
+            font-size: 13px;
+            color: #888;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .flow-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .flow-col {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .flow-col.in {
+            background: #e8f7ee;
+        }
+
+        .flow-col.out {
+            background: #fdecea;
+        }
+
+        .flow-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .flow-amount {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: bold;
+        }
+
+        .flow-col.in .flow-amount {
+            color: #2e7d32;
+        }
+
+        .flow-col.out .flow-amount {
+            color: #c62828;
+        }
+
+        .net-row {
+            margin-top: 10px;
+            text-align: right;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .net-row strong {
+            color: #222;
+        }
+
+        .cat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cat-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 4px 12px;
+            align-items: baseline;
+        }
+
+        .cat-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .cat-amount {
+            font-size: 14px;
+            color: #c62828;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .cat-amount.in {
+            color: #2e7d32;
+        }
+
+        .cat-bar-fill.in {
+            background: linear-gradient(90deg, #2e7d32 0%, #66bb6a 100%);
+        }
+
+        .cat-details td.amt.in {
+            color: #2e7d32;
+        }
+
+        .cat-meta {
+            grid-column: 1 / -1;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cat-toggle {
+            background: #f0edff;
+            border: none;
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 1;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .cat-toggle:hover {
+            background: #e0d8f5;
+        }
+
+        .cat-details {
+            grid-column: 1 / -1;
+            display: none;
+            margin-top: 6px;
+            border-top: 1px dashed #eee;
+            padding-top: 8px;
+        }
+
+        .cat-row.expanded .cat-details {
+            display: block;
+        }
+
+        .cat-details table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .cat-details td {
+            padding: 4px 6px;
+            border-bottom: 1px solid #f7f7f7;
+            vertical-align: top;
+        }
+
+        .cat-details td.date {
+            color: #888;
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .cat-details td.amt {
+            text-align: right;
+            color: #c62828;
+            font-weight: 600;
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .cat-bar {
+            grid-column: 1 / -1;
+            height: 6px;
+            background: #f0edff;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .cat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+            border-radius: 999px;
+        }
+
+        .uncat-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .uncat-table th,
+        .uncat-table td {
+            padding: 8px 6px;
+            text-align: left;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .uncat-table th {
+            color: #888;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .uncat-table td.amt {
+            text-align: right;
+            color: #c62828;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .uncat-table td.amt.pos {
+            color: #2e7d32;
+        }
+
+        .uncat-empty {
+            padding: 16px 8px;
+            color: #2e7d32;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .cat-details tbody tr,
+        .uncat-table tbody tr {
+            cursor: pointer;
+        }
+
+        .cat-details tbody tr:hover,
+        .uncat-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .cat-details tbody tr.disabled,
+        .uncat-table tbody tr.disabled {
+            opacity: 0.45;
+        }
+
+        .cat-details tbody tr.disabled td,
+        .uncat-table tbody tr.disabled td {
+            text-decoration: line-through;
+        }
+
+        .uncat-table tbody tr.disabled td .cat-assign {
+            text-decoration: none;
+        }
+
+        .scroll-box {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .source-note {
+            grid-column: 1 / -1;
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .wide {
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 900px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            .flow-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Money Lens</h1>
+    <p class="tagline">
+        Drop in your bank statement CSV to see where your money went — spending and income broken down by category,
+        the time range it covers, and totals in and out. Re-categorize anything we missed and export the result.
+    </p>
+
+    <section id="uploadScreen">
+        <div id="uploadCard" class="card">
+            <div class="drop-zone" id="dropZone">
+                Drop your account statement CSV here<br>or use the button below.
+            </div>
+            <button class="choose-btn" id="chooseBtn">Choose CSV</button>
+            <input type="file" id="fileInput" accept=".csv,text/csv">
+            <div class="privacy-note">Your file is parsed entirely in your browser. Nothing is uploaded to any server or processed anywhere else.</div>
+            <div class="error" id="errorBox"></div>
+        </div>
+    </section>
+
+    <section id="dashboardScreen">
+        <div class="dash-header">
+            <div class="file-name" id="fileName"></div>
+            <div class="header-actions">
+                <button class="reload-btn" id="exportBtn">Export CSV</button>
+                <button class="reload-btn" id="reloadBtn">Load another</button>
+            </div>
+        </div>
+        <div class="grid" id="widgets"></div>
+    </section>
+
+    <script>
+        // Mirror of moneylens/categories.csv. Used as fallback when the file can't be fetched
+        // (e.g. opened via file://). Keep in sync with categories.csv. Order matters:
+        // first matching pattern wins, so put more specific patterns above generic ones.
+        const DEFAULT_CATEGORIES = [
+            ['Net Interest Paid', 'Interest Income'],
+            ['Cash withdrawal', 'Cash Withdrawal'],
+            ['Exchanged to', 'Currency Exchange'],
+            ['Instant Access Savings', 'Internal Transfer'],
+            ['Pocket', 'Internal Transfer'],
+            ['investment account', 'Internal Transfer'],
+            ['Lidl', 'Groceries'],
+            ['Rewe', 'Groceries'],
+            ['EDEKA', 'Groceries'],
+            ['Netto', 'Groceries'],
+            ['dm drogerie', 'Personal Care'],
+            ['Amazon', 'Online Shopping'],
+            ['Supersupply', 'Online Shopping'],
+            ['Sanku Maots', 'Restaurants'],
+            ['Tacuza', 'Restaurants'],
+            ['Café Blüte', 'Restaurants'],
+            ['Merakee', 'Restaurants'],
+            ['Dh Innovhub', 'Restaurants'],
+            ['Girasol', 'Cash Withdrawal'],
+            ['The Mood Burger', 'Restaurants'],
+            ['Mr Orient Bar', 'Restaurants'],
+            ['Kailash Parbat', 'Restaurants'],
+            ['Lsp Kokio', 'Restaurants'],
+            ['Fiore Di Roma', 'Restaurants'],
+            ['Green & Protein', 'Restaurants'],
+            ['Marral', 'Restaurants'],
+            ['Lucky Star', 'Restaurants'],
+            ['Orient Master', 'Restaurants'],
+            ['Urban Apes', 'Restaurants'],
+            ['Steinecke', 'Bakery'],
+            ['BackWERK', 'Bakery'],
+            ['Wolt', 'Food Delivery'],
+            ['St Christopher', 'Travel & Lodging'],
+            ['Urban Sports', 'Fitness'],
+            ['ROLAND Rechtsschutz', 'Insurance'],
+            ['Getsafe', 'Insurance'],
+            ['Vodafone', 'Telecom'],
+            ['nextbike', 'Transport'],
+            ['Payment from', 'Personal Income'],
+            ['Transfer from', 'Person Transfer In'],
+            ['Transfer to', 'Person Transfer Out'],
+            ['To ', 'Person Transfer Out'],
+        ].map(([pattern, category]) => ({ pattern, category }));
+
+        // Categories not considered "spending" — money moved within own accounts or converted
+        const EXCLUDED_FROM_SPENDING = new Set(['Internal Transfer', 'Currency Exchange']);
+
+        let categoryRules = DEFAULT_CATEGORIES;
+        let categoriesSource = 'embedded defaults';
+
+        const uploadScreen = document.getElementById('uploadScreen');
+        const dashboardScreen = document.getElementById('dashboardScreen');
+        const dropZone = document.getElementById('dropZone');
+        const chooseBtn = document.getElementById('chooseBtn');
+        const fileInput = document.getElementById('fileInput');
+        const errorBox = document.getElementById('errorBox');
+        const fileNameEl = document.getElementById('fileName');
+        const widgetsEl = document.getElementById('widgets');
+        const reloadBtn = document.getElementById('reloadBtn');
+        const exportBtn = document.getElementById('exportBtn');
+
+        let currentRecords = [];
+        let currentFileName = '';
+
+        chooseBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', e => {
+            if (e.target.files[0]) handleFile(e.target.files[0]);
+        });
+
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropZone.addEventListener(evt, e => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+        });
+        ['dragleave', 'drop'].forEach(evt => {
+            dropZone.addEventListener(evt, e => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+            });
+        });
+        dropZone.addEventListener('drop', e => {
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        reloadBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            widgetsEl.innerHTML = '';
+            currentRecords = [];
+            currentFileName = '';
+            dashboardScreen.style.display = 'none';
+            uploadScreen.style.display = 'flex';
+            hideError();
+        });
+
+        exportBtn.addEventListener('click', exportCSV);
+
+        function csvEscape(v) {
+            const s = v == null ? '' : String(v);
+            return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        }
+
+        function exportCSV() {
+            if (currentRecords.length === 0) return;
+            const lines = [];
+            const records = currentRecords;
+
+            const range = computeTimeRange(records);
+            lines.push('# Time Range');
+            lines.push(['Earliest', range.min.toISOString().slice(0, 10)].map(csvEscape).join(','));
+            lines.push(['Latest', range.max.toISOString().slice(0, 10)].map(csvEscape).join(','));
+            lines.push(['Days', range.days].map(csvEscape).join(','));
+            lines.push('');
+
+            lines.push('# Inflow vs Outflow');
+            lines.push(['Currency', 'Inflow', 'Outflow', 'Net'].map(csvEscape).join(','));
+            for (const [currency, b] of computeFlow(records)) {
+                lines.push([currency, b.inflow.toFixed(2), b.outflow.toFixed(2), (b.inflow - b.outflow).toFixed(2)].map(csvEscape).join(','));
+            }
+            lines.push('');
+
+            const writeBreakdown = (title, breakdown) => {
+                lines.push(`# ${title}`);
+                lines.push(['Category', 'Currency', 'Total', 'Count'].map(csvEscape).join(','));
+                for (const [name, b] of breakdown) {
+                    lines.push([name, b.currency, b.total.toFixed(2), b.count].map(csvEscape).join(','));
+                }
+                lines.push('');
+            };
+            writeBreakdown('Spending by Category', computeCategoryBreakdown(records));
+            writeBreakdown('Income by Category', computeIncomeBreakdown(records));
+
+            lines.push('# All Transactions');
+            lines.push(['Date', 'Description', 'Type', 'Amount', 'Currency', 'Category'].map(csvEscape).join(','));
+            for (const r of records) {
+                lines.push([
+                    r.date.toISOString().slice(0, 19).replace('T', ' '),
+                    r.description,
+                    r.type,
+                    r.amount.toFixed(2),
+                    r.currency,
+                    r.category || ''
+                ].map(csvEscape).join(','));
+            }
+
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const base = currentFileName.replace(/\.csv$/i, '') || 'statement';
+            a.href = url;
+            a.download = `${base}_stats.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.classList.add('visible');
+        }
+
+        function hideError() {
+            errorBox.textContent = '';
+            errorBox.classList.remove('visible');
+        }
+
+        function handleFile(file) {
+            hideError();
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const { headers, rows } = parseCSV(reader.result);
+                    const records = toRecords(headers, rows);
+                    if (records.length === 0) {
+                        showError('No completed transactions found in this file.');
+                        return;
+                    }
+                    annotate(records, categoryRules);
+                    currentRecords = records;
+                    currentFileName = file.name;
+                    renderDashboard();
+                } catch (err) {
+                    showError('Could not parse this file. Please upload a valid CSV statement.');
+                    console.error(err);
+                }
+            };
+            reader.onerror = () => showError('Could not read the file.');
+            reader.readAsText(file);
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            let field = '';
+            let row = [];
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                if (inQuotes) {
+                    if (c === '"') {
+                        if (text[i + 1] === '"') { field += '"'; i++; }
+                        else { inQuotes = false; }
+                    } else {
+                        field += c;
+                    }
+                } else {
+                    if (c === '"') {
+                        inQuotes = true;
+                    } else if (c === ',') {
+                        row.push(field); field = '';
+                    } else if (c === '\n' || c === '\r') {
+                        if (c === '\r' && text[i + 1] === '\n') i++;
+                        row.push(field); field = '';
+                        if (row.length > 1 || row[0] !== '') rows.push(row);
+                        row = [];
+                    } else {
+                        field += c;
+                    }
+                }
+            }
+            if (field !== '' || row.length > 0) {
+                row.push(field);
+                if (row.length > 1 || row[0] !== '') rows.push(row);
+            }
+
+            if (rows.length === 0) throw new Error('Empty file');
+            return { headers: rows[0], rows: rows.slice(1) };
+        }
+
+        function toRecords(headers, rows) {
+            const idx = {};
+            headers.forEach((h, i) => { idx[h.trim()] = i; });
+            const required = ['Completed Date', 'Amount', 'Fee', 'Currency', 'State'];
+            for (const r of required) {
+                if (idx[r] === undefined) throw new Error(`Missing column: ${r}`);
+            }
+            const records = [];
+            for (const row of rows) {
+                const state = (row[idx['State']] || '').trim();
+                if (state !== 'COMPLETED') continue;
+                const completed = row[idx['Completed Date']];
+                const amount = parseFloat(row[idx['Amount']]);
+                const fee = parseFloat(row[idx['Fee']]) || 0;
+                const currency = (row[idx['Currency']] || '').trim();
+                if (!completed || isNaN(amount)) continue;
+                const date = new Date(completed.replace(' ', 'T'));
+                if (isNaN(date.getTime())) continue;
+                const description = (row[idx['Description']] || '').trim();
+                const type = (row[idx['Type']] || '').trim();
+                records.push({ date, amount, fee, currency, description, type, disabled: false });
+            }
+            records.forEach((r, i) => { r.id = i; });
+            return records;
+        }
+
+        function categorize(record, rules) {
+            const desc = (record.description || '').toLowerCase();
+            for (const rule of rules) {
+                if (desc.includes(rule.pattern.toLowerCase())) return rule.category;
+            }
+            return 'Uncategorized';
+        }
+
+        function annotate(records, rules) {
+            for (const r of records) r.category = categorize(r, rules);
+            return records;
+        }
+
+        function computeCategoryBreakdown(records) {
+            const map = new Map();
+            for (const r of records) {
+                if (r.amount >= 0) continue;
+                if (EXCLUDED_FROM_SPENDING.has(r.category)) continue;
+                if (!map.has(r.category)) map.set(r.category, { total: 0, count: 0, currency: r.currency, txns: [] });
+                const b = map.get(r.category);
+                if (!r.disabled) {
+                    b.total += -r.amount;
+                    b.count += 1;
+                }
+                b.txns.push(r);
+            }
+            for (const [, b] of map) b.txns.sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+            return [...map.entries()].sort((a, b) => b[1].total - a[1].total);
+        }
+
+        function computeIncomeBreakdown(records) {
+            const map = new Map();
+            for (const r of records) {
+                if (r.amount <= 0) continue;
+                if (EXCLUDED_FROM_FLOW.has(r.category)) continue;
+                if (!map.has(r.category)) map.set(r.category, { total: 0, count: 0, currency: r.currency, txns: [] });
+                const b = map.get(r.category);
+                if (!r.disabled) {
+                    b.total += r.amount;
+                    b.count += 1;
+                }
+                b.txns.push(r);
+            }
+            for (const [, b] of map) b.txns.sort((a, b) => b.amount - a.amount);
+            return [...map.entries()].sort((a, b) => b[1].total - a[1].total);
+        }
+
+        function uncategorizedTxns(records) {
+            return records.filter(r => r.category === 'Uncategorized')
+                          .sort((a, b) => b.date - a.date);
+        }
+
+        function parseCategoriesCSV(text) {
+            const { headers, rows } = parseCSV(text);
+            const pIdx = headers.findIndex(h => h.trim().toLowerCase() === 'pattern');
+            const cIdx = headers.findIndex(h => h.trim().toLowerCase() === 'category');
+            if (pIdx < 0 || cIdx < 0) throw new Error('categories.csv must have Pattern,Category columns');
+            return rows
+                .filter(r => r[pIdx] && r[cIdx])
+                .map(r => ({ pattern: r[pIdx], category: r[cIdx].trim() }));
+        }
+
+        async function loadCategories() {
+            try {
+                const res = await fetch('./categories.csv', { cache: 'no-store' });
+                if (!res.ok) return;
+                const rules = parseCategoriesCSV(await res.text());
+                if (rules.length > 0) {
+                    categoryRules = rules;
+                    categoriesSource = './categories.csv';
+                }
+            } catch {
+                // file:// or no server — keep embedded defaults
+            }
+        }
+        loadCategories();
+
+        function computeTimeRange(records) {
+            let min = records[0].date;
+            let max = records[0].date;
+            for (const r of records) {
+                if (r.date < min) min = r.date;
+                if (r.date > max) max = r.date;
+            }
+            const days = Math.max(1, Math.ceil((max - min) / 86400000) + 1);
+            return { min, max, days };
+        }
+
+        // Internal transfers (Pocket / Savings / Investment shuffles) have paired
+        // legs in the same currency that net to zero — exclude them from flow totals.
+        const EXCLUDED_FROM_FLOW = new Set(['Internal Transfer']);
+
+        function computeFlow(records) {
+            const byCurrency = new Map();
+            for (const r of records) {
+                if (EXCLUDED_FROM_FLOW.has(r.category)) continue;
+                if (r.disabled) continue;
+                if (!byCurrency.has(r.currency)) {
+                    byCurrency.set(r.currency, { inflow: 0, outflow: 0 });
+                }
+                const b = byCurrency.get(r.currency);
+                if (r.amount >= 0) b.inflow += r.amount;
+                else b.outflow += -r.amount;
+            }
+            return byCurrency;
+        }
+
+        function formatMoney(value, currency) {
+            try {
+                return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(value);
+            } catch {
+                return `${currency} ${value.toFixed(2)}`;
+            }
+        }
+
+        function formatDate(d) {
+            return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function getKnownCategories() {
+            const set = new Set();
+            for (const rule of categoryRules) set.add(rule.category);
+            for (const r of currentRecords) {
+                if (r.category && r.category !== 'Uncategorized') set.add(r.category);
+            }
+            return [...set].sort();
+        }
+
+        function renderDashboard() {
+            const records = currentRecords;
+            fileNameEl.textContent = currentFileName;
+            widgetsEl.innerHTML = '';
+
+            const range = computeTimeRange(records);
+            const rangeWidget = document.createElement('div');
+            rangeWidget.className = 'card widget';
+            rangeWidget.innerHTML = `
+                <h2>Time range</h2>
+                <div class="range-row"><span>Earliest</span><span>${formatDate(range.min)}</span></div>
+                <div class="range-row"><span>Latest</span><span>${formatDate(range.max)}</span></div>
+                <div class="span-pill">${range.days} day${range.days === 1 ? '' : 's'}</div>
+            `;
+            widgetsEl.appendChild(rangeWidget);
+
+            const flow = computeFlow(records);
+            const flowWidget = document.createElement('div');
+            flowWidget.className = 'card widget';
+            const blocks = [];
+            for (const [currency, b] of flow) {
+                const net = b.inflow - b.outflow;
+                blocks.push(`
+                    <div class="currency-block">
+                        <div class="currency-tag">${currency}</div>
+                        <div class="flow-row">
+                            <div class="flow-col in">
+                                <div class="flow-label">Inflow</div>
+                                <div class="flow-amount">${formatMoney(b.inflow, currency)}</div>
+                            </div>
+                            <div class="flow-col out">
+                                <div class="flow-label">Outflow</div>
+                                <div class="flow-amount">${formatMoney(b.outflow, currency)}</div>
+                            </div>
+                        </div>
+                        <div class="net-row">Net <strong>${formatMoney(net, currency)}</strong></div>
+                    </div>
+                `);
+            }
+            flowWidget.innerHTML = `<h2>Inflow vs Outflow</h2>${blocks.join('')}`;
+            widgetsEl.appendChild(flowWidget);
+
+            widgetsEl.appendChild(buildCategoryWidget(
+                'Spending by Category',
+                computeCategoryBreakdown(records),
+                'No spending recorded.',
+                'out'
+            ));
+            widgetsEl.appendChild(buildCategoryWidget(
+                'Income by Category',
+                computeIncomeBreakdown(records),
+                'No income recorded.',
+                'in'
+            ));
+
+            const knownCats = getKnownCategories();
+            const uncatIndices = records
+                .map((r, i) => ({ r, i }))
+                .filter(o => o.r.category === 'Uncategorized')
+                .sort((a, b) => b.r.date - a.r.date);
+            const uncatWidget = document.createElement('div');
+            uncatWidget.className = 'card widget wide';
+            if (uncatIndices.length === 0) {
+                uncatWidget.innerHTML = `
+                    <h2>Uncategorized Transactions</h2>
+                    <div class="uncat-empty">All transactions are categorized.</div>
+                `;
+            } else {
+                const optionsHtml = ['<option value="">— assign —</option>']
+                    .concat(knownCats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`))
+                    .join('');
+                const tableRows = uncatIndices.map(({ r, i }) => `
+                    <tr data-id="${r.id}" class="${r.disabled ? 'disabled' : ''}">
+                        <td>${formatDate(r.date)}</td>
+                        <td>${escapeHtml(r.description)}</td>
+                        <td>${escapeHtml(r.type)}</td>
+                        <td class="amt ${r.amount >= 0 ? 'pos' : ''}">${formatMoney(r.amount, r.currency)}</td>
+                        <td><select class="cat-assign" data-idx="${i}">${optionsHtml}</select></td>
+                    </tr>
+                `).join('');
+                uncatWidget.innerHTML = `
+                    <h2>Uncategorized Transactions <span style="font-weight:normal;color:#888;font-size:14px;">(${uncatIndices.length})</span></h2>
+                    <div class="scroll-box">
+                        <table class="uncat-table">
+                            <thead><tr><th>Date</th><th>Description</th><th>Type</th><th style="text-align:right">Amount</th><th>Assign to</th></tr></thead>
+                            <tbody>${tableRows}</tbody>
+                        </table>
+                    </div>
+                `;
+                uncatWidget.addEventListener('change', e => {
+                    const sel = e.target.closest('.cat-assign');
+                    if (!sel || !sel.value) return;
+                    const idx = parseInt(sel.dataset.idx, 10);
+                    if (Number.isNaN(idx) || !currentRecords[idx]) return;
+                    currentRecords[idx].category = sel.value;
+                    renderDashboard();
+                });
+                uncatWidget.addEventListener('click', e => {
+                    if (e.target.closest('.cat-assign')) return;
+                    toggleTxnFromRow(e.target.closest('tbody tr'));
+                });
+            }
+            widgetsEl.appendChild(uncatWidget);
+
+            const sourceNote = document.createElement('div');
+            sourceNote.className = 'source-note';
+            sourceNote.textContent = `Categories source: ${categoriesSource}`;
+            widgetsEl.appendChild(sourceNote);
+
+            uploadScreen.style.display = 'none';
+            dashboardScreen.style.display = 'flex';
+        }
+
+        function buildCategoryWidget(title, breakdown, emptyMsg, direction) {
+            const widget = document.createElement('div');
+            widget.className = 'card widget';
+            const total = breakdown.reduce((s, [, b]) => s + b.total, 0);
+            const inMod = direction === 'in' ? ' in' : '';
+            const rows = breakdown.map(([name, b]) => {
+                const pct = total > 0 ? (b.total / total) * 100 : 0;
+                const txnRows = b.txns.map(t => `
+                    <tr data-id="${t.id}" class="${t.disabled ? 'disabled' : ''}">
+                        <td class="date">${formatDate(t.date)}</td>
+                        <td>${escapeHtml(t.description)}</td>
+                        <td class="amt${inMod}">${formatMoney(Math.abs(t.amount), t.currency)}</td>
+                    </tr>
+                `).join('');
+                return `
+                    <div class="cat-row">
+                        <div class="cat-name">${escapeHtml(name)}</div>
+                        <div class="cat-amount${inMod}">${formatMoney(b.total, b.currency)}</div>
+                        <div class="cat-bar"><div class="cat-bar-fill${inMod}" style="width:${pct.toFixed(1)}%"></div></div>
+                        <div class="cat-meta">
+                            <span>${b.count} txn${b.count === 1 ? '' : 's'} · ${pct.toFixed(1)}%</span>
+                            <button class="cat-toggle" type="button" aria-label="Toggle details">+</button>
+                        </div>
+                        <div class="cat-details"><table><tbody>${txnRows}</tbody></table></div>
+                    </div>
+                `;
+            }).join('') || `<div class="uncat-empty">${emptyMsg}</div>`;
+            widget.innerHTML = `<h2>${escapeHtml(title)}</h2><div class="cat-list">${rows}</div>`;
+            widget.addEventListener('click', e => {
+                const tr = e.target.closest('.cat-details tbody tr');
+                if (tr) {
+                    toggleTxnFromRow(tr);
+                    return;
+                }
+                const btn = e.target.closest('.cat-toggle');
+                if (!btn) return;
+                const row = btn.closest('.cat-row');
+                const expanded = row.classList.toggle('expanded');
+                btn.textContent = expanded ? '−' : '+';
+            });
+            return widget;
+        }
+
+        function toggleTxnFromRow(tr) {
+            if (!tr || tr.dataset.id === undefined) return;
+            const id = parseInt(tr.dataset.id, 10);
+            const rec = currentRecords[id];
+            if (!rec) return;
+            const wasExpanded = new Set();
+            document.querySelectorAll('.cat-row.expanded .cat-name').forEach(el => {
+                wasExpanded.add(el.textContent);
+            });
+            rec.disabled = !rec.disabled;
+            renderDashboard();
+            document.querySelectorAll('.cat-row').forEach(row => {
+                const name = row.querySelector('.cat-name');
+                if (name && wasExpanded.has(name.textContent)) {
+                    row.classList.add('expanded');
+                    const btn = row.querySelector('.cat-toggle');
+                    if (btn) btn.textContent = '−';
+                }
+            });
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+    </script>
+</body>
+</html>
