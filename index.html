@@ -117,28 +117,6 @@
 
         <div class="footer">Powered by static HTML and GitHub Pages.</div>
     </div>
-
-    <script>
-        fetch('projects.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load projects');
-                return response.json();
-            })
-            .then(data => {
-                const nav = document.getElementById('navContainer');
-                nav.innerHTML = '';
-                data.projects.forEach(project => {
-                    const link = document.createElement('a');
-                    link.className = 'card-link';
-                    link.href = project.url || `projects/${project.slug}/`;
-                    link.innerHTML = `<strong>${project.name}</strong><span>${project.description}</span>`;
-                    nav.appendChild(link);
-                });
-            })
-            .catch(() => {
-                console.warn('Using fallback project links.');
-            });
-    </script>
 </body>
 
 </html>
