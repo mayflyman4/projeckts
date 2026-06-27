@@ -653,7 +653,10 @@
             answerInput.focus();
 
             answerInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter' && !state.revealed) revealBtn.click();
+                if (e.key === 'Enter' && !state.revealed) {
+                    e.preventDefault();
+                    revealBtn.click();
+                }
             });
 
             revealBtn.addEventListener('click', () => {
@@ -731,7 +734,11 @@
                 recordScore(false);
             });
 
-            document.getElementById('btnYes').focus();
+            if (typed && normalize(typed) !== normalize(ex.german)) {
+                document.getElementById('btnNo').focus();
+            } else {
+                document.getElementById('btnYes').focus();
+            }
         }
 
         function recordScore(correct) {
