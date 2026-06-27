@@ -254,6 +254,17 @@
             line-height: 1.25;
         }
 
+        .answer-tag-label {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #EDE9FE;
+            color: #5B21B6;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
         .comparison-row {
             display: flex;
             flex-direction: column;
@@ -527,7 +538,9 @@
         function buildDeck() {
             let exercises;
             if (state.activeTagId === 'all') {
-                exercises = state.tags.flatMap(t => t.exercises);
+                exercises = state.tags.flatMap(t =>
+                    t.exercises.map(ex => ({ ...ex, _tagLabel: t.label }))
+                );
             } else {
                 const tag = state.tags.find(t => t.id === state.activeTagId);
                 exercises = tag ? tag.exercises : [];
@@ -616,6 +629,7 @@
                         <div>
                             <div class="german-answer-label">🇩🇪 German</div>
                             <div class="german-answer" id="germanAnswer">${escapeHtml(ex.german)}</div>
+                            ${ex._tagLabel ? `<div class="answer-tag-label">${escapeHtml(ex._tagLabel)}</div>` : ''}
                         </div>
 
                         <div class="comparison-row" id="comparisonRow" style="display:none"></div>
@@ -687,7 +701,7 @@
                 selfScoreLabel.textContent = 'Override score if needed:';
 
                 if (!isMatch) {
-                    let t = 3;
+                    let t = 5;
                     const btnNo = document.getElementById('btnNo');
                     btnNo.textContent = `✗ I missed it (${t})`;
                     autoMissTimer = setInterval(() => {
@@ -739,24 +753,29 @@
             nextBtn.style.display = 'block';
             nextBtn.focus();
 
-            let nt = 3;
-            nextBtn.textContent = `Next card → (${nt})`;
-            const autoNextTimer = setInterval(() => {
-                nt--;
-                const btn = document.getElementById('nextBtn');
-                if (!btn) { clearInterval(autoNextTimer); return; }
-                if (nt <= 0) {
-                    clearInterval(autoNextTimer);
-                    state.deckIdx++;
-                    updateProgress();
-                    renderCard();
-                } else {
-                    btn.textContent = `Next card → (${nt})`;
-                }
-            }, 1000);
+            let autoNextTimer = null;
+            if (correct) {
+                let nt = 5;
+                nextBtn.textContent = `Next card → (${nt})`;
+                autoNextTimer = setInterval(() => {
+                    nt--;
+                    const btn = document.getElementById('nextBtn');
+                    if (!btn) { clearInterval(autoNextTimer); return; }
+                    if (nt <= 0) {
+                        clearInterval(autoNextTimer);
+                        state.deckIdx++;
+                        updateProgress();
+                        renderCard();
+                    } else {
+                        btn.textContent = `Next card → (${nt})`;
+                    }
+                }, 1000);
+            } else {
+                nextBtn.textContent = 'Next card →';
+            }
 
             nextBtn.addEventListener('click', () => {
-                clearInterval(autoNextTimer);
+                if (autoNextTimer) clearInterval(autoNextTimer);
                 state.deckIdx++;
                 updateProgress();
                 renderCard();
