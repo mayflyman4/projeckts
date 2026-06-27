@@ -546,8 +546,7 @@
 
         // ── Tag strip ──
         function renderTagStrip() {
-            const totalAll = state.tags.reduce((s, t) => s + t.exercises.length, 0);
-            const chips = [{ id: 'all', label: `All (${totalAll})` }]
+            const chips = [{ id: 'all', label: 'All' }]
                 .concat(state.tags.map(t => ({ id: t.id, label: t.label })));
 
             tagStrip.innerHTML = chips.map(c => `
@@ -660,6 +659,8 @@
             revealBtn.style.display = 'none';
             answerZone.classList.add('visible');
 
+            let autoMissTimer = null;
+
             if (typed) {
                 const isMatch = normalize(typed) === normalize(ex.german);
                 answerInput.classList.add(isMatch ? 'correct' : 'wrong');
@@ -684,13 +685,37 @@
                 `;
 
                 selfScoreLabel.textContent = 'Override score if needed:';
+
+                if (!isMatch) {
+                    let t = 3;
+                    const btnNo = document.getElementById('btnNo');
+                    btnNo.textContent = `✗ I missed it (${t})`;
+                    autoMissTimer = setInterval(() => {
+                        t--;
+                        const btn = document.getElementById('btnNo');
+                        if (!btn) { clearInterval(autoMissTimer); return; }
+                        if (t <= 0) {
+                            clearInterval(autoMissTimer);
+                            autoMissTimer = null;
+                            recordScore(false);
+                        } else {
+                            btn.textContent = `✗ I missed it (${t})`;
+                        }
+                    }, 1000);
+                }
             } else {
                 answerInput.style.display = 'none';
                 selfScoreLabel.textContent = 'Did you get it right?';
             }
 
-            document.getElementById('btnYes').addEventListener('click', () => recordScore(true));
-            document.getElementById('btnNo').addEventListener('click',  () => recordScore(false));
+            document.getElementById('btnYes').addEventListener('click', () => {
+                if (autoMissTimer) { clearInterval(autoMissTimer); autoMissTimer = null; }
+                recordScore(true);
+            });
+            document.getElementById('btnNo').addEventListener('click', () => {
+                if (autoMissTimer) { clearInterval(autoMissTimer); autoMissTimer = null; }
+                recordScore(false);
+            });
 
             document.getElementById('btnYes').focus();
         }
@@ -713,7 +738,25 @@
             const nextBtn = document.getElementById('nextBtn');
             nextBtn.style.display = 'block';
             nextBtn.focus();
+
+            let nt = 3;
+            nextBtn.textContent = `Next card → (${nt})`;
+            const autoNextTimer = setInterval(() => {
+                nt--;
+                const btn = document.getElementById('nextBtn');
+                if (!btn) { clearInterval(autoNextTimer); return; }
+                if (nt <= 0) {
+                    clearInterval(autoNextTimer);
+                    state.deckIdx++;
+                    updateProgress();
+                    renderCard();
+                } else {
+                    btn.textContent = `Next card → (${nt})`;
+                }
+            }, 1000);
+
             nextBtn.addEventListener('click', () => {
+                clearInterval(autoNextTimer);
                 state.deckIdx++;
                 updateProgress();
                 renderCard();
