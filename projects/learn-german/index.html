@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lern Deutsch — A1 Flashcards</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Header ── */
+        .app-header {
+            width: 100%;
+            max-width: 720px;
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .app-title {
+            color: white;
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .app-title .flag { font-size: 1.2em; }
+
+        .score-bar {
+            display: flex;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .score-pill {
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .score-pill.right {
+            background: rgba(16, 185, 129, 0.25);
+            color: #6EE7B7;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .score-pill.wrong {
+            background: rgba(239, 68, 68, 0.22);
+            color: #FCA5A5;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        /* ── Tag Filter Strip ── */
+        .tag-strip-wrapper {
+            width: 100%;
+            max-width: 720px;
+            padding: 16px 20px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .tag-strip-wrapper::-webkit-scrollbar { display: none; }
+
+        .tag-strip {
+            display: flex;
+            gap: 8px;
+            width: max-content;
+        }
+
+        .tag-chip {
+            padding: 7px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            color: rgba(255, 255, 255, 0.85);
+            background: transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.18s, color 0.18s, border-color 0.18s;
+        }
+
+        .tag-chip:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .tag-chip.active {
+            background: white;
+            color: #4F46E5;
+            border-color: white;
+        }
+
+        /* ── Progress ── */
+        .progress-row {
+            width: 100%;
+            max-width: 720px;
+            padding: 14px 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-bar-track {
+            flex: 1;
+            height: 5px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.85);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            color: rgba(255,255,255,0.75);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ── Card ── */
+        .card-wrap {
+            width: 100%;
+            max-width: 720px;
+            padding: 16px 20px 32px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            padding: 32px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .english-word {
+            font-size: clamp(22px, 5vw, 34px);
+            font-weight: 800;
+            color: #1E1B4B;
+            text-align: center;
+            line-height: 1.25;
+            min-height: 48px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #E8E5FF;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 17px;
+            border: 2px solid #C7D2FE;
+            border-radius: 12px;
+            color: #1E1B4B;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            font-family: inherit;
+        }
+
+        .answer-input::placeholder { color: #A5B4FC; }
+
+        .answer-input:focus {
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .answer-input.correct {
+            border-color: #10B981;
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .answer-input.wrong {
+            border-color: #EF4444;
+            background: #FEF2F2;
+            color: #991B1B;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+        }
+
+        .reveal-btn:active { transform: translateY(0); }
+
+        /* ── Answer Zone ── */
+        .answer-zone {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeSlideUp 0.28s ease;
+        }
+
+        .answer-zone.visible { display: flex; }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .german-answer-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #8B5CF6;
+        }
+
+        .german-answer {
+            font-size: clamp(22px, 5vw, 32px);
+            font-weight: 800;
+            color: #1E1B4B;
+            line-height: 1.25;
+        }
+
+        .comparison-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #F5F3FF;
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .comparison-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9CA3AF;
+            min-width: 52px;
+        }
+
+        .comparison-text.match {
+            color: #065F46;
+            font-weight: 600;
+        }
+
+        .comparison-text.mismatch {
+            color: #991B1B;
+            font-weight: 600;
+            text-decoration: line-through;
+        }
+
+        .match-badge {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        .match-badge.correct { background: #D1FAE5; color: #065F46; }
+        .match-badge.incorrect { background: #FEE2E2; color: #991B1B; }
+
+        /* ── Self-score buttons ── */
+        .self-score-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        .self-score-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .self-score-btns button {
+            flex: 1;
+            padding: 13px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .self-score-btns button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+        }
+
+        .btn-yes {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-no {
+            background: #EF4444;
+            color: white;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #4F46E5;
+            background: #EEF2FF;
+            border: 2px solid #C7D2FE;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.18s, transform 0.15s;
+        }
+
+        .next-btn:hover {
+            background: #E0E7FF;
+            transform: translateY(-1px);
+        }
+
+        /* ── Completion Card ── */
+        .completion-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            padding: 40px 28px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            animation: fadeSlideUp 0.35s ease;
+        }
+
+        .completion-emoji { font-size: 52px; }
+
+        .completion-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1E1B4B;
+        }
+
+        .completion-sub {
+            font-size: 15px;
+            color: #6B7280;
+        }
+
+        .completion-score {
+            display: flex;
+            gap: 16px;
+        }
+
+        .completion-score-pill {
+            padding: 10px 22px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .completion-score-pill.right { background: #D1FAE5; color: #065F46; }
+        .completion-score-pill.wrong { background: #FEE2E2; color: #991B1B; }
+
+        .completion-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .btn-retry {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .btn-retry:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+        }
+
+        /* ── Loading / Error ── */
+        .status-msg {
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 15px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 480px) {
+            .card { padding: 24px 18px 20px; }
+            .self-score-btns button { font-size: 14px; padding: 12px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="app-title"><span class="flag">🇩🇪</span> Lern Deutsch</div>
+        <div class="score-bar">
+            <span class="score-pill right" id="scoreRight">✓ 0</span>
+            <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
+        </div>
+    </header>
+
+    <div class="tag-strip-wrapper">
+        <div class="tag-strip" id="tagStrip"></div>
+    </div>
+
+    <div class="progress-row" id="progressRow" style="display:none">
+        <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <span class="progress-text" id="progressText">0 / 0</span>
+    </div>
+
+    <div class="card-wrap" id="cardWrap">
+        <div class="status-msg" id="statusMsg">Loading exercises…</div>
+    </div>
+
+    <script>
+        // ── Fallback data (mirrors exercises.yaml — used when fetch fails on file://) ──
+        const FALLBACK_TAGS = [{"id":"begruessungen","label":"Begrüßungen & Verabschiedungen","description":"Greetings and farewells","exercises":[{"english":"Hello","german":"Hallo"},{"english":"Good morning","german":"Guten Morgen"},{"english":"Good day / Good afternoon","german":"Guten Tag"},{"english":"Good evening","german":"Guten Abend"},{"english":"Good night","german":"Gute Nacht"},{"english":"Goodbye (formal)","german":"Auf Wiedersehen"},{"english":"Bye (informal)","german":"Tschüss"},{"english":"See you later","german":"Bis später"},{"english":"See you tomorrow","german":"Bis morgen"},{"english":"See you soon","german":"Bis bald"},{"english":"How are you? (informal)","german":"Wie geht es dir?"},{"english":"How are you? (formal)","german":"Wie geht es Ihnen?"},{"english":"I'm fine, thank you","german":"Mir geht es gut, danke"},{"english":"Nice to meet you","german":"Schön, dich kennenzulernen"},{"english":"Welcome","german":"Willkommen"},{"english":"Please","german":"Bitte"},{"english":"Thank you","german":"Danke"},{"english":"Thank you very much","german":"Danke schön"},{"english":"You're welcome","german":"Gern geschehen"},{"english":"Excuse me","german":"Entschuldigung"}]},{"id":"modal_verb","label":"Modal Verbs","description":"können, müssen, dürfen, wollen, sollen, mögen, möchten","exercises":[{"english":"I can swim","german":"Ich kann schwimmen"},{"english":"I must work","german":"Ich muss arbeiten"},{"english":"You can drive","german":"Du kannst fahren"},{"english":"She must cook","german":"Sie muss kochen"},{"english":"We want to go","german":"Wir wollen gehen"},{"english":"You may leave","german":"Du darfst gehen"},{"english":"I would like a coffee","german":"Ich möchte einen Kaffee"},{"english":"He should come","german":"Er soll kommen"},{"english":"Can you help me?","german":"Kannst du mir helfen?"},{"english":"I must learn German","german":"Ich muss Deutsch lernen"},{"english":"We can speak German","german":"Wir können Deutsch sprechen"},{"english":"She wants to buy shoes","german":"Sie will Schuhe kaufen"},{"english":"May I sit here?","german":"Darf ich hier sitzen?"},{"english":"You should eat","german":"Du sollst essen"},{"english":"I like music","german":"Ich mag Musik"},{"english":"He can run fast","german":"Er kann schnell laufen"},{"english":"We must go home","german":"Wir müssen nach Hause gehen"},{"english":"She would like some water","german":"Sie möchte Wasser"},{"english":"Can he come?","german":"Kann er kommen?"},{"english":"I want to sleep","german":"Ich will schlafen"}]},{"id":"nominativ","label":"Nominativ","description":"Nominative case — subject of the sentence","exercises":[{"english":"The man is tall","german":"Der Mann ist groß"},{"english":"The woman is beautiful","german":"Die Frau ist schön"},{"english":"The child plays","german":"Das Kind spielt"},{"english":"The dog is small","german":"Der Hund ist klein"},{"english":"A cat is sleeping","german":"Eine Katze schläft"},{"english":"The house is big","german":"Das Haus ist groß"},{"english":"A man is coming","german":"Ein Mann kommt"},{"english":"The teacher is kind","german":"Der Lehrer ist nett"},{"english":"A student learns","german":"Ein Student lernt"},{"english":"The coffee is hot","german":"Der Kaffee ist heiß"},{"english":"The car is red","german":"Das Auto ist rot"},{"english":"A child is playing","german":"Ein Kind spielt"},{"english":"The school is closed","german":"Die Schule ist geschlossen"},{"english":"The phone rings","german":"Das Telefon klingelt"},{"english":"A woman is singing","german":"Eine Frau singt"},{"english":"The window is open","german":"Das Fenster ist offen"},{"english":"The door is closed","german":"Die Tür ist geschlossen"},{"english":"A friend comes","german":"Ein Freund kommt"},{"english":"The bus is late","german":"Der Bus ist spät"},{"english":"The book is interesting","german":"Das Buch ist interessant"}]},{"id":"akkusativ","label":"Akkusativ","description":"Accusative case — direct object of the sentence","exercises":[{"english":"I see the man","german":"Ich sehe den Mann"},{"english":"She loves the dog","german":"Sie liebt den Hund"},{"english":"He buys a book","german":"Er kauft ein Buch"},{"english":"I have a cat","german":"Ich habe eine Katze"},{"english":"We need a car","german":"Wir brauchen ein Auto"},{"english":"She drinks the water","german":"Sie trinkt das Wasser"},{"english":"He reads the book","german":"Er liest das Buch"},{"english":"We eat the bread","german":"Wir essen das Brot"},{"english":"She opens the door","german":"Sie öffnet die Tür"},{"english":"He hears the music","german":"Er hört die Musik"},{"english":"I love the city","german":"Ich liebe die Stadt"},{"english":"She has a brother","german":"Sie hat einen Bruder"},{"english":"We need a house","german":"Wir brauchen ein Haus"},{"english":"He drinks a coffee","german":"Er trinkt einen Kaffee"},{"english":"I buy the apple","german":"Ich kaufe den Apfel"},{"english":"We close the window","german":"Wir schließen das Fenster"},{"english":"He sees the school","german":"Er sieht die Schule"},{"english":"I find the bag","german":"Ich finde die Tasche"},{"english":"She visits a friend","german":"Sie besucht eine Freundin"},{"english":"He calls the doctor","german":"Er ruft den Arzt an"}]},{"id":"dativ","label":"Dativ","description":"Dative case — indirect object and certain prepositions","exercises":[{"english":"I give the man a book","german":"Ich gebe dem Mann ein Buch"},{"english":"She helps the woman","german":"Sie hilft der Frau"},{"english":"He writes to the child","german":"Er schreibt dem Kind"},{"english":"I go to the doctor","german":"Ich gehe zum Arzt"},{"english":"She comes from the school","german":"Sie kommt von der Schule"},{"english":"He lives in the house","german":"Er wohnt in dem Haus"},{"english":"I talk to a friend","german":"Ich spreche mit einem Freund"},{"english":"She is at home","german":"Sie ist zu Hause"},{"english":"He goes to work","german":"Er geht zur Arbeit"},{"english":"I travel by train","german":"Ich reise mit dem Zug"},{"english":"She sits on the chair","german":"Sie sitzt auf dem Stuhl"},{"english":"He stands at the door","german":"Er steht an der Tür"},{"english":"I buy it for my mother","german":"Ich kaufe es für meine Mutter"},{"english":"She speaks with the teacher","german":"Sie spricht mit dem Lehrer"},{"english":"He drives to the city","german":"Er fährt in die Stadt"},{"english":"I meet with a friend","german":"Ich treffe mich mit einem Freund"},{"english":"She goes to the supermarket","german":"Sie geht zum Supermarkt"},{"english":"He comes from Germany","german":"Er kommt aus Deutschland"},{"english":"I am at the station","german":"Ich bin am Bahnhof"},{"english":"She gives the child the ball","german":"Sie gibt dem Kind den Ball"}]},{"id":"nomen","label":"Nomen","description":"Basic nouns with their articles","exercises":[{"english":"the house","german":"das Haus"},{"english":"the car","german":"das Auto"},{"english":"the dog","german":"der Hund"},{"english":"the cat","german":"die Katze"},{"english":"the book","german":"das Buch"},{"english":"the table","german":"der Tisch"},{"english":"the chair","german":"der Stuhl"},{"english":"the water","german":"das Wasser"},{"english":"the bread","german":"das Brot"},{"english":"the milk","german":"die Milch"},{"english":"the apple","german":"der Apfel"},{"english":"the city","german":"die Stadt"},{"english":"the street","german":"die Straße"},{"english":"the school","german":"die Schule"},{"english":"the door","german":"die Tür"},{"english":"the window","german":"das Fenster"},{"english":"the phone","german":"das Telefon"},{"english":"the bag","german":"die Tasche"},{"english":"the key","german":"der Schlüssel"},{"english":"the time","german":"die Zeit"}]},{"id":"artikel","label":"Artikel","description":"der / die / das — German definite articles","exercises":[{"english":"the man","german":"der Mann"},{"english":"the woman","german":"die Frau"},{"english":"the child","german":"das Kind"},{"english":"the tree","german":"der Baum"},{"english":"the flower","german":"die Blume"},{"english":"the house","german":"das Haus"},{"english":"the book","german":"das Buch"},{"english":"the cat","german":"die Katze"},{"english":"the dog","german":"der Hund"},{"english":"the car","german":"das Auto"},{"english":"the school","german":"die Schule"},{"english":"the table","german":"der Tisch"},{"english":"the door","german":"die Tür"},{"english":"the window","german":"das Fenster"},{"english":"the city","german":"die Stadt"},{"english":"the country","german":"das Land"},{"english":"the apple","german":"der Apfel"},{"english":"the bottle","german":"die Flasche"},{"english":"the key","german":"der Schlüssel"},{"english":"the letter","german":"der Brief"}]},{"id":"verben","label":"Verben","description":"Basic A1 verbs conjugated in present tense","exercises":[{"english":"I go","german":"Ich gehe"},{"english":"You come","german":"Du kommst"},{"english":"He / she eats","german":"Er / sie isst"},{"english":"We drink","german":"Wir trinken"},{"english":"They sleep","german":"Sie schlafen"},{"english":"I work","german":"Ich arbeite"},{"english":"You learn","german":"Du lernst"},{"english":"He / she speaks","german":"Er / sie spricht"},{"english":"We live","german":"Wir wohnen"},{"english":"They play","german":"Sie spielen"},{"english":"I read","german":"Ich lese"},{"english":"You write","german":"Du schreibst"},{"english":"He / she runs","german":"Er / sie läuft"},{"english":"We swim","german":"Wir schwimmen"},{"english":"They cook","german":"Sie kochen"},{"english":"I drive","german":"Ich fahre"},{"english":"You help","german":"Du hilfst"},{"english":"He / she sings","german":"Er / sie singt"},{"english":"We travel","german":"Wir reisen"},{"english":"They buy","german":"Sie kaufen"}]},{"id":"adjektive","label":"Adjektive","description":"Common A1 adjectives","exercises":[{"english":"big","german":"groß"},{"english":"small","german":"klein"},{"english":"good","german":"gut"},{"english":"bad","german":"schlecht"},{"english":"fast","german":"schnell"},{"english":"slow","german":"langsam"},{"english":"hot","german":"heiß"},{"english":"cold","german":"kalt"},{"english":"new","german":"neu"},{"english":"old","german":"alt"},{"english":"beautiful","german":"schön"},{"english":"expensive","german":"teuer"},{"english":"cheap","german":"günstig"},{"english":"happy","german":"glücklich"},{"english":"sad","german":"traurig"},{"english":"tired","german":"müde"},{"english":"hungry","german":"hungrig"},{"english":"thirsty","german":"durstig"},{"english":"interesting","german":"interessant"},{"english":"easy","german":"einfach"}]},{"id":"zahlen","label":"Zahlen","description":"Numbers and counting","exercises":[{"english":"one","german":"eins"},{"english":"two","german":"zwei"},{"english":"three","german":"drei"},{"english":"four","german":"vier"},{"english":"five","german":"fünf"},{"english":"six","german":"sechs"},{"english":"seven","german":"sieben"},{"english":"eight","german":"acht"},{"english":"nine","german":"neun"},{"english":"ten","german":"zehn"},{"english":"eleven","german":"elf"},{"english":"twelve","german":"zwölf"},{"english":"twenty","german":"zwanzig"},{"english":"thirty","german":"dreißig"},{"english":"one hundred","german":"hundert"},{"english":"one thousand","german":"tausend"},{"english":"How old are you?","german":"Wie alt bist du?"},{"english":"I am 25 years old","german":"Ich bin fünfundzwanzig Jahre alt"},{"english":"It costs 5 euros","german":"Es kostet fünf Euro"},{"english":"I need two tickets","german":"Ich brauche zwei Tickets"}]},{"id":"farben","label":"Farben","description":"Colors","exercises":[{"english":"red","german":"rot"},{"english":"blue","german":"blau"},{"english":"green","german":"grün"},{"english":"yellow","german":"gelb"},{"english":"black","german":"schwarz"},{"english":"white","german":"weiß"},{"english":"orange","german":"orange"},{"english":"pink","german":"rosa"},{"english":"purple","german":"lila"},{"english":"brown","german":"braun"},{"english":"grey","german":"grau"},{"english":"The car is red","german":"Das Auto ist rot"},{"english":"The sky is blue","german":"Der Himmel ist blau"},{"english":"The grass is green","german":"Das Gras ist grün"},{"english":"The sun is yellow","german":"Die Sonne ist gelb"},{"english":"My bag is black","german":"Meine Tasche ist schwarz"},{"english":"The snow is white","german":"Der Schnee ist weiß"},{"english":"The rose is pink","german":"Die Rose ist rosa"},{"english":"What color is it?","german":"Welche Farbe hat es?"},{"english":"I like green","german":"Ich mag Grün"}]},{"id":"familie","label":"Familie","description":"Family members","exercises":[{"english":"mother","german":"die Mutter"},{"english":"father","german":"der Vater"},{"english":"sister","german":"die Schwester"},{"english":"brother","german":"der Bruder"},{"english":"grandmother","german":"die Großmutter"},{"english":"grandfather","german":"der Großvater"},{"english":"daughter","german":"die Tochter"},{"english":"son","german":"der Sohn"},{"english":"aunt","german":"die Tante"},{"english":"uncle","german":"der Onkel"},{"english":"cousin (female)","german":"die Cousine"},{"english":"cousin (male)","german":"der Cousin"},{"english":"wife","german":"die Frau / Ehefrau"},{"english":"husband","german":"der Mann / Ehemann"},{"english":"parents","german":"die Eltern"},{"english":"children","german":"die Kinder"},{"english":"grandparents","german":"die Großeltern"},{"english":"My mother is kind","german":"Meine Mutter ist nett"},{"english":"I have two brothers","german":"Ich habe zwei Brüder"},{"english":"Her sister is a doctor","german":"Ihre Schwester ist Ärztin"}]},{"id":"essen_trinken","label":"Essen & Trinken","description":"Food and drink vocabulary","exercises":[{"english":"bread","german":"das Brot"},{"english":"water","german":"das Wasser"},{"english":"coffee","german":"der Kaffee"},{"english":"tea","german":"der Tee"},{"english":"milk","german":"die Milch"},{"english":"apple","german":"der Apfel"},{"english":"banana","german":"die Banane"},{"english":"cheese","german":"der Käse"},{"english":"butter","german":"die Butter"},{"english":"eggs","german":"die Eier"},{"english":"meat","german":"das Fleisch"},{"english":"fish","german":"der Fisch"},{"english":"soup","german":"die Suppe"},{"english":"cake","german":"der Kuchen"},{"english":"juice","german":"der Saft"},{"english":"beer","german":"das Bier"},{"english":"wine","german":"der Wein"},{"english":"I like coffee","german":"Ich mag Kaffee"},{"english":"I eat bread","german":"Ich esse Brot"},{"english":"I drink water","german":"Ich trinke Wasser"}]},{"id":"wochentage","label":"Wochentage","description":"Days of the week and time expressions","exercises":[{"english":"Monday","german":"Montag"},{"english":"Tuesday","german":"Dienstag"},{"english":"Wednesday","german":"Mittwoch"},{"english":"Thursday","german":"Donnerstag"},{"english":"Friday","german":"Freitag"},{"english":"Saturday","german":"Samstag"},{"english":"Sunday","german":"Sonntag"},{"english":"today","german":"heute"},{"english":"tomorrow","german":"morgen"},{"english":"yesterday","german":"gestern"},{"english":"the day after tomorrow","german":"übermorgen"},{"english":"the day before yesterday","german":"vorgestern"},{"english":"On Monday","german":"Am Montag"},{"english":"Every Friday","german":"Jeden Freitag"},{"english":"Next Monday","german":"Nächsten Montag"},{"english":"Last Tuesday","german":"Letzten Dienstag"},{"english":"What day is today?","german":"Welcher Tag ist heute?"},{"english":"I work on Mondays","german":"Ich arbeite montags"},{"english":"On the weekend","german":"Am Wochenende"},{"english":"weekday","german":"der Werktag"}]},{"id":"monate","label":"Monate & Jahreszeiten","description":"Months and seasons","exercises":[{"english":"January","german":"Januar"},{"english":"February","german":"Februar"},{"english":"March","german":"März"},{"english":"April","german":"April"},{"english":"May","german":"Mai"},{"english":"June","german":"Juni"},{"english":"July","german":"Juli"},{"english":"August","german":"August"},{"english":"September","german":"September"},{"english":"October","german":"Oktober"},{"english":"November","german":"November"},{"english":"December","german":"Dezember"},{"english":"What month is it?","german":"Welcher Monat ist es?"},{"english":"In January","german":"Im Januar"},{"english":"My birthday is in June","german":"Mein Geburtstag ist im Juni"},{"english":"spring","german":"der Frühling"},{"english":"summer","german":"der Sommer"},{"english":"autumn","german":"der Herbst"},{"english":"winter","german":"der Winter"},{"english":"In winter it is cold","german":"Im Winter ist es kalt"}]}];
+
+        // ── App State ──
+        const state = {
+            tags: [],
+            activeTagId: 'all',
+            deck: [],
+            deckIdx: 0,
+            score: { right: 0, wrong: 0 },
+            revealed: false,
+            scored: false,
+        };
+
+        // ── DOM refs ──
+        const tagStrip   = document.getElementById('tagStrip');
+        const progressRow  = document.getElementById('progressRow');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const cardWrap   = document.getElementById('cardWrap');
+        const scoreRight = document.getElementById('scoreRight');
+        const scoreWrong = document.getElementById('scoreWrong');
+
+        // ── Utilities ──
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function normalize(s) {
+            return String(s).trim().toLowerCase()
+                .replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae')
+                .replace(/ß/g, 'ss').replace(/\s+/g, ' ');
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        // ── Data loading ──
+        async function loadExercises() {
+            try {
+                const res = await fetch('./exercises.yaml', { cache: 'no-store' });
+                if (res.ok) {
+                    const text = await res.text();
+                    const parsed = jsyaml.load(text);
+                    state.tags = parsed.tags;
+                    return;
+                }
+            } catch { /* file:// or offline — fall through */ }
+            state.tags = FALLBACK_TAGS;
+        }
+
+        // ── Deck building ──
+        function buildDeck() {
+            let exercises;
+            if (state.activeTagId === 'all') {
+                exercises = state.tags.flatMap(t => t.exercises);
+            } else {
+                const tag = state.tags.find(t => t.id === state.activeTagId);
+                exercises = tag ? tag.exercises : [];
+            }
+            state.deck = shuffle(exercises);
+            state.deckIdx = 0;
+            state.revealed = false;
+            state.scored = false;
+        }
+
+        // ── Score display ──
+        function updateScoreDisplay() {
+            scoreRight.textContent = `✓ ${state.score.right}`;
+            scoreWrong.textContent = `✗ ${state.score.wrong}`;
+        }
+
+        // ── Tag strip ──
+        function renderTagStrip() {
+            const totalAll = state.tags.reduce((s, t) => s + t.exercises.length, 0);
+            const chips = [{ id: 'all', label: `All (${totalAll})` }]
+                .concat(state.tags.map(t => ({ id: t.id, label: t.label })));
+
+            tagStrip.innerHTML = chips.map(c => `
+                <button class="tag-chip${c.id === state.activeTagId ? ' active' : ''}"
+                        data-tag="${escapeHtml(c.id)}">
+                    ${escapeHtml(c.label)}
+                </button>
+            `).join('');
+        }
+
+        tagStrip.addEventListener('click', e => {
+            const chip = e.target.closest('.tag-chip');
+            if (!chip) return;
+            state.activeTagId = chip.dataset.tag;
+            renderTagStrip();
+            buildDeck();
+            renderCard();
+        });
+
+        // ── Progress ──
+        function updateProgress() {
+            if (state.deck.length === 0) {
+                progressRow.style.display = 'none';
+                return;
+            }
+            progressRow.style.display = 'flex';
+            const done = Math.min(state.deckIdx, state.deck.length);
+            const pct = (done / state.deck.length) * 100;
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `${done} / ${state.deck.length}`;
+        }
+
+        // ── Main card render ──
+        function renderCard() {
+            updateProgress();
+
+            if (state.deck.length === 0) {
+                cardWrap.innerHTML = `<div class="status-msg">No exercises found for this tag.</div>`;
+                return;
+            }
+
+            if (state.deckIdx >= state.deck.length) {
+                renderCompletion();
+                return;
+            }
+
+            const ex = state.deck[state.deckIdx];
+            state.revealed = false;
+            state.scored = false;
+
+            cardWrap.innerHTML = `
+                <div class="card" id="mainCard">
+                    <div class="english-word" id="englishWord">${escapeHtml(ex.english)}</div>
+                    <div class="divider"></div>
+                    <input
+                        class="answer-input"
+                        id="answerInput"
+                        type="text"
+                        placeholder="Type the German word or phrase…"
+                        autocomplete="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                    >
+                    <button class="reveal-btn" id="revealBtn">Reveal →</button>
+
+                    <div class="answer-zone" id="answerZone">
+                        <div>
+                            <div class="german-answer-label">🇩🇪 German</div>
+                            <div class="german-answer" id="germanAnswer">${escapeHtml(ex.german)}</div>
+                        </div>
+
+                        <div class="comparison-row" id="comparisonRow" style="display:none"></div>
+
+                        <div id="selfScore">
+                            <div class="self-score-label" id="selfScoreLabel">Did you get it right?</div>
+                            <div class="self-score-btns" style="margin-top:10px">
+                                <button class="btn-yes" id="btnYes">✓ Yes, I got it</button>
+                                <button class="btn-no"  id="btnNo">✗ I missed it</button>
+                            </div>
+                        </div>
+
+                        <button class="next-btn" id="nextBtn" style="display:none">Next card →</button>
+                    </div>
+                </div>
+            `;
+
+            const answerInput = document.getElementById('answerInput');
+            const revealBtn   = document.getElementById('revealBtn');
+
+            answerInput.focus();
+
+            answerInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !state.revealed) revealBtn.click();
+            });
+
+            revealBtn.addEventListener('click', () => {
+                if (state.revealed) return;
+                state.revealed = true;
+                revealAnswer(ex, answerInput.value.trim());
+            });
+        }
+
+        function revealAnswer(ex, typed) {
+            const answerZone    = document.getElementById('answerZone');
+            const comparisonRow = document.getElementById('comparisonRow');
+            const selfScoreLabel = document.getElementById('selfScoreLabel');
+            const revealBtn     = document.getElementById('revealBtn');
+            const answerInput   = document.getElementById('answerInput');
+
+            revealBtn.style.display = 'none';
+            answerZone.classList.add('visible');
+
+            if (typed) {
+                const isMatch = normalize(typed) === normalize(ex.german);
+                answerInput.classList.add(isMatch ? 'correct' : 'wrong');
+                answerInput.disabled = true;
+
+                const badge = isMatch
+                    ? '<span class="match-badge correct">Correct!</span>'
+                    : '<span class="match-badge incorrect">Not quite</span>';
+
+                comparisonRow.style.display = 'flex';
+                comparisonRow.style.flexDirection = 'column';
+                comparisonRow.innerHTML = `
+                    <div class="comparison-item">
+                        <span class="comparison-label">You</span>
+                        <span class="comparison-text ${isMatch ? 'match' : 'mismatch'}">${escapeHtml(typed)}</span>
+                        ${badge}
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">Answer</span>
+                        <span class="comparison-text match">${escapeHtml(ex.german)}</span>
+                    </div>
+                `;
+
+                selfScoreLabel.textContent = 'Override score if needed:';
+            } else {
+                answerInput.style.display = 'none';
+                selfScoreLabel.textContent = 'Did you get it right?';
+            }
+
+            document.getElementById('btnYes').addEventListener('click', () => recordScore(true));
+            document.getElementById('btnNo').addEventListener('click',  () => recordScore(false));
+
+            document.getElementById('btnYes').focus();
+        }
+
+        function recordScore(correct) {
+            if (state.scored) return;
+            state.scored = true;
+
+            if (correct) state.score.right++;
+            else state.score.wrong++;
+
+            updateScoreDisplay();
+            updateProgress();
+
+            const selfScore = document.getElementById('selfScore');
+            selfScore.innerHTML = correct
+                ? `<div style="text-align:center;color:#065F46;font-weight:700;font-size:15px;">✓ Marked as correct</div>`
+                : `<div style="text-align:center;color:#991B1B;font-weight:700;font-size:15px;">✗ Marked as incorrect</div>`;
+
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.style.display = 'block';
+            nextBtn.focus();
+            nextBtn.addEventListener('click', () => {
+                state.deckIdx++;
+                updateProgress();
+                renderCard();
+            });
+        }
+
+        // ── Completion screen ──
+        function renderCompletion() {
+            const total = state.deck.length;
+            const { right, wrong } = state.score;
+            const pct = total > 0 ? Math.round((right / total) * 100) : 0;
+            const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '💪' : '📚';
+
+            progressFill.style.width = '100%';
+            progressText.textContent = `${total} / ${total}`;
+
+            cardWrap.innerHTML = `
+                <div class="completion-card">
+                    <div class="completion-emoji">${emoji}</div>
+                    <div class="completion-title">Round complete!</div>
+                    <div class="completion-sub">${pct}% correct this round</div>
+                    <div class="completion-score">
+                        <div class="completion-score-pill right">✓ ${right} right</div>
+                        <div class="completion-score-pill wrong">✗ ${wrong} wrong</div>
+                    </div>
+                    <div class="completion-btns">
+                        <button class="btn-retry" id="btnRetry">Shuffle &amp; try again</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('btnRetry').addEventListener('click', () => {
+                state.score = { right: 0, wrong: 0 };
+                updateScoreDisplay();
+                buildDeck();
+                renderCard();
+            });
+        }
+
+        // ── Boot ──
+        (async () => {
+            document.getElementById('statusMsg').textContent = 'Loading exercises…';
+            await loadExercises();
+            buildDeck();
+            renderTagStrip();
+            renderCard();
+        })();
+    </script>
+</body>
+</html>

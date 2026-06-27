@@ -911,7 +911,7 @@
             try {
                 return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(value);
             } catch {
-                return `${currency} ${value.toFixed(2)}`;
+                return `${escapeHtml(currency)} ${value.toFixed(2)}`;
             }
         }
 
@@ -952,7 +952,7 @@
                 const net = b.inflow - b.outflow;
                 blocks.push(`
                     <div class="currency-block">
-                        <div class="currency-tag">${currency}</div>
+                        <div class="currency-tag">${escapeHtml(currency)}</div>
                         <div class="flow-row">
                             <div class="flow-col in">
                                 <div class="flow-label">Inflow</div>
