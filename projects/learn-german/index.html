@@ -481,7 +481,7 @@
         // ── App State ──
         const state = {
             tags: [],
-            activeTagId: 'all',
+            activeTags: new Set(['all']),
             deck: [],
             deckIdx: 0,
             score: { right: 0, wrong: 0 },
@@ -536,13 +536,14 @@
         // ── Deck building ──
         function buildDeck() {
             let exercises;
-            if (state.activeTagId === 'all') {
+            if (state.activeTags.has('all') || state.activeTags.size === 0) {
                 exercises = state.tags.flatMap(t =>
                     t.exercises.map(ex => ({ ...ex, _tagLabel: t.label }))
                 );
             } else {
-                const tag = state.tags.find(t => t.id === state.activeTagId);
-                exercises = tag ? tag.exercises : [];
+                exercises = state.tags
+                    .filter(t => state.activeTags.has(t.id))
+                    .flatMap(t => t.exercises.map(ex => ({ ...ex, _tagLabel: t.label })));
             }
             state.deck = shuffle(exercises);
             state.deckIdx = 0;
@@ -562,7 +563,7 @@
                 .concat(state.tags.map(t => ({ id: t.id, label: t.label })));
 
             tagStrip.innerHTML = chips.map(c => `
-                <button class="tag-chip${c.id === state.activeTagId ? ' active' : ''}"
+                <button class="tag-chip${state.activeTags.has(c.id) ? ' active' : ''}"
                         data-tag="${escapeHtml(c.id)}">
                     ${escapeHtml(c.label)}
                 </button>
@@ -572,7 +573,20 @@
         tagStrip.addEventListener('click', e => {
             const chip = e.target.closest('.tag-chip');
             if (!chip) return;
-            state.activeTagId = chip.dataset.tag;
+            const id = chip.dataset.tag;
+
+            if (id === 'all') {
+                state.activeTags = new Set(['all']);
+            } else {
+                state.activeTags.delete('all');
+                if (state.activeTags.has(id)) {
+                    state.activeTags.delete(id);
+                    if (state.activeTags.size === 0) state.activeTags.add('all');
+                } else {
+                    state.activeTags.add(id);
+                }
+            }
+
             renderTagStrip();
             buildDeck();
             renderCard();
