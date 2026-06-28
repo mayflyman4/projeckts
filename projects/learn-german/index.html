@@ -660,9 +660,13 @@
             answerInput.focus();
 
             answerInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter' && !state.revealed) {
-                    e.preventDefault();
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                if (!state.revealed) {
                     revealBtn.click();
+                } else {
+                    const btnNextWrong = document.getElementById('btnNextWrong');
+                    if (btnNextWrong) btnNextWrong.click();
                 }
             });
 
