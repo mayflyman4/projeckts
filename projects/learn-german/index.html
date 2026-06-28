@@ -37,7 +37,6 @@
             letter-spacing: -0.5px;
         }
 
-        .app-title .flag { font-size: 1.2em; }
 
         .score-bar {
             display: flex;
@@ -224,6 +223,23 @@
         }
 
         .reveal-btn:active { transform: translateY(0); }
+
+        .show-answer-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #6366F1;
+            background: white;
+            border: 2px solid #6366F1;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .show-answer-btn:hover {
+            background: #EEF2FF;
+        }
 
         /* ── Answer Zone ── */
         .answer-zone {
@@ -461,7 +477,7 @@
 <body>
 
     <header class="app-header">
-        <div class="app-title"><span class="flag">🇩🇪</span> Lern Deutsch</div>
+        <div class="app-title">Lern Deutsch</div>
         <div class="score-bar">
             <span class="score-pill right" id="scoreRight">✓ 0</span>
             <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
@@ -635,12 +651,13 @@
                     <button class="reveal-btn" id="revealBtn">Reveal →</button>
 
                     <div class="answer-zone" id="answerZone">
-                        <div>
+                        <div id="answerRevealSection">
                             <div class="german-answer-label">🇩🇪 German</div>
                             <div class="german-answer" id="germanAnswer">${escapeHtml(ex.german)}</div>
                             ${ex._tagLabel ? `<div class="answer-tag-label">${escapeHtml(ex._tagLabel)}</div>` : ''}
                             ${ex.explanation ? `<div class="answer-explanation">${escapeHtml(ex.explanation)}</div>` : ''}
                         </div>
+                        <button class="show-answer-btn" id="showAnswerBtn" style="display:none">Reveal correct answer</button>
 
                         <div class="comparison-row" id="comparisonRow" style="display:none"></div>
 
@@ -677,11 +694,13 @@
         }
 
         function revealAnswer(ex, typed) {
-            const answerZone    = document.getElementById('answerZone');
-            const comparisonRow = document.getElementById('comparisonRow');
-            const selfScoreLabel = document.getElementById('selfScoreLabel');
-            const revealBtn     = document.getElementById('revealBtn');
-            const answerInput   = document.getElementById('answerInput');
+            const answerZone          = document.getElementById('answerZone');
+            const comparisonRow       = document.getElementById('comparisonRow');
+            const selfScoreLabel      = document.getElementById('selfScoreLabel');
+            const revealBtn           = document.getElementById('revealBtn');
+            const answerInput         = document.getElementById('answerInput');
+            const answerRevealSection = document.getElementById('answerRevealSection');
+            const showAnswerBtn       = document.getElementById('showAnswerBtn');
 
             revealBtn.style.display = 'none';
             answerZone.classList.add('visible');
@@ -691,29 +710,38 @@
                 answerInput.classList.add(isMatch ? 'correct' : 'wrong');
                 answerInput.disabled = true;
 
-                const badge = isMatch
-                    ? '<span class="match-badge correct">Correct!</span>'
-                    : '<span class="match-badge incorrect">Not quite</span>';
-
-                comparisonRow.style.display = 'flex';
-                comparisonRow.style.flexDirection = 'column';
-                comparisonRow.innerHTML = `
-                    <div class="comparison-item">
-                        <span class="comparison-label">You</span>
-                        <span class="comparison-text ${isMatch ? 'match' : 'mismatch'}">${escapeHtml(typed)}</span>
-                        ${badge}
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">Answer</span>
-                        <span class="comparison-text match">${escapeHtml(ex.german)}</span>
-                    </div>
-                `;
-
-                selfScoreLabel.textContent = isMatch ? 'Override score if needed:' : 'Mark as correct if you accept your answer:';
+                if (isMatch) {
+                    comparisonRow.style.display = 'flex';
+                    comparisonRow.style.flexDirection = 'column';
+                    comparisonRow.innerHTML = `
+                        <div class="comparison-item">
+                            <span class="comparison-label">You</span>
+                            <span class="comparison-text match">${escapeHtml(typed)}</span>
+                            <span class="match-badge correct">Correct!</span>
+                        </div>
+                    `;
+                } else {
+                    // Wrong answer: hide the German, show "Reveal correct answer" button
+                    answerRevealSection.style.display = 'none';
+                    showAnswerBtn.style.display = 'block';
+                    showAnswerBtn.addEventListener('click', () => {
+                        answerRevealSection.style.display = 'block';
+                        showAnswerBtn.style.display = 'none';
+                        comparisonRow.style.display = 'flex';
+                        comparisonRow.style.flexDirection = 'column';
+                        comparisonRow.innerHTML = `
+                            <div class="comparison-item">
+                                <span class="comparison-label">You typed</span>
+                                <span class="comparison-text mismatch">${escapeHtml(typed)}</span>
+                            </div>
+                        `;
+                    });
+                }
             } else {
                 answerInput.style.display = 'none';
-                selfScoreLabel.textContent = 'Did you get it right?';
             }
+
+            selfScoreLabel.textContent = 'Did you get it right?';
 
             document.getElementById('btnYes').addEventListener('click', () => {
                 recordScore(true);
@@ -721,12 +749,7 @@
             document.getElementById('btnNo').addEventListener('click', () => {
                 recordScore(false);
             });
-
-            if (typed && normalize(typed) !== normalize(ex.german)) {
-                document.getElementById('btnNo').focus();
-            } else {
-                document.getElementById('btnYes').focus();
-            }
+            // No auto-focus: user chooses explicitly
         }
 
         function recordScore(correct) {
