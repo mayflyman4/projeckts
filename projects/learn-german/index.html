@@ -695,14 +695,21 @@
                 } else {
                     // Wrong typed: show German immediately, offer override or move on
                     selfScore.innerHTML = `
-                        <div class="self-score-label">Mark your answer:</div>
                         <div class="self-score-btns" style="margin-top:10px">
                             <button class="btn-yes" id="btnMarkCorrect">✓ Mark as correct</button>
                             <button class="btn-no" id="btnNextWrong">Next word →</button>
                         </div>
                     `;
                     document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true, false));
-                    document.getElementById('btnNextWrong').addEventListener('click', () => recordScore(false, false));
+                    document.getElementById('btnNextWrong').addEventListener('click', () => {
+                        if (state.scored) return;
+                        state.scored = true;
+                        state.score.wrong++;
+                        updateScoreDisplay();
+                        state.deckIdx++;
+                        updateProgress();
+                        renderCard();
+                    });
                 }
             } else {
                 // Not typed: show German, show Yes/No, no auto-advance
