@@ -241,6 +241,12 @@
             background: #EEF2FF;
         }
 
+        .wrong-action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         /* ── Answer Zone ── */
         .answer-zone {
             display: none;
@@ -657,12 +663,9 @@
                             ${ex._tagLabel ? `<div class="answer-tag-label">${escapeHtml(ex._tagLabel)}</div>` : ''}
                             ${ex.explanation ? `<div class="answer-explanation">${escapeHtml(ex.explanation)}</div>` : ''}
                         </div>
-                        <button class="show-answer-btn" id="showAnswerBtn" style="display:none">Reveal correct answer</button>
-
-                        <div class="comparison-row" id="comparisonRow" style="display:none"></div>
 
                         <div id="selfScore">
-                            <div class="self-score-label" id="selfScoreLabel">Did you get it right?</div>
+                            <div class="self-score-label">Did you get it right?</div>
                             <div class="self-score-btns" style="margin-top:10px">
                                 <button class="btn-yes" id="btnYes">✓ Yes, I got it</button>
                                 <button class="btn-no"  id="btnNo">✗ I missed it</button>
@@ -695,12 +698,10 @@
 
         function revealAnswer(ex, typed) {
             const answerZone          = document.getElementById('answerZone');
-            const comparisonRow       = document.getElementById('comparisonRow');
-            const selfScoreLabel      = document.getElementById('selfScoreLabel');
             const revealBtn           = document.getElementById('revealBtn');
             const answerInput         = document.getElementById('answerInput');
             const answerRevealSection = document.getElementById('answerRevealSection');
-            const showAnswerBtn       = document.getElementById('showAnswerBtn');
+            const selfScore           = document.getElementById('selfScore');
 
             revealBtn.style.display = 'none';
             answerZone.classList.add('visible');
@@ -711,48 +712,35 @@
                 answerInput.disabled = true;
 
                 if (isMatch) {
-                    comparisonRow.style.display = 'flex';
-                    comparisonRow.style.flexDirection = 'column';
-                    comparisonRow.innerHTML = `
-                        <div class="comparison-item">
-                            <span class="comparison-label">You</span>
-                            <span class="comparison-text match">${escapeHtml(typed)}</span>
-                            <span class="match-badge correct">Correct!</span>
+                    // Correct typed: auto-score, show next card with 5s timer
+                    selfScore.style.display = 'none';
+                    recordScore(true, true);
+                } else {
+                    // Wrong typed: hide German, show 3 action buttons
+                    answerRevealSection.style.display = 'none';
+                    selfScore.innerHTML = `
+                        <div class="wrong-action-btns">
+                            <button class="show-answer-btn" id="showAnswerBtn">Show correct answer</button>
+                            <button class="btn-yes" id="btnMarkCorrect">✓ Mark as correct</button>
+                            <button class="btn-no" id="btnNextWrong">Next word →</button>
                         </div>
                     `;
-                } else {
-                    // Wrong answer: hide the German, show "Reveal correct answer" button
-                    answerRevealSection.style.display = 'none';
-                    showAnswerBtn.style.display = 'block';
-                    showAnswerBtn.addEventListener('click', () => {
+                    document.getElementById('showAnswerBtn').addEventListener('click', () => {
                         answerRevealSection.style.display = 'block';
-                        showAnswerBtn.style.display = 'none';
-                        comparisonRow.style.display = 'flex';
-                        comparisonRow.style.flexDirection = 'column';
-                        comparisonRow.innerHTML = `
-                            <div class="comparison-item">
-                                <span class="comparison-label">You typed</span>
-                                <span class="comparison-text mismatch">${escapeHtml(typed)}</span>
-                            </div>
-                        `;
+                        document.getElementById('showAnswerBtn').remove();
                     });
+                    document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true, false));
+                    document.getElementById('btnNextWrong').addEventListener('click', () => recordScore(false, false));
                 }
             } else {
+                // Not typed: show German, show Yes/No, no auto-advance
                 answerInput.style.display = 'none';
+                document.getElementById('btnYes').addEventListener('click', () => recordScore(true, false));
+                document.getElementById('btnNo').addEventListener('click', () => recordScore(false, false));
             }
-
-            selfScoreLabel.textContent = 'Did you get it right?';
-
-            document.getElementById('btnYes').addEventListener('click', () => {
-                recordScore(true);
-            });
-            document.getElementById('btnNo').addEventListener('click', () => {
-                recordScore(false);
-            });
-            // No auto-focus: user chooses explicitly
         }
 
-        function recordScore(correct) {
+        function recordScore(correct, useTimer = false) {
             if (state.scored) return;
             state.scored = true;
 
@@ -772,7 +760,7 @@
             nextBtn.focus();
 
             let autoNextTimer = null;
-            if (correct) {
+            if (useTimer && correct) {
                 let nt = 5;
                 nextBtn.textContent = `Next card → (${nt})`;
                 autoNextTimer = setInterval(() => {
