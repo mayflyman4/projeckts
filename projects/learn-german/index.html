@@ -660,14 +660,10 @@
             answerInput.focus();
 
             answerInput.addEventListener('keydown', e => {
-                if (e.key !== 'Enter') return;
+                if (e.key !== 'Enter' || state.revealed) return;
                 e.preventDefault();
-                if (!state.revealed) {
-                    revealBtn.click();
-                } else {
-                    const btnNextWrong = document.getElementById('btnNextWrong');
-                    if (btnNextWrong) btnNextWrong.click();
-                }
+                e.stopPropagation();
+                revealBtn.click();
             });
 
             revealBtn.addEventListener('click', () => {
@@ -705,8 +701,8 @@
                         </div>
                     `;
 
-                    const advanceWrong = () => {
-                        document.removeEventListener('keydown', onEnterWrong);
+                    document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true, false));
+                    document.getElementById('btnNextWrong').addEventListener('click', () => {
                         if (state.scored) return;
                         state.scored = true;
                         state.score.wrong++;
@@ -714,17 +710,7 @@
                         state.deckIdx++;
                         updateProgress();
                         renderCard();
-                    };
-                    const onEnterWrong = (e) => {
-                        if (e.key === 'Enter') { e.preventDefault(); advanceWrong(); }
-                    };
-                    document.addEventListener('keydown', onEnterWrong);
-
-                    document.getElementById('btnMarkCorrect').addEventListener('click', () => {
-                        document.removeEventListener('keydown', onEnterWrong);
-                        recordScore(true, false);
                     });
-                    document.getElementById('btnNextWrong').addEventListener('click', advanceWrong);
                 }
             } else {
                 // Not typed: show German, show Yes/No, no auto-advance
@@ -814,6 +800,31 @@
                 renderCard();
             });
         }
+
+        // ── Global Enter key handler ──
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Enter') return;
+
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn && nextBtn.style.display !== 'none') {
+                e.preventDefault();
+                nextBtn.click();
+                return;
+            }
+
+            const btnNextWrong = document.getElementById('btnNextWrong');
+            if (btnNextWrong) {
+                e.preventDefault();
+                btnNextWrong.click();
+                return;
+            }
+
+            const btnRetry = document.getElementById('btnRetry');
+            if (btnRetry) {
+                e.preventDefault();
+                btnRetry.click();
+            }
+        });
 
         // ── Boot ──
         (async () => {
