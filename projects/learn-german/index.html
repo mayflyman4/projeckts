@@ -224,29 +224,6 @@
 
         .reveal-btn:active { transform: translateY(0); }
 
-        .show-answer-btn {
-            width: 100%;
-            padding: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #6366F1;
-            background: white;
-            border: 2px solid #6366F1;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-        }
-
-        .show-answer-btn:hover {
-            background: #EEF2FF;
-        }
-
-        .wrong-action-btns {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
         /* ── Answer Zone ── */
         .answer-zone {
             display: none;
@@ -716,19 +693,14 @@
                     selfScore.style.display = 'none';
                     recordScore(true, true);
                 } else {
-                    // Wrong typed: hide German, show 3 action buttons
-                    answerRevealSection.style.display = 'none';
+                    // Wrong typed: show German immediately, offer override or move on
                     selfScore.innerHTML = `
-                        <div class="wrong-action-btns">
-                            <button class="show-answer-btn" id="showAnswerBtn">Show correct answer</button>
+                        <div class="self-score-label">Mark your answer:</div>
+                        <div class="self-score-btns" style="margin-top:10px">
                             <button class="btn-yes" id="btnMarkCorrect">✓ Mark as correct</button>
                             <button class="btn-no" id="btnNextWrong">Next word →</button>
                         </div>
                     `;
-                    document.getElementById('showAnswerBtn').addEventListener('click', () => {
-                        answerRevealSection.style.display = 'block';
-                        document.getElementById('showAnswerBtn').remove();
-                    });
                     document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true, false));
                     document.getElementById('btnNextWrong').addEventListener('click', () => recordScore(false, false));
                 }
