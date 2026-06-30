@@ -885,8 +885,8 @@
             sessionStartTs: 0,
             // F3 — direction
             direction: 'en2de',
-            // F7 — speech
-            autoSpeak: true,
+            // F7 — speech (auto-speak off by default; user opts in via the 🔊 Auto toggle)
+            autoSpeak: false,
             speech: { supported: false, voice: null, voicesLoaded: false },
             // F9 — mock test
             mode: 'flash',
@@ -1202,8 +1202,8 @@
         function loadAutoSpeak() {
             try {
                 const v = localStorage.getItem('lg_autospeak');
-                return v === null ? true : v === '1';
-            } catch { return true; }
+                return v === null ? false : v === '1';
+            } catch { return false; }
         }
 
         function setAutoSpeak(on) {
