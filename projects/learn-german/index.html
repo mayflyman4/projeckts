@@ -466,7 +466,6 @@
             flex-wrap: wrap;
         }
 
-        .dir-toggle,
         .auto-speak-toggle {
             padding: 7px 16px;
             border-radius: 999px;
@@ -475,27 +474,44 @@
             cursor: pointer;
             white-space: nowrap;
             transition: background 0.18s, color 0.18s, border-color 0.18s;
-        }
-
-        .dir-toggle,
-        .auto-speak-toggle {
             color: rgba(255, 255, 255, 0.9);
             background: rgba(255, 255, 255, 0.15);
             border: 2px solid rgba(255, 255, 255, 0.35);
         }
 
-        .dir-toggle:hover,
         .auto-speak-toggle:hover {
             background: rgba(255, 255, 255, 0.28);
             border-color: rgba(255, 255, 255, 0.6);
         }
 
-        .dir-toggle[aria-pressed="true"],
         .auto-speak-toggle.on {
             background: white;
             color: #4F46E5;
             border-color: white;
         }
+
+        /* ── Direction segmented control ── */
+        .dir-seg {
+            display: inline-flex;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .dir-seg-btn {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .dir-seg-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.18); }
+        .dir-seg-btn.active { background: #fff; color: #4F46E5; }
 
         /* ── F4: "almost" article state ── */
         .answer-input.almost {
@@ -702,7 +718,10 @@
     </header>
 
     <div class="toolbar" id="toolbar">
-        <button class="dir-toggle" id="dirToggle" type="button" aria-pressed="false" title="Switch translation direction">EN → DE</button>
+        <div class="dir-seg" id="dirSeg" role="group" aria-label="Translation direction">
+            <button class="dir-seg-btn" type="button" data-dir="en2de" title="Prompt in English, type German">EN → DE</button>
+            <button class="dir-seg-btn" type="button" data-dir="de2en" title="Prompt in German, type English">DE → EN</button>
+        </div>
         <button class="auto-speak-toggle" id="autoSpeakToggle" type="button" title="Auto-play German audio on reveal">🔊 Auto</button>
     </div>
 
@@ -754,7 +773,7 @@
         const cardWrap   = document.getElementById('cardWrap');
         const scoreRight = document.getElementById('scoreRight');
         const scoreWrong = document.getElementById('scoreWrong');
-        const dirToggle  = document.getElementById('dirToggle');
+        const dirSeg     = document.getElementById('dirSeg');
         const autoSpeakToggle = document.getElementById('autoSpeakToggle');
         const streakPill = document.getElementById('streakPill');
 
@@ -964,10 +983,12 @@
         function isGermanPrompt() { return !isReverse(); }
 
         function renderDirectionToggle() {
-            if (!dirToggle) return;
-            const de2en = isReverse();
-            dirToggle.textContent = de2en ? 'DE → EN' : 'EN → DE';
-            dirToggle.setAttribute('aria-pressed', String(de2en));
+            if (!dirSeg) return;
+            dirSeg.querySelectorAll('.dir-seg-btn').forEach(b => {
+                const on = b.dataset.dir === state.direction;
+                b.classList.toggle('active', on);
+                b.setAttribute('aria-pressed', String(on));
+            });
         }
 
         function setDirection(d) {
@@ -1527,7 +1548,10 @@
             renderCard();
 
             // Toolbar wiring
-            dirToggle.addEventListener('click', () => setDirection(isReverse() ? 'en2de' : 'de2en'));
+            dirSeg.addEventListener('click', e => {
+                const btn = e.target.closest('.dir-seg-btn');
+                if (btn) setDirection(btn.dataset.dir);
+            });
             autoSpeakToggle.addEventListener('click', () => setAutoSpeak(!state.autoSpeak));
         })();
     </script>
