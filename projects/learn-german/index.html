@@ -456,14 +456,7 @@
             font-size: 15px;
         }
 
-        /* ── Header right cluster ── */
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* ── Toolbar (direction / audio / mock controls) ── */
+        /* ── Toolbar (direction / audio controls) ── */
         .toolbar {
             width: 100%;
             max-width: 720px;
@@ -474,8 +467,7 @@
         }
 
         .dir-toggle,
-        .auto-speak-toggle,
-        .mock-toggle {
+        .auto-speak-toggle {
             padding: 7px 16px;
             border-radius: 999px;
             font-size: 13px;
@@ -503,23 +495,6 @@
             background: white;
             color: #4F46E5;
             border-color: white;
-        }
-
-        .mock-toggle {
-            color: #4F46E5;
-            background: white;
-            border: 2px solid white;
-        }
-
-        .mock-toggle:hover { background: #EEF2FF; }
-
-        .mock-timer {
-            color: #fff;
-            font-weight: 700;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.18);
-            padding: 5px 12px;
-            border-radius: 999px;
         }
 
         /* ── F4: "almost" article state ── */
@@ -643,135 +618,66 @@
         .streak-day-label { font-size: 10px; font-weight: 700; color: #9CA3AF; }
         .streak-day.today .streak-day-label { color: #4F46E5; }
 
-        /* ── F9: mock test ── */
-        .mock-card { gap: 16px; }
-
-        .mock-step {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #8B5CF6;
+        /* ── Streak pill (header) ── */
+        .score-pill.streak {
+            background: rgba(249, 115, 22, 0.22);
+            color: #FDBA74;
+            border: 1px solid rgba(249, 115, 22, 0.4);
         }
 
-        .mock-prompt { font-size: 13px; font-weight: 700; color: #5B21B6; }
-
-        .mock-unscored {
-            background: #FEF3C7;
-            color: #92400E;
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 999px;
-            margin-left: 6px;
+        /* ── Celebration (every 10 correct) ── */
+        .celebrate-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
         }
 
-        .mock-question {
-            font-size: clamp(18px, 4vw, 22px);
-            font-weight: 800;
-            color: #1E1B4B;
-            line-height: 1.3;
+        .confetti {
+            position: absolute;
+            top: -16px;
+            width: 10px;
+            height: 14px;
+            border-radius: 2px;
+            opacity: 0.95;
+            will-change: transform, opacity;
+            animation: confetti-fall linear forwards;
         }
 
-        .mock-text,
-        .mock-sign,
-        .mock-model {
-            background: #F5F3FF;
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 15px;
-            color: #1E1B4B;
-            line-height: 1.5;
-            white-space: pre-wrap;
+        @keyframes confetti-fall {
+            0%   { transform: translateY(-20px) rotateZ(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotateZ(720deg); opacity: 0.9; }
         }
 
-        .mock-place {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #9CA3AF;
-            margin-bottom: 6px;
-        }
-
-        .mock-audio-btn {
-            width: 100%;
-            padding: 13px;
-            font-size: 16px;
-            font-weight: 700;
+        .celebrate-toast {
+            position: fixed;
+            top: 38%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 27, 75, 0.92);
             color: white;
-            background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
+            font-size: 22px;
+            font-weight: 800;
+            padding: 16px 28px;
+            border-radius: 18px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.35);
+            z-index: 10000;
+            pointer-events: none;
+            text-align: center;
+            animation: toast-pop 1.8s ease forwards;
         }
 
-        .mock-audio-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.4); }
-
-        .mock-transcript-toggle {
-            background: none;
-            border: none;
-            color: #4F46E5;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 4px;
-            align-self: flex-start;
+        @keyframes toast-pop {
+            0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+            15%  { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+            30%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            80%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
         }
 
-        .mock-transcript {
-            font-size: 13px;
-            color: #6B7280;
-            font-style: italic;
-            background: #F9FAFB;
-            border-radius: 10px;
-            padding: 10px 14px;
-            line-height: 1.5;
-        }
-
-        .mock-opts { display: flex; flex-direction: column; gap: 10px; }
-
-        .mock-opt {
-            width: 100%;
-            text-align: left;
-            padding: 13px 16px;
-            font-size: 16px;
-            font-weight: 700;
-            color: #4F46E5;
-            background: #EEF2FF;
-            border: 2px solid #C7D2FE;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: background 0.18s, transform 0.15s;
-        }
-
-        .mock-opt:hover:not(:disabled) { background: #E0E7FF; transform: translateY(-1px); }
-        .mock-opt:disabled { cursor: default; }
-        .mock-opt.mock-correct { border-color: #10B981; background: #ECFDF5; color: #065F46; }
-        .mock-opt.mock-wrong { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
-
-        .mock-write {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #C7D2FE;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 15px;
-            color: #1E1B4B;
-            resize: vertical;
-        }
-
-        .mock-disclaimer {
-            font-size: 12px;
-            color: #6B7280;
-            font-style: italic;
-            line-height: 1.5;
-            max-width: 360px;
-        }
-
-        .mock-breakdown {
-            font-size: 14px;
-            color: #4B5563;
-            font-weight: 600;
+        @media (prefers-reduced-motion: reduce) {
+            .confetti { animation-duration: 0.01ms !important; opacity: 0 !important; }
         }
 
         /* ── Responsive ── */
@@ -788,19 +694,16 @@
 
     <header class="app-header">
         <div class="app-title">Lern Deutsch</div>
-        <div class="header-right">
-            <span class="mock-timer" id="mockTimer" style="display:none"></span>
-            <div class="score-bar" id="scoreBar">
-                <span class="score-pill right" id="scoreRight">✓ 0</span>
-                <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
-            </div>
+        <div class="score-bar" id="scoreBar">
+            <span class="score-pill streak" id="streakPill" style="display:none">🔥 0</span>
+            <span class="score-pill right" id="scoreRight">✓ 0</span>
+            <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
         </div>
     </header>
 
     <div class="toolbar" id="toolbar">
         <button class="dir-toggle" id="dirToggle" type="button" aria-pressed="false" title="Switch translation direction">EN → DE</button>
         <button class="auto-speak-toggle" id="autoSpeakToggle" type="button" title="Auto-play German audio on reveal">🔊 Auto</button>
-        <button class="mock-toggle" id="mockToggle" type="button">📝 Mock Test</button>
     </div>
 
     <div class="tag-strip-wrapper" id="tagStripWrapper">
@@ -821,54 +724,6 @@
         // ── Fallback data (mirrors exercises.yaml — used when fetch fails on file://) ──
         const FALLBACK_TAGS = [{"id":"begruessungen","label":"Begrüßungen & Verabschiedungen","description":"Greetings and farewells","exercises":[{"english":"Hello","german":"Hallo"},{"english":"Good morning","german":"Guten Morgen"},{"english":"Good day / Good afternoon","german":"Guten Tag"},{"english":"Good evening","german":"Guten Abend"},{"english":"Good night","german":"Gute Nacht"},{"english":"Goodbye (formal)","german":"Auf Wiedersehen"},{"english":"Bye (informal)","german":"Tschüss"},{"english":"See you later","german":"Bis später"},{"english":"See you tomorrow","german":"Bis morgen"},{"english":"See you soon","german":"Bis bald"},{"english":"How are you? (informal)","german":"Wie geht es dir?"},{"english":"How are you? (formal)","german":"Wie geht es Ihnen?"},{"english":"I'm fine, thank you","german":"Mir geht es gut, danke"},{"english":"Nice to meet you","german":"Schön, dich kennenzulernen"},{"english":"Welcome","german":"Willkommen"},{"english":"Please","german":"Bitte"},{"english":"Thank you","german":"Danke"},{"english":"Thank you very much","german":"Danke schön"},{"english":"You're welcome","german":"Gern geschehen"},{"english":"Excuse me","german":"Entschuldigung"}]},{"id":"modal_verb","label":"Modal Verbs","description":"können, müssen, dürfen, wollen, sollen, mögen, möchten","exercises":[{"english":"I can swim","german":"Ich kann schwimmen","explanation":"'können' = can/able to. Expresses ability. The infinitive (schwimmen) goes to the end."},{"english":"I must work","german":"Ich muss arbeiten","explanation":"'müssen' = must/have to. Expresses necessity or obligation. Infinitive goes to the end."},{"english":"You can drive","german":"Du kannst fahren","explanation":"'können' conjugation: ich kann, du kannst, er kann. Expresses ability."},{"english":"She must cook","german":"Sie muss kochen","explanation":"'müssen' conjugation: ich muss, du musst, sie muss. Expresses necessity."},{"english":"We want to go","german":"Wir wollen gehen","explanation":"'wollen' = to want to. Expresses desire or intention. Infinitive at the end."},{"english":"You may leave","german":"Du darfst gehen","explanation":"'dürfen' = may/to be allowed to. Expresses permission. Infinitive at the end."},{"english":"I would like a coffee","german":"Ich möchte einen Kaffee","explanation":"'möchten' = would like. Polite form of mögen. Note 'einen Kaffee' — masculine accusative."},{"english":"He should come","german":"Er soll kommen","explanation":"'sollen' = should/supposed to. Used when someone else expects this of you."},{"english":"Can you help me?","german":"Kannst du mir helfen?","explanation":"Questions with modals: verb comes first (Kannst), then subject (du). 'mir' = me (dative)."},{"english":"I must learn German","german":"Ich muss Deutsch lernen","explanation":"'müssen' = necessity. The infinitive (lernen) always goes to the end of the clause."},{"english":"We can speak German","german":"Wir können Deutsch sprechen","explanation":"'können' = ability. Infinitive (sprechen) at the end. Used for language skills."},{"english":"She wants to buy shoes","german":"Sie will Schuhe kaufen","explanation":"'wollen': 3rd person is 'will' (not 'wollen'). Infinitive (kaufen) at the end."},{"english":"May I sit here?","german":"Darf ich hier sitzen?","explanation":"'dürfen' in a question: verb first (Darf), then subject (ich). Asking permission politely."},{"english":"You should eat","german":"Du sollst essen","explanation":"'sollen' = supposed to/should. Used when someone else has told you to do something."},{"english":"I like music","german":"Ich mag Musik","explanation":"'mögen' = to like. When used directly with a noun (no infinitive), it means you like something."},{"english":"He can run fast","german":"Er kann schnell laufen","explanation":"'können' = ability. Adverbs (schnell) go before the infinitive (laufen) at the end."},{"english":"We must go home","german":"Wir müssen nach Hause gehen","explanation":"'müssen' = necessity. The full phrase 'nach Hause gehen' (go home) goes to the end."},{"english":"She would like some water","german":"Sie möchte Wasser","explanation":"'möchten' = would like. No infinitive needed when directly requesting a noun."},{"english":"Can he come?","german":"Kann er kommen?","explanation":"Modal in a question: verb first (Kann), then subject (er), then infinitive (kommen)."},{"english":"I want to sleep","german":"Ich will schlafen","explanation":"'wollen' = to want to. Expresses a strong personal desire. Infinitive at the end."},{"english":"I would like to pay","german":"Ich möchte zahlen","explanation":"'möchten' = would like to. Classic polite phrase in restaurants and shops."},{"english":"Can you please speak slowly?","german":"Können Sie bitte langsam sprechen?","explanation":"'können' with 'Sie' (formal). Polite request: modal verb first, infinitive last."},{"english":"May I help you?","german":"Darf ich Ihnen helfen?","explanation":"'dürfen' = permission/offer. 'Ihnen' is the formal dative 'you' — polite register."},{"english":"I must go to the doctor","german":"Ich muss zum Arzt gehen","explanation":"'müssen' = necessity. 'zum Arzt' = to the doctor. Full infinitive phrase at the end."},{"english":"Do I have to change trains?","german":"Muss ich umsteigen?","explanation":"'müssen' = have to. 'umsteigen' (change trains) is a separable verb used as infinitive."},{"english":"Where can I buy a ticket?","german":"Wo kann ich eine Fahrkarte kaufen?","explanation":"'Wo kann ich...?' = Where can I...? Modal stays in 2nd position; infinitive goes last."},{"english":"I would like a single room","german":"Ich möchte ein Einzelzimmer","explanation":"'möchten' = would like. Hotel request with no infinitive — directly followed by the noun."},{"english":"You must not smoke here","german":"Hier darf man nicht rauchen","explanation":"'dürfen' + 'nicht' = not allowed to. 'man' = one/people (general). Verb stays in 2nd position."},{"english":"He can speak English","german":"Er kann Englisch sprechen","explanation":"'können' = ability. Commonly used for language skills. Infinitive at the end."},{"english":"I would like to reserve a table","german":"Ich möchte einen Tisch reservieren","explanation":"'möchten' + infinitive at the end. 'einen Tisch' = masculine accusative direct object."},{"english":"Can you help me please?","german":"Können Sie mir bitte helfen?","explanation":"'können' formal polite request (Sie form). 'mir' = me (dative, because helfen takes dative)."},{"english":"She must take the medicine","german":"Sie muss die Medizin nehmen","explanation":"'müssen' = obligation. Often used for doctor's instructions. Infinitive at the end."},{"english":"We want to visit Berlin","german":"Wir wollen Berlin besuchen","explanation":"'wollen' = intention/plan. Expresses a group desire. Infinitive (besuchen) at the end."},{"english":"You should drink more water","german":"Sie sollen mehr Wasser trinken","explanation":"'sollen' = should (advice from someone else, e.g. a doctor). Infinitive at the end."},{"english":"I would like to make an appointment","german":"Ich möchte einen Termin machen","explanation":"'möchten' + infinitive. Standard polite phrase for scheduling. 'Termin' = appointment."},{"english":"Can I pay by card?","german":"Kann ich mit Karte zahlen?","explanation":"'können' for possibility. 'mit Karte' = by card (mit takes dative). Common payment phrase."},{"english":"I would like to order","german":"Ich möchte bestellen","explanation":"'möchten' + infinitive. Standard phrase when ready to order in a restaurant."},{"english":"Can you repeat that?","german":"Können Sie das wiederholen?","explanation":"'können' formal request (Sie form). 'das wiederholen' = repeat that. Infinitive at the end."}]},{"id":"nominativ","label":"Nominativ","description":"Nominative case — subject of the sentence","exercises":[{"english":"The man is tall","german":"Der Mann ist groß","explanation":"'Der' = masculine nominative article. Mann is the subject (the one being described)."},{"english":"The woman is beautiful","german":"Die Frau ist schön","explanation":"'Die' = feminine nominative article. Frau is the subject."},{"english":"The child plays","german":"Das Kind spielt","explanation":"'Das' = neuter nominative article. Kind is the subject doing the action."},{"english":"The dog is small","german":"Der Hund ist klein","explanation":"'Der' = masculine nominative. Hund is the subject being described."},{"english":"A cat is sleeping","german":"Eine Katze schläft","explanation":"'Eine' = feminine indefinite nominative. Katze is the subject."},{"english":"The house is big","german":"Das Haus ist groß","explanation":"'Das' = neuter nominative. Haus is the subject being described."},{"english":"A man is coming","german":"Ein Mann kommt","explanation":"'Ein' = masculine indefinite nominative. Mann is the subject doing the action."},{"english":"The teacher is kind","german":"Der Lehrer ist nett","explanation":"'Der' = masculine nominative. Lehrer is the subject being described."},{"english":"A student learns","german":"Ein Student lernt","explanation":"'Ein' = masculine indefinite nominative. Student is the subject doing the action."},{"english":"The coffee is hot","german":"Der Kaffee ist heiß","explanation":"'Der' = masculine nominative. Kaffee is the subject."},{"english":"The car is red","german":"Das Auto ist rot","explanation":"'Das' = neuter nominative. Auto is the subject being described."},{"english":"A child is playing","german":"Ein Kind spielt","explanation":"'Ein' = neuter indefinite nominative (not 'eine' — Kind is neuter). Kind is the subject."},{"english":"The school is closed","german":"Die Schule ist geschlossen","explanation":"'Die' = feminine nominative. Schule is the subject."},{"english":"The phone rings","german":"Das Telefon klingelt","explanation":"'Das' = neuter nominative. Telefon is the subject doing the action."},{"english":"A woman is singing","german":"Eine Frau singt","explanation":"'Eine' = feminine indefinite nominative. Frau is the subject."},{"english":"The window is open","german":"Das Fenster ist offen","explanation":"'Das' = neuter nominative. Fenster is the subject."},{"english":"The door is closed","german":"Die Tür ist geschlossen","explanation":"'Die' = feminine nominative. Tür is the subject."},{"english":"A friend comes","german":"Ein Freund kommt","explanation":"'Ein' = masculine indefinite nominative. Freund is the subject doing the action."},{"english":"The bus is late","german":"Der Bus ist spät","explanation":"'Der' = masculine nominative. Bus is the subject."},{"english":"The book is interesting","german":"Das Buch ist interessant","explanation":"'Das' = neuter nominative. Buch is the subject being described."}]},{"id":"akkusativ","label":"Akkusativ","description":"Accusative case — direct object of the sentence","exercises":[{"english":"I see the man","german":"Ich sehe den Mann","explanation":"'der' → 'den': masculine definite article changes in accusative. Mann is the direct object."},{"english":"She loves the dog","german":"Sie liebt den Hund","explanation":"'der' → 'den': masculine definite accusative. Hund is the direct object (receiving the love)."},{"english":"He buys a book","german":"Er kauft ein Buch","explanation":"'ein' stays 'ein': neuter indefinite article is unchanged in accusative. Buch is the direct object."},{"english":"I have a cat","german":"Ich habe eine Katze","explanation":"'eine' stays 'eine': feminine indefinite is unchanged in accusative. Katze is the direct object."},{"english":"We need a car","german":"Wir brauchen ein Auto","explanation":"'ein' stays 'ein': neuter indefinite is unchanged in accusative. Auto is the direct object."},{"english":"She drinks the water","german":"Sie trinkt das Wasser","explanation":"'das' stays 'das': neuter definite is unchanged in accusative. Wasser is the direct object."},{"english":"He reads the book","german":"Er liest das Buch","explanation":"'das' stays 'das': neuter definite is unchanged in accusative. Buch is the direct object."},{"english":"We eat the bread","german":"Wir essen das Brot","explanation":"'das' stays 'das': neuter definite is unchanged in accusative. Brot is the direct object."},{"english":"She opens the door","german":"Sie öffnet die Tür","explanation":"'die' stays 'die': feminine definite is unchanged in accusative. Tür is the direct object."},{"english":"He hears the music","german":"Er hört die Musik","explanation":"'die' stays 'die': feminine definite is unchanged in accusative. Musik is the direct object."},{"english":"I love the city","german":"Ich liebe die Stadt","explanation":"'die' stays 'die': feminine definite is unchanged in accusative. Stadt is the direct object."},{"english":"She has a brother","german":"Sie hat einen Bruder","explanation":"'ein' → 'einen': masculine indefinite changes in accusative. Bruder is the direct object."},{"english":"We need a house","german":"Wir brauchen ein Haus","explanation":"'ein' stays 'ein': neuter indefinite is unchanged in accusative. Haus is the direct object."},{"english":"He drinks a coffee","german":"Er trinkt einen Kaffee","explanation":"'ein' → 'einen': masculine indefinite changes in accusative. Kaffee is the direct object."},{"english":"I buy the apple","german":"Ich kaufe den Apfel","explanation":"'der' → 'den': masculine definite changes in accusative. Apfel is the direct object."},{"english":"We close the window","german":"Wir schließen das Fenster","explanation":"'das' stays 'das': neuter definite is unchanged in accusative. Fenster is the direct object."},{"english":"He sees the school","german":"Er sieht die Schule","explanation":"'die' stays 'die': feminine definite is unchanged in accusative. Schule is the direct object."},{"english":"I find the bag","german":"Ich finde die Tasche","explanation":"'die' stays 'die': feminine definite is unchanged in accusative. Tasche is the direct object."},{"english":"She visits a friend","german":"Sie besucht eine Freundin","explanation":"'eine' stays 'eine': feminine indefinite is unchanged in accusative. Freundin is the direct object."},{"english":"He calls the doctor","german":"Er ruft den Arzt an","explanation":"'der' → 'den': masculine definite changes in accusative. Arzt is the direct object."}]},{"id":"dativ","label":"Dativ","description":"Dative case — indirect object and certain prepositions","exercises":[{"english":"I give the man a book","german":"Ich gebe dem Mann ein Buch","explanation":"'der' → 'dem': masculine dative. 'dem Mann' is the indirect object (to whom you give)."},{"english":"She helps the woman","german":"Sie hilft der Frau","explanation":"'die' → 'der': feminine dative. 'helfen' always takes a dative object, not accusative."},{"english":"He writes to the child","german":"Er schreibt dem Kind","explanation":"'das' → 'dem': neuter dative. 'dem Kind' is the indirect object (to whom he writes)."},{"english":"I go to the doctor","german":"Ich gehe zum Arzt","explanation":"'zum' = 'zu dem': the preposition 'zu' always takes dative (masculine: dem)."},{"english":"She comes from the school","german":"Sie kommt von der Schule","explanation":"'von' always takes dative: 'die' → 'der' (feminine dative)."},{"english":"He lives in the house","german":"Er wohnt in dem Haus","explanation":"'in' takes dative for location (where? — no movement). 'das' → 'dem' (neuter dative)."},{"english":"I talk to a friend","german":"Ich spreche mit einem Freund","explanation":"'mit' always takes dative: 'ein' → 'einem' (masculine indefinite dative)."},{"english":"She is at home","german":"Sie ist zu Hause","explanation":"'zu Hause' is a fixed dative expression meaning 'at home' — learned as a set phrase."},{"english":"He goes to work","german":"Er geht zur Arbeit","explanation":"'zur' = 'zu der': preposition 'zu' always takes dative (feminine: der)."},{"english":"I travel by train","german":"Ich reise mit dem Zug","explanation":"'mit' always takes dative: 'der' → 'dem' (masculine definite dative)."},{"english":"She sits on the chair","german":"Sie sitzt auf dem Stuhl","explanation":"'auf' takes dative for location (sitting still = where?). 'der' → 'dem' (masculine)."},{"english":"He stands at the door","german":"Er steht an der Tür","explanation":"'an' takes dative for location (standing = where?). 'die' → 'der' (feminine dative)."},{"english":"I give a gift to my mother","german":"Ich gebe meiner Mutter ein Geschenk","explanation":"Feminine dative: 'meine' → 'meiner'. Mutter is the indirect object (to whom)."},{"english":"She speaks with the teacher","german":"Sie spricht mit dem Lehrer","explanation":"'mit' always takes dative: 'der' → 'dem' (masculine definite dative)."},{"english":"He lives near the city","german":"Er wohnt bei der Stadt","explanation":"'bei' always takes dative: 'die' → 'der' (feminine definite dative)."},{"english":"I meet with a friend","german":"Ich treffe mich mit einem Freund","explanation":"'mit' always takes dative: 'ein' → 'einem' (masculine indefinite dative)."},{"english":"She goes to the supermarket","german":"Sie geht zum Supermarkt","explanation":"'zum' = 'zu dem': preposition 'zu' always takes dative (masculine: dem)."},{"english":"He comes from Germany","german":"Er kommt aus Deutschland","explanation":"'aus' always takes dative — used for origin and countries."},{"english":"I am at the station","german":"Ich bin am Bahnhof","explanation":"'am' = 'an dem': 'an' takes dative for location (being at a place). Masculine dative."},{"english":"She gives the child the ball","german":"Sie gibt dem Kind den Ball","explanation":"'dem Kind' = dative (indirect object: to whom). 'den Ball' = accusative (direct object: what)."}]},{"id":"nomen","label":"Nomen","description":"Basic nouns with their articles","exercises":[{"english":"the house","german":"das Haus"},{"english":"the car","german":"das Auto"},{"english":"the dog","german":"der Hund"},{"english":"the cat","german":"die Katze"},{"english":"the book","german":"das Buch"},{"english":"the table","german":"der Tisch"},{"english":"the chair","german":"der Stuhl"},{"english":"the water","german":"das Wasser"},{"english":"the bread","german":"das Brot"},{"english":"the milk","german":"die Milch"},{"english":"the apple","german":"der Apfel"},{"english":"the city","german":"die Stadt"},{"english":"the street","german":"die Straße"},{"english":"the school","german":"die Schule"},{"english":"the door","german":"die Tür"},{"english":"the window","german":"das Fenster"},{"english":"the phone","german":"das Telefon"},{"english":"the bag","german":"die Tasche"},{"english":"the key","german":"der Schlüssel"},{"english":"the time","german":"die Zeit"}]},{"id":"artikel","label":"Artikel","description":"der / die / das — German definite articles","exercises":[{"english":"the man","german":"der Mann"},{"english":"the woman","german":"die Frau"},{"english":"the child","german":"das Kind"},{"english":"the tree","german":"der Baum"},{"english":"the flower","german":"die Blume"},{"english":"the house","german":"das Haus"},{"english":"the book","german":"das Buch"},{"english":"the cat","german":"die Katze"},{"english":"the dog","german":"der Hund"},{"english":"the car","german":"das Auto"},{"english":"the school","german":"die Schule"},{"english":"the table","german":"der Tisch"},{"english":"the door","german":"die Tür"},{"english":"the window","german":"das Fenster"},{"english":"the city","german":"die Stadt"},{"english":"the country","german":"das Land"},{"english":"the apple","german":"der Apfel"},{"english":"the bottle","german":"die Flasche"},{"english":"the key","german":"der Schlüssel"},{"english":"the letter","german":"der Brief"}]},{"id":"verben","label":"Verben","description":"Basic A1 verbs conjugated in present tense","exercises":[{"english":"I go","german":"Ich gehe"},{"english":"You come","german":"Du kommst"},{"english":"He / she eats","german":"Er / sie isst"},{"english":"We drink","german":"Wir trinken"},{"english":"They sleep","german":"Sie schlafen"},{"english":"I work","german":"Ich arbeite"},{"english":"You learn","german":"Du lernst"},{"english":"He / she speaks","german":"Er / sie spricht"},{"english":"We live","german":"Wir wohnen"},{"english":"They play","german":"Sie spielen"},{"english":"I read","german":"Ich lese"},{"english":"You write","german":"Du schreibst"},{"english":"He / she runs","german":"Er / sie läuft"},{"english":"We swim","german":"Wir schwimmen"},{"english":"They cook","german":"Sie kochen"},{"english":"I drive","german":"Ich fahre"},{"english":"You help","german":"Du hilfst"},{"english":"He / she sings","german":"Er / sie singt"},{"english":"We travel","german":"Wir reisen"},{"english":"They buy","german":"Sie kaufen"}]},{"id":"adjektive","label":"Adjektive","description":"Common A1 adjectives","exercises":[{"english":"big","german":"groß"},{"english":"small","german":"klein"},{"english":"good","german":"gut"},{"english":"bad","german":"schlecht"},{"english":"fast","german":"schnell"},{"english":"slow","german":"langsam"},{"english":"hot","german":"heiß"},{"english":"cold","german":"kalt"},{"english":"new","german":"neu"},{"english":"old","german":"alt"},{"english":"beautiful","german":"schön"},{"english":"expensive","german":"teuer"},{"english":"cheap","german":"günstig"},{"english":"happy","german":"glücklich"},{"english":"sad","german":"traurig"},{"english":"tired","german":"müde"},{"english":"hungry","german":"hungrig"},{"english":"thirsty","german":"durstig"},{"english":"interesting","german":"interessant"},{"english":"easy","german":"einfach"}]},{"id":"zahlen","label":"Zahlen","description":"Numbers and counting","exercises":[{"english":"one","german":"eins"},{"english":"two","german":"zwei"},{"english":"three","german":"drei"},{"english":"four","german":"vier"},{"english":"five","german":"fünf"},{"english":"six","german":"sechs"},{"english":"seven","german":"sieben"},{"english":"eight","german":"acht"},{"english":"nine","german":"neun"},{"english":"ten","german":"zehn"},{"english":"eleven","german":"elf"},{"english":"twelve","german":"zwölf"},{"english":"twenty","german":"zwanzig"},{"english":"thirty","german":"dreißig"},{"english":"one hundred","german":"hundert"},{"english":"one thousand","german":"tausend"},{"english":"How old are you?","german":"Wie alt bist du?"},{"english":"I am 25 years old","german":"Ich bin fünfundzwanzig Jahre alt"},{"english":"It costs 5 euros","german":"Es kostet fünf Euro"},{"english":"I need two tickets","german":"Ich brauche zwei Tickets"}]},{"id":"farben","label":"Farben","description":"Colors","exercises":[{"english":"red","german":"rot"},{"english":"blue","german":"blau"},{"english":"green","german":"grün"},{"english":"yellow","german":"gelb"},{"english":"black","german":"schwarz"},{"english":"white","german":"weiß"},{"english":"orange","german":"orange"},{"english":"pink","german":"rosa"},{"english":"purple","german":"lila"},{"english":"brown","german":"braun"},{"english":"grey","german":"grau"},{"english":"The car is red","german":"Das Auto ist rot"},{"english":"The sky is blue","german":"Der Himmel ist blau"},{"english":"The grass is green","german":"Das Gras ist grün"},{"english":"The sun is yellow","german":"Die Sonne ist gelb"},{"english":"My bag is black","german":"Meine Tasche ist schwarz"},{"english":"The snow is white","german":"Der Schnee ist weiß"},{"english":"The rose is pink","german":"Die Rose ist rosa"},{"english":"What color is it?","german":"Welche Farbe hat es?"},{"english":"I like green","german":"Ich mag Grün"}]},{"id":"familie","label":"Familie","description":"Family members","exercises":[{"english":"mother","german":"die Mutter"},{"english":"father","german":"der Vater"},{"english":"sister","german":"die Schwester"},{"english":"brother","german":"der Bruder"},{"english":"grandmother","german":"die Großmutter"},{"english":"grandfather","german":"der Großvater"},{"english":"daughter","german":"die Tochter"},{"english":"son","german":"der Sohn"},{"english":"aunt","german":"die Tante"},{"english":"uncle","german":"der Onkel"},{"english":"cousin (female)","german":"die Cousine"},{"english":"cousin (male)","german":"der Cousin"},{"english":"wife","german":"die Frau / Ehefrau"},{"english":"husband","german":"der Mann / Ehemann"},{"english":"parents","german":"die Eltern"},{"english":"children","german":"die Kinder"},{"english":"grandparents","german":"die Großeltern"},{"english":"My mother is kind","german":"Meine Mutter ist nett"},{"english":"I have two brothers","german":"Ich habe zwei Brüder"},{"english":"Her sister is a doctor","german":"Ihre Schwester ist Ärztin"}]},{"id":"essen_trinken","label":"Essen & Trinken","description":"Food and drink vocabulary","exercises":[{"english":"bread","german":"das Brot"},{"english":"water","german":"das Wasser"},{"english":"coffee","german":"der Kaffee"},{"english":"tea","german":"der Tee"},{"english":"milk","german":"die Milch"},{"english":"apple","german":"der Apfel"},{"english":"banana","german":"die Banane"},{"english":"cheese","german":"der Käse"},{"english":"butter","german":"die Butter"},{"english":"eggs","german":"die Eier"},{"english":"meat","german":"das Fleisch"},{"english":"fish","german":"der Fisch"},{"english":"soup","german":"die Suppe"},{"english":"cake","german":"der Kuchen"},{"english":"juice","german":"der Saft"},{"english":"beer","german":"das Bier"},{"english":"wine","german":"der Wein"},{"english":"I like coffee","german":"Ich mag Kaffee"},{"english":"I eat bread","german":"Ich esse Brot"},{"english":"I drink water","german":"Ich trinke Wasser"}]},{"id":"wochentage","label":"Wochentage","description":"Days of the week and time expressions","exercises":[{"english":"Monday","german":"Montag"},{"english":"Tuesday","german":"Dienstag"},{"english":"Wednesday","german":"Mittwoch"},{"english":"Thursday","german":"Donnerstag"},{"english":"Friday","german":"Freitag"},{"english":"Saturday","german":"Samstag"},{"english":"Sunday","german":"Sonntag"},{"english":"today","german":"heute"},{"english":"tomorrow","german":"morgen"},{"english":"yesterday","german":"gestern"},{"english":"the day after tomorrow","german":"übermorgen"},{"english":"the day before yesterday","german":"vorgestern"},{"english":"On Monday","german":"Am Montag"},{"english":"Every Friday","german":"Jeden Freitag"},{"english":"Next Monday","german":"Nächsten Montag"},{"english":"Last Tuesday","german":"Letzten Dienstag"},{"english":"What day is today?","german":"Welcher Tag ist heute?"},{"english":"I work on Mondays","german":"Ich arbeite montags"},{"english":"On the weekend","german":"Am Wochenende"},{"english":"weekday","german":"der Werktag"}]},{"id":"monate","label":"Monate & Jahreszeiten","description":"Months and seasons","exercises":[{"english":"January","german":"Januar"},{"english":"February","german":"Februar"},{"english":"March","german":"März"},{"english":"April","german":"April"},{"english":"May","german":"Mai"},{"english":"June","german":"Juni"},{"english":"July","german":"Juli"},{"english":"August","german":"August"},{"english":"September","german":"September"},{"english":"October","german":"Oktober"},{"english":"November","german":"November"},{"english":"December","german":"Dezember"},{"english":"What month is it?","german":"Welcher Monat ist es?"},{"english":"In January","german":"Im Januar"},{"english":"My birthday is in June","german":"Mein Geburtstag ist im Juni"},{"english":"spring","german":"der Frühling"},{"english":"summer","german":"der Sommer"},{"english":"autumn","german":"der Herbst"},{"english":"winter","german":"der Winter"},{"english":"In winter it is cold","german":"Im Winter ist es kalt"}]},{"id":"personliche_info","label":"Persönliche Informationen","description":"Introducing yourself — name, age, origin, job (telc A1 Sprechen/Schreiben)","exercises":[{"english":"What is your name? (formal)","german":"Wie heißen Sie?"},{"english":"What is your name? (informal)","german":"Wie heißt du?"},{"english":"My name is Anna","german":"Ich heiße Anna"},{"english":"Where do you come from?","german":"Woher kommen Sie?"},{"english":"I come from India","german":"Ich komme aus Indien"},{"english":"Where do you live?","german":"Wo wohnen Sie?"},{"english":"I live in Berlin","german":"Ich wohne in Berlin"},{"english":"How old are you? (formal)","german":"Wie alt sind Sie?"},{"english":"I am 30 years old","german":"Ich bin 30 Jahre alt"},{"english":"What is your job?","german":"Was machen Sie beruflich?"},{"english":"I am a teacher","german":"Ich bin Lehrer"},{"english":"What is your phone number?","german":"Was ist Ihre Telefonnummer?"},{"english":"What is your email address?","german":"Was ist Ihre E-Mail-Adresse?"},{"english":"Are you married?","german":"Sind Sie verheiratet?"},{"english":"I am married","german":"Ich bin verheiratet"},{"english":"I am single","german":"Ich bin ledig"},{"english":"Do you have children?","german":"Haben Sie Kinder?"},{"english":"I have two children","german":"Ich habe zwei Kinder"},{"english":"What language do you speak?","german":"Welche Sprache sprechen Sie?"},{"english":"I speak English and German","german":"Ich spreche Englisch und Deutsch"}]},{"id":"tagesablauf","label":"Tagesablauf","description":"Daily routine — a key telc A1 reading and writing topic","exercises":[{"english":"I get up at 7 o'clock","german":"Ich stehe um 7 Uhr auf"},{"english":"I brush my teeth","german":"Ich putze mir die Zähne"},{"english":"I have breakfast","german":"Ich frühstücke"},{"english":"I go to work","german":"Ich gehe zur Arbeit"},{"english":"I start work at 8","german":"Ich fange um 8 Uhr an"},{"english":"I have a lunch break","german":"Ich mache Mittagspause"},{"english":"I eat lunch","german":"Ich esse zu Mittag"},{"english":"I finish work at 5","german":"Ich höre um 17 Uhr auf"},{"english":"I go home","german":"Ich gehe nach Hause"},{"english":"I cook dinner","german":"Ich koche Abendessen"},{"english":"I eat dinner","german":"Ich esse zu Abend"},{"english":"I watch TV","german":"Ich schaue fern"},{"english":"I read a book","german":"Ich lese ein Buch"},{"english":"I go to bed","german":"Ich gehe schlafen"},{"english":"I take a shower","german":"Ich dusche"},{"english":"I drink coffee in the morning","german":"Ich trinke morgens Kaffee"},{"english":"I take the bus to work","german":"Ich fahre mit dem Bus zur Arbeit"},{"english":"I sleep 8 hours","german":"Ich schlafe 8 Stunden"},{"english":"On weekends I go for a walk","german":"Am Wochenende gehe ich spazieren"},{"english":"I go shopping on Saturday","german":"Ich gehe am Samstag einkaufen"}]},{"id":"einkaufen","label":"Einkaufen","description":"Shopping — prices, quantities, asking for items (telc A1 Lesen/Schreiben)","exercises":[{"english":"How much does it cost?","german":"Was kostet das?"},{"english":"It costs 5 euros","german":"Es kostet 5 Euro"},{"english":"I would like to buy this","german":"Ich möchte das kaufen"},{"english":"That is too expensive","german":"Das ist zu teuer"},{"english":"I will take it","german":"Ich nehme es"},{"english":"How can I help you?","german":"Wie kann ich Ihnen helfen?"},{"english":"I am just looking","german":"Ich schaue nur"},{"english":"Do you accept cards?","german":"Akzeptieren Sie Karten?"},{"english":"Where is the checkout?","german":"Wo ist die Kasse?"},{"english":"A kilo of apples please","german":"Ein Kilo Äpfel bitte"},{"english":"A bottle of water please","german":"Eine Flasche Wasser bitte"},{"english":"I would like to pay","german":"Ich möchte bezahlen"},{"english":"The receipt please","german":"Die Quittung bitte"},{"english":"Here is the change","german":"Hier ist das Wechselgeld"},{"english":"Do you have this in a different size?","german":"Haben Sie das in einer anderen Größe?"},{"english":"Is the shop open?","german":"Ist das Geschäft geöffnet?"},{"english":"The shop is closed on Sundays","german":"Das Geschäft ist sonntags geschlossen"},{"english":"I need milk and bread","german":"Ich brauche Milch und Brot"},{"english":"A half kilo of cheese","german":"Ein halbes Kilo Käse"},{"english":"That costs 3 euros 50","german":"Das kostet 3 Euro 50"}]},{"id":"richtungen","label":"Richtungen & Orte","description":"Asking for and giving directions (telc A1 Hören/Lesen)","exercises":[{"english":"Excuse me, where is the train station?","german":"Entschuldigung, wo ist der Bahnhof?"},{"english":"Go straight ahead","german":"Gehen Sie geradeaus"},{"english":"Turn left","german":"Biegen Sie links ab"},{"english":"Turn right","german":"Biegen Sie rechts ab"},{"english":"The bank is on the left","german":"Die Bank ist links"},{"english":"The pharmacy is on the right","german":"Die Apotheke ist rechts"},{"english":"It is near here","german":"Es ist hier in der Nähe"},{"english":"It is far away","german":"Es ist weit weg"},{"english":"How far is it?","german":"Wie weit ist es?"},{"english":"About 500 metres","german":"Ungefähr 500 Meter"},{"english":"At the traffic lights","german":"An der Ampel"},{"english":"At the crossroads","german":"An der Kreuzung"},{"english":"Next to the church","german":"Neben der Kirche"},{"english":"Opposite the school","german":"Gegenüber der Schule"},{"english":"Where is the bus stop?","german":"Wo ist die Bushaltestelle?"},{"english":"Is there a post office nearby?","german":"Gibt es hier in der Nähe eine Post?"},{"english":"I am looking for the supermarket","german":"Ich suche den Supermarkt"},{"english":"Please speak slowly","german":"Bitte sprechen Sie langsam"},{"english":"I don't understand","german":"Ich verstehe nicht"},{"english":"Can you repeat that please?","german":"Können Sie das bitte wiederholen?"}]},{"id":"uhrzeit","label":"Uhrzeit","description":"Telling the time — a core telc A1 topic","exercises":[{"english":"What time is it?","german":"Wie spät ist es?"},{"english":"It is 8 o'clock","german":"Es ist 8 Uhr"},{"english":"It is half past 3","german":"Es ist halb vier"},{"english":"It is quarter past 5","german":"Es ist Viertel nach fünf"},{"english":"It is quarter to 7","german":"Es ist Viertel vor sieben"},{"english":"At what time does the train leave?","german":"Um wie viel Uhr fährt der Zug ab?"},{"english":"The train leaves at 9:15","german":"Der Zug fährt um 9:15 Uhr ab"},{"english":"The shop opens at 9","german":"Das Geschäft öffnet um 9 Uhr"},{"english":"The shop closes at 8 pm","german":"Das Geschäft schließt um 20 Uhr"},{"english":"In the morning","german":"Am Morgen"},{"english":"In the afternoon","german":"Am Nachmittag"},{"english":"In the evening","german":"Am Abend"},{"english":"At noon","german":"Zu Mittag"},{"english":"At midnight","german":"Um Mitternacht"},{"english":"The film starts at 8 pm","german":"Der Film beginnt um 20 Uhr"},{"english":"How long does it take?","german":"Wie lange dauert es?"},{"english":"It takes one hour","german":"Es dauert eine Stunde"},{"english":"I have an appointment at 3","german":"Ich habe um 3 Uhr einen Termin"},{"english":"It is 10 past 6","german":"Es ist 10 nach sechs"},{"english":"It is 20 to 9","german":"Es ist 20 vor neun"}]},{"id":"gesundheit","label":"Gesundheit","description":"Health and illness vocabulary (telc A1 Sprechen/Hören)","exercises":[{"english":"I have a headache","german":"Ich habe Kopfschmerzen"},{"english":"I have a stomach ache","german":"Ich habe Bauchschmerzen"},{"english":"I am sick","german":"Ich bin krank"},{"english":"I feel unwell","german":"Mir ist nicht gut"},{"english":"I have a cold","german":"Ich habe eine Erkältung"},{"english":"I have a fever","german":"Ich habe Fieber"},{"english":"I need a doctor","german":"Ich brauche einen Arzt"},{"english":"Where is the pharmacy?","german":"Wo ist die Apotheke?"},{"english":"I am allergic to penicillin","german":"Ich bin allergisch gegen Penicillin"},{"english":"How often should I take this?","german":"Wie oft soll ich das nehmen?"},{"english":"Three times a day","german":"Dreimal täglich"},{"english":"I have a toothache","german":"Ich habe Zahnschmerzen"},{"english":"My arm hurts","german":"Mein Arm tut weh"},{"english":"I cannot sleep","german":"Ich kann nicht schlafen"},{"english":"I feel better today","german":"Ich fühle mich heute besser"},{"english":"I need to see a doctor","german":"Ich muss zum Arzt gehen"},{"english":"Please call an ambulance","german":"Rufen Sie bitte einen Krankenwagen"},{"english":"I need a prescription","german":"Ich brauche ein Rezept"},{"english":"the hospital","german":"das Krankenhaus"},{"english":"the doctor's surgery","german":"die Arztpraxis"}]},{"id":"wohnen","label":"Wohnen","description":"Rooms, housing, and accommodation (telc A1 Lesen/Schreiben)","exercises":[{"english":"the bedroom","german":"das Schlafzimmer"},{"english":"the kitchen","german":"die Küche"},{"english":"the bathroom","german":"das Badezimmer"},{"english":"the living room","german":"das Wohnzimmer"},{"english":"the dining room","german":"das Esszimmer"},{"english":"the toilet","german":"die Toilette"},{"english":"the garden","german":"der Garten"},{"english":"the balcony","german":"der Balkon"},{"english":"the entrance hall","german":"der Flur"},{"english":"the apartment","german":"die Wohnung"},{"english":"the ground floor","german":"das Erdgeschoss"},{"english":"the first floor","german":"das erste Stockwerk"},{"english":"the rent","german":"die Miete"},{"english":"the landlord","german":"der Vermieter"},{"english":"I live in a flat","german":"Ich wohne in einer Wohnung"},{"english":"The apartment has 3 rooms","german":"Die Wohnung hat 3 Zimmer"},{"english":"The rent is 800 euros","german":"Die Miete beträgt 800 Euro"},{"english":"I am looking for a flat","german":"Ich suche eine Wohnung"},{"english":"Is heating included?","german":"Ist Heizung inklusive?"},{"english":"The flat is on the second floor","german":"Die Wohnung ist im zweiten Stockwerk"}]},{"id":"hobbys","label":"Freizeit & Hobbys","description":"Leisure and hobbies — telc A1 Sprechen topic","exercises":[{"english":"What do you do in your free time?","german":"Was machen Sie in Ihrer Freizeit?"},{"english":"I like reading","german":"Ich lese gern"},{"english":"I like cooking","german":"Ich koche gern"},{"english":"I play football","german":"Ich spiele Fußball"},{"english":"I go swimming","german":"Ich gehe schwimmen"},{"english":"I watch films","german":"Ich schaue Filme"},{"english":"I listen to music","german":"Ich höre Musik"},{"english":"I go for walks","german":"Ich gehe spazieren"},{"english":"I travel","german":"Ich reise"},{"english":"I paint","german":"Ich male"},{"english":"I play guitar","german":"Ich spiele Gitarre"},{"english":"I do sport","german":"Ich mache Sport"},{"english":"I go to the gym","german":"Ich gehe ins Fitnessstudio"},{"english":"I meet friends","german":"Ich treffe Freunde"},{"english":"I play computer games","german":"Ich spiele Computerspiele"},{"english":"I dance","german":"Ich tanze"},{"english":"I take photos","german":"Ich mache Fotos"},{"english":"I go cycling","german":"Ich fahre Fahrrad"},{"english":"What are your hobbies?","german":"Was sind Ihre Hobbys?"},{"english":"I like hiking","german":"Ich wandere gern"}]},{"id":"wetter","label":"Wetter","description":"Weather expressions (telc A1 Lesen/Hören)","exercises":[{"english":"What is the weather like?","german":"Wie ist das Wetter?"},{"english":"It is sunny","german":"Es ist sonnig"},{"english":"It is raining","german":"Es regnet"},{"english":"It is snowing","german":"Es schneit"},{"english":"It is windy","german":"Es ist windig"},{"english":"It is warm","german":"Es ist warm"},{"english":"It is cold","german":"Es ist kalt"},{"english":"It is hot","german":"Es ist heiß"},{"english":"It is cloudy","german":"Es ist bewölkt"},{"english":"It is foggy","german":"Es ist neblig"},{"english":"What will the weather be like tomorrow?","german":"Wie wird das Wetter morgen?"},{"english":"It will be 20 degrees","german":"Es werden 20 Grad sein"},{"english":"Take an umbrella","german":"Nimm einen Regenschirm mit"},{"english":"The sun is shining","german":"Die Sonne scheint"},{"english":"There is a thunderstorm","german":"Es gibt ein Gewitter"},{"english":"It is freezing","german":"Es friert"},{"english":"The weather is beautiful","german":"Das Wetter ist schön"},{"english":"The weather is bad","german":"Das Wetter ist schlecht"},{"english":"In summer it is hot","german":"Im Sommer ist es heiß"},{"english":"In winter it is cold and snowy","german":"Im Winter ist es kalt und schneit es"}]},{"id":"berufe","label":"Berufe","description":"Jobs and professions — a core telc A1 vocabulary area","exercises":[{"english":"doctor (male)","german":"der Arzt"},{"english":"doctor (female)","german":"die Ärztin"},{"english":"teacher (male)","german":"der Lehrer"},{"english":"teacher (female)","german":"die Lehrerin"},{"english":"engineer (male)","german":"der Ingenieur"},{"english":"engineer (female)","german":"die Ingenieurin"},{"english":"nurse (female)","german":"die Krankenschwester"},{"english":"nurse (male)","german":"der Krankenpfleger"},{"english":"cook / chef","german":"der Koch"},{"english":"waiter (male)","german":"der Kellner"},{"english":"waiter (female)","german":"die Kellnerin"},{"english":"police officer (male)","german":"der Polizist"},{"english":"police officer (female)","german":"die Polizistin"},{"english":"salesperson (male)","german":"der Verkäufer"},{"english":"salesperson (female)","german":"die Verkäuferin"},{"english":"student (male)","german":"der Student"},{"english":"student (female)","german":"die Studentin"},{"english":"What do you do for work?","german":"Was machen Sie beruflich?"},{"english":"I work as a nurse","german":"Ich arbeite als Krankenpfleger"},{"english":"I am unemployed","german":"Ich bin arbeitslos"}]},{"id":"verkehrsmittel","label":"Verkehrsmittel & Reisen","description":"Transport and travel — a core telc A1 Hören topic (trains, buses, tickets, schedules)","exercises":[{"english":"the train","german":"der Zug"},{"english":"the bus","german":"der Bus"},{"english":"the taxi","german":"das Taxi"},{"english":"the tram","german":"die Straßenbahn"},{"english":"the underground / metro","german":"die U-Bahn"},{"english":"the S-Bahn (city rail)","german":"die S-Bahn"},{"english":"the flight","german":"der Flug"},{"english":"the ship","german":"das Schiff"},{"english":"the train station","german":"der Bahnhof"},{"english":"the bus stop","german":"die Bushaltestelle"},{"english":"the ticket","german":"die Fahrkarte"},{"english":"the platform","german":"der Bahnsteig / das Gleis"},{"english":"the departure","german":"die Abfahrt"},{"english":"the arrival","german":"die Ankunft"},{"english":"When does the train depart?","german":"Wann fährt der Zug ab?"},{"english":"The train leaves at platform 3","german":"Der Zug fährt von Gleis 3 ab"},{"english":"One ticket to Hamburg please","german":"Eine Fahrkarte nach Hamburg bitte"},{"english":"I would like to take a taxi","german":"Ich möchte ein Taxi nehmen"},{"english":"The train is delayed","german":"Der Zug hat Verspätung"},{"english":"Where do I have to change?","german":"Wo muss ich umsteigen?"}]},{"id":"kommunikation","label":"Kommunikation & Nachrichten","description":"Phone calls, messages, letters, notices — telc A1 Hören/Lesen/Schreiben","exercises":[{"english":"I would like to make a phone call","german":"Ich möchte telefonieren"},{"english":"My phone number is ...","german":"Meine Telefonnummer ist ..."},{"english":"Can you call me back?","german":"Können Sie mich zurückrufen?"},{"english":"I would like to leave a message","german":"Ich möchte eine Nachricht hinterlassen"},{"english":"Please speak slowly","german":"Bitte sprechen Sie langsam"},{"english":"I did not understand","german":"Ich habe nicht verstanden"},{"english":"Can you repeat that?","german":"Können Sie das wiederholen?"},{"english":"Dear Sir / Madam (letter opening)","german":"Sehr geehrte Damen und Herren"},{"english":"Kind regards (letter closing)","german":"Mit freundlichen Grüßen"},{"english":"I am writing because ...","german":"Ich schreibe, weil ..."},{"english":"Please send me information about ...","german":"Bitte schicken Sie mir Informationen über ..."},{"english":"I am arriving in August","german":"Ich komme im August an"},{"english":"Please confirm the reservation","german":"Bitte bestätigen Sie die Reservierung"},{"english":"First name","german":"der Vorname"},{"english":"Surname / family name","german":"der Nachname / Familienname"},{"english":"Date of birth","german":"das Geburtsdatum"},{"english":"Address","german":"die Adresse"},{"english":"Postcode","german":"die Postleitzahl"},{"english":"Signature","german":"die Unterschrift"},{"english":"Payment method: cash or card?","german":"Zahlungsweise: bar oder Kreditkarte?"}]}];
 
-        // ── Mock test data (telc A1 Übungstest 1 — embedded for file:// use) ──
-        const MOCK_TEST = {
-            meta: { title: 'telc Deutsch A1 — Übungstest 1', autoPoints: 30, totalPoints: 60 },
-            hoeren: [
-                { teil: 1, n: 1, q: 'Was kostet der Pullover?', transcript: 'Kunde: Was kostet dieser Pullover jetzt? Da steht 30 Prozent billiger. Verkäuferin: Einen Moment bitte … neunzehn Euro fünfundneunzig. Kunde: 19,95 Euro? Ok, den nehme ich.', opts: { a: '€ 30,00', b: '€ 9,95', c: '€ 19,95' }, correct: 'c', plays: 2 },
-                { teil: 1, n: 2, q: 'Wie spät ist es?', transcript: 'Passant: Haben Sie eine Uhr? Wie spät ist es bitte? Passantin: Jetzt ist es gleich 5 Uhr.', opts: { a: 'Gleich 15.00 Uhr', b: 'Gleich 7.00 Uhr', c: 'Gleich 17.00 Uhr' }, correct: 'c', plays: 2 },
-                { teil: 1, n: 3, q: 'Was isst die Frau im Restaurant?', transcript: 'Ober: Was wünschen Sie bitte? Gast: Ich hätte gern die Salatplatte. Ober: Die Salatplatte ist leider aus. Die Bratwurst kann ich empfehlen. Gast: Ich esse kein Fleisch. Gibt es etwas ohne Fleisch? Ober: Fisch oder Pommes. Gast: Dann wohl die Pommes.', opts: { a: 'Salatplatte', b: 'Fisch', c: 'Pommes' }, correct: 'c', plays: 2 },
-                { teil: 1, n: 4, q: 'In welche Klasse geht Frau Hegers Sohn?', transcript: 'Kollege: Haben Sie Kinder, Frau Heger? Kollegin: Ja, einen Sohn. Neun Jahre … seit gestern. Kollege: Dann geht er schon zur Schule? Kollegin: Ja, schon in die dritte Klasse.', opts: { a: 'In die zweite Klasse', b: 'In die dritte Klasse', c: 'In die vierte Klasse' }, correct: 'b', plays: 2 },
-                { teil: 1, n: 5, q: 'Wie kommt die Frau in den 2. Stock?', transcript: 'Kundin: Wie komme ich in den zweiten Stock? Die Rolltreppe ist kaputt. Verkäuferin: Gehen Sie rechts um die Ecke und nehmen den Aufzug.', opts: { a: 'Mit dem Aufzug', b: 'Mit der Rolltreppe', c: 'Mit der Treppe' }, correct: 'a', plays: 2 },
-                { teil: 1, n: 6, q: 'Wohin fährt Herr Albers?', transcript: 'Kollegin: Wohin fahren Sie denn? Kollege: Zu meinen Verwandten nach Polen. Für 3 Wochen.', opts: { a: 'In den Urlaub ans Meer', b: 'Zur Arbeit', c: 'Zur Familie' }, correct: 'c', plays: 2 },
-                { teil: 2, n: 7, statement: 'Die Kunden sollen die Weihnachtsfeier besuchen.', transcript: 'Liebe Kunden, zu Weihnachten bieten wir Superpreise an — Weißwein für 12 Euro 78, Rotwein für 9 Euro 68. Besuchen Sie uns im 3. Stock.', correct: 'falsch', plays: 1 },
-                { teil: 2, n: 8, statement: 'Die Fahrgäste sollen sich im Restaurant treffen.', transcript: 'Liebe Fahrgäste. Wir sind kurz vor Würzburg. An der nächsten Raststätte halten wir eine Stunde. Wir treffen uns um halb eins am Bus — bitte pünktlich.', correct: 'falsch', plays: 1 },
-                { teil: 2, n: 9, statement: 'Die Fahrgäste sollen im Zug bleiben.', transcript: 'Liebe Fahrgäste! Das ist ein außerplanmäßiger Halt. Bitte hier nicht aussteigen. In ein paar Minuten erreichen wir Bahnhof Bonn–Bad Godesberg.', correct: 'richtig', plays: 1 },
-                { teil: 2, n: 10, statement: 'Der Herr soll sofort zum Schalter kommen.', transcript: 'Herr Stefan Janda, Flug LH 737 nach Warschau, wird zum Schalter F7 gebeten. Der Flug wird in ein paar Minuten geschlossen.', correct: 'richtig', plays: 1 },
-                { teil: 3, n: 11, q: 'Die Nummer ist:', transcript: 'Telefonansagedienst der deutschen Telekom. Die Rufnummer hat sich geändert. Bitte rufen Sie die Auskunft an unter 11833.', opts: { a: '11833', b: '11883', c: '11338' }, correct: 'a', plays: 2 },
-                { teil: 3, n: 12, q: 'Wo genau treffen sich die Männer?', transcript: 'Hallo Jan, hier ist Boris. Ich bin noch im Zug. Ich warte an der Information auf dich.', opts: { a: 'Am Zug', b: 'Am Ausgang', c: 'An der Information' }, correct: 'c', plays: 2 },
-                { teil: 3, n: 13, q: 'Wie lange will der Mann noch warten?', transcript: 'Ich bin jetzt am Bahnhof. Ich warte schon über 20 Minuten. Zehn Minuten Zeit hast du noch … bis 2, dann nehme ich ein Taxi.', opts: { a: '20 Minuten', b: '5 Minuten', c: '10 Minuten' }, correct: 'c', plays: 2 },
-                { teil: 3, n: 14, q: 'An welchem Tag will die Frau kommen?', transcript: 'Guten Tag, hier Rogalla. Wir können am Samstag leider nicht kommen. Am Sonntag haben wir Zeit. Rufen Sie uns zurück, ob Ihnen das passt.', opts: { a: 'Am Freitag', b: 'Am Sonntag', c: 'Am Samstag' }, correct: 'c', plays: 2 },
-                { teil: 3, n: 15, q: 'Was ist kaputt?', transcript: 'Hallo Alex. Walter hier. Kannst du rüberkommen? Mein Computer hat einen Fehler. Ich kann nichts drucken. Melde dich, wenn du nach Hause kommst.', opts: { a: 'Das Telefon', b: 'Der Computer', c: 'Der Drucker' }, correct: 'b', plays: 2 },
-            ],
-            lesen: [
-                { teil: 1, n: 1, text: 'Liebe Li, dein Zug kommt hier in Hannover um 12.36 Uhr an. Ich bin ab 12.15 Uhr im Hauptbahnhof und warte auf dich vor der Auskunft. Du kannst mich den ganzen Vormittag auf meinem Handy (++49 173 62 205 59) erreichen. Karin', statement: 'Lis Zug kommt nach halb eins an.', correct: 'richtig' },
-                { teil: 1, n: 2, statement: 'Karin wartet den ganzen Vormittag vor der Auskunft.', correct: 'falsch' },
-                { teil: 1, n: 3, text: 'Am kommenden Sonntag habe ich Geburtstag. Ich möchte gerne mit euch feiern und lade euch herzlich zu meiner Party am Samstagabend ein. Wir fangen um 21 Uhr an. Es werden eine ganze Menge Leute da sein. Könntet ihr vielleicht einen Salat mitbringen? Wir wollen draußen im Garten feiern. Ralf', statement: 'Ralf hatte am letzten Wochenende Geburtstag.', correct: 'falsch' },
-                { teil: 1, n: 4, statement: 'Ralf hat nur zwei oder drei Leute eingeladen.', correct: 'falsch' },
-                { teil: 1, n: 5, statement: 'Die Party findet draußen statt.', correct: 'richtig' },
-                { teil: 2, n: 6, situation: 'Sie möchten mit dem Schiff auf dem Rhein fahren und suchen Informationen.', opts: { a: 'www.sprachenfuchs.de', b: 'www.bingen-ruedesheimer.de' }, correct: 'b' },
-                { teil: 2, n: 7, situation: 'Sie wollen in Deutschland Deutsch lernen.', opts: { a: 'www.sprachenfuchs.de', b: 'www.rottenmeier.de' }, correct: 'a' },
-                { teil: 2, n: 8, situation: 'Sie möchten ein Zugticket im Internet kaufen.', opts: { a: 'www.DER.com', b: 'www.bingen-ruedesheimer.de' }, correct: 'a' },
-                { teil: 2, n: 9, situation: 'Sie suchen Informationen über den Bodensee.', opts: { a: 'www.bodensee.de (Touristeninformation)', b: 'www.rottenmeier.de (Ferienwohnungen)' }, correct: 'a' },
-                { teil: 2, n: 10, situation: 'Sie suchen einen Zug von Wiesbaden nach Hamburg mit Ankunft am Mittag.', opts: { a: 'Wiesbaden ab 09:34 → Hamburg an 14:05', b: 'Wiesbaden ab 07:34 → Hamburg an 12:05' }, correct: 'b' },
-                { teil: 3, n: 11, place: 'In der Sprachschule', sign: 'In der 10-Uhr-Pause: belegte Brötchen und Getränke für 2 Euro', statement: 'Sie können etwas zu essen kaufen.', correct: 'richtig' },
-                { teil: 3, n: 12, place: 'An der Post', sign: 'Öffnungszeiten: Mo–Fr 8–12 und 13–18 Uhr; Sa 8–12 Uhr', statement: 'Es ist Samstagnachmittag. Sie können Briefmarken kaufen.', correct: 'falsch' },
-                { teil: 3, n: 13, place: 'Am Bahnhof', sign: 'Auf dem gesamten Bahnhof ist das Rauchen verboten.', statement: 'Sie können hier Zigaretten rauchen.', correct: 'falsch' },
-                { teil: 3, n: 14, place: 'Am Eingang des Restaurants', sign: 'Bayerischer Abend: Brezeln, Weißwürste, Volksmusik, ab 20 Uhr Tanz', statement: 'Heute Abend können Sie tanzen.', correct: 'richtig' },
-                { teil: 3, n: 15, place: 'An der Haltestelle', sign: 'In der Neujahrsnacht: Busverkehr bis 23 Uhr und von 1–5 Uhr alle 30 Minuten', statement: 'Von 23 Uhr bis 1 Uhr fährt kein Bus.', correct: 'richtig' },
-            ],
-            schreiben: [
-                { teil: 1, type: 'form', prompt: 'Eva Kadavy bucht eine Bodensee-Rundfahrt (Eva + Mann + 2 Söhne). Sie hat keine Kreditkarte. Füllen Sie das Formular aus.', fields: [{ label: 'Anzahl der Personen', model: '4' }, { label: 'Davon Kinder', model: '2' }, { label: 'PLZ, Urlaubsort', model: '78014 Seeheim' }, { label: 'Zahlungsweise', model: 'bar' }, { label: 'Reisetermin', model: 'nächster Sonntag (Datum)' }] },
-                { teil: 2, type: 'message', prompt: 'Schreiben Sie an die Touristeninformation Dresden (~30 Wörter): Sie kommen im August; bitten Sie um Informationen zum Kulturprogramm (Film, Theater, Museen) und um Hoteladressen. Anrede und Gruß nicht vergessen.', model: 'Sehr geehrte Damen und Herren,\nich komme im August nach Dresden. Bitte schicken Sie mir Informationen über das Kulturprogramm (Film, Theater, Museen) und Hoteladressen.\nMit freundlichen Grüßen, [Name]' },
-            ],
-            sprechen: [
-                { teil: 1, prompt: 'Sich vorstellen: Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby — je ein Satz. Danach Namen buchstabieren und eine Telefonnummer nennen.', model: 'Mein Name ist … / Ich bin … Jahre alt. / Ich komme aus … / Ich wohne in … / Ich spreche … / Von Beruf bin ich … / Mein Hobby ist …' },
-                { teil: 2, prompt: 'Informationen erfragen/geben. Thema Essen & Trinken (Karten: Lieblingsfrühstück, Sonntag essen, Bier, Fisch, Brot, Obst) und Einkaufen (Schuhe, Zeitung, Kasse, Buch, Stadtplan).', model: 'z. B. „Was essen Sie gern zum Frühstück?" — „Brot und Obst." / „Wo kaufen Sie Schuhe?"' },
-                { teil: 3, prompt: 'Bitten formulieren und reagieren. Beispielkarte → höfliche Bitte.', model: '„Könnte ich bitte ein Glas Wasser haben?" — „Hier, bitte." / „Tut mir leid, ich habe keins."' },
-            ],
-        };
-
         // ── App State ──
         const state = {
             tags: [],
@@ -888,27 +743,20 @@
             // F7 — speech (auto-speak off by default; user opts in via the 🔊 Auto toggle)
             autoSpeak: false,
             speech: { supported: false, voice: null, voicesLoaded: false },
-            // F9 — mock test
-            mode: 'flash',
-            mock: null,
             // shared 5s auto-next countdown handle (cleared on any re-render)
             autoNextTimer: null,
         };
 
         // ── DOM refs ──
         const tagStrip   = document.getElementById('tagStrip');
-        const tagStripWrapper = document.getElementById('tagStripWrapper');
-        const toolbar    = document.getElementById('toolbar');
         const progressRow  = document.getElementById('progressRow');
         const progressFill = document.getElementById('progressFill');
         const cardWrap   = document.getElementById('cardWrap');
-        const scoreBar   = document.getElementById('scoreBar');
         const scoreRight = document.getElementById('scoreRight');
         const scoreWrong = document.getElementById('scoreWrong');
         const dirToggle  = document.getElementById('dirToggle');
         const autoSpeakToggle = document.getElementById('autoSpeakToggle');
-        const mockToggle = document.getElementById('mockToggle');
-        const mockTimer  = document.getElementById('mockTimer');
+        const streakPill = document.getElementById('streakPill');
 
         // ── Utilities ──
         function shuffle(arr) {
@@ -979,6 +827,7 @@
                 state.history.days.sort();
             }
             saveHistory();
+            updateStreakDisplay(); // reflect today's streak in the header pill immediately
         }
 
         function recordSession({ right, wrong, mode = 'quiz' }) {
@@ -1048,6 +897,52 @@
                 </div>`;
             }).join('');
             return `<div class="streak-block">${badge}<div class="streak-strip">${bars}</div></div>`;
+        }
+
+        // Always-visible header streak pill (shown once the user has a live streak)
+        function updateStreakDisplay() {
+            if (!streakPill) return;
+            let count = 0;
+            try { ({ count } = computeStreak(state.history.days)); } catch { count = 0; }
+            if (count > 0) {
+                streakPill.textContent = `🔥 ${count}`;
+                streakPill.title = `${count}-day practice streak`;
+                streakPill.style.display = '';
+            } else {
+                streakPill.style.display = 'none';
+            }
+        }
+
+        // ── Celebration (confetti + toast) ──
+        function celebrate(message) {
+            if (typeof document === 'undefined') return;
+            const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const toast = document.createElement('div');
+            toast.className = 'celebrate-toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 1900);
+
+            if (reduce) return; // honor reduced-motion: toast only, no confetti
+
+            const overlay = document.createElement('div');
+            overlay.className = 'celebrate-overlay';
+            const colors = ['#6366F1', '#7C3AED', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#06B6D4'];
+            const pieces = 80;
+            for (let i = 0; i < pieces; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = (Math.random() * 100) + 'vw';
+                c.style.background = colors[i % colors.length];
+                c.style.animationDuration = (1.6 + Math.random() * 1.4) + 's';
+                c.style.animationDelay = (Math.random() * 0.5) + 's';
+                c.style.transform = `scale(${0.7 + Math.random() * 0.8})`;
+                if (i % 3 === 0) c.style.borderRadius = '50%'; // mix circles + rectangles
+                overlay.appendChild(c);
+            }
+            document.body.appendChild(overlay);
+            setTimeout(() => overlay.remove(), 3600);
         }
 
         // ── F3: direction (EN→DE / DE→EN) ──
@@ -1305,7 +1200,6 @@
         function renderCard() {
             // kill any pending auto-next countdown from a previous card (prevents phantom skips)
             if (state.autoNextTimer) { clearInterval(state.autoNextTimer); state.autoNextTimer = null; }
-            if (state.mode === 'mock') return; // mock test owns the view
 
             updateProgress();
 
@@ -1486,6 +1380,11 @@
             updateScoreDisplay();
             updateProgress();
 
+            // Celebrate every 10th correct answer this session
+            if (correct && state.score.right > 0 && state.score.right % 10 === 0) {
+                celebrate(`🎉 ${state.score.right} correct! Weiter so!`);
+            }
+
             const selfScore = document.getElementById('selfScore');
             selfScore.innerHTML = correct
                 ? `<div style="text-align:center;color:#065F46;font-weight:700;font-size:15px;">✓ Marked as correct</div>`
@@ -1564,264 +1463,9 @@
             });
         }
 
-        // ── F9: Mock test mode ──
-        function enterMockMode() {
-            if (state.autoNextTimer) { clearInterval(state.autoNextTimer); state.autoNextTimer = null; }
-            state.mode = 'mock';
-            const items = [];
-            MOCK_TEST.hoeren.forEach(it => items.push({ kind: 'hoeren', gradable: true, data: it }));
-            MOCK_TEST.lesen.forEach(it => items.push({ kind: 'lesen', gradable: true, data: it }));
-            MOCK_TEST.schreiben.forEach(it => items.push({ kind: 'schreiben', gradable: false, data: it }));
-            MOCK_TEST.sprechen.forEach(it => items.push({ kind: 'sprechen', gradable: false, data: it }));
-            state.mock = { idx: 0, items, answers: [], score: 0, startTs: Date.now(), timerId: null, finished: false };
-
-            // a mock run is its own session for streak/history purposes
-            state.sessionLogged = false;
-            state.dayMarkedThisSession = false;
-            state.sessionStartTs = Date.now();
-
-            // hide flashcard chrome
-            tagStripWrapper.style.display = 'none';
-            progressRow.style.display = 'none';
-            scoreBar.style.display = 'none';
-            if (dirToggle) dirToggle.style.display = 'none';
-            if (autoSpeakToggle) autoSpeakToggle.style.display = 'none';
-            mockToggle.textContent = '✕ Beenden';
-
-            startMockTimer();
-            renderMockItem();
-        }
-
-        function exitMockMode() {
-            stopMockTimer();
-            state.mode = 'flash';
-            state.mock = null;
-            try { window.speechSynthesis.cancel(); } catch {}
-
-            tagStripWrapper.style.display = '';
-            scoreBar.style.display = '';
-            if (dirToggle) dirToggle.style.display = '';
-            // only restore the auto-speak toggle if speech is actually supported
-            if (autoSpeakToggle) autoSpeakToggle.style.display = state.speech.supported ? '' : 'none';
-            mockToggle.textContent = '📝 Mock Test';
-
-            buildDeck();
-            renderCard();
-        }
-
-        function mockSectionLabel(it) {
-            const map = { hoeren: 'Hören', lesen: 'Lesen', schreiben: 'Schreiben', sprechen: 'Sprechen' };
-            return `${map[it.kind]} Teil ${it.data.teil}`;
-        }
-
-        function renderMockItem() {
-            const m = state.mock;
-            if (!m) return;
-            if (m.idx >= m.items.length) { renderMockResults(); return; }
-            const item = m.items[m.idx];
-            const header = `<div class="mock-step">${mockSectionLabel(item)} · ${m.idx + 1}/${m.items.length}</div>`;
-            if (item.kind === 'hoeren') return renderHoeren(item, header);
-            if (item.kind === 'lesen') return renderLesen(item, header);
-            return renderReference(item, header);
-        }
-
-        function mockOptsHtml(d) {
-            return d.opts
-                ? Object.entries(d.opts).map(([k, v]) => `<button class="mock-opt" data-val="${k}">${k}) ${escapeHtml(v)}</button>`).join('')
-                : ['richtig', 'falsch'].map(v => `<button class="mock-opt" data-val="${v}">${v}</button>`).join('');
-        }
-
-        function bindMockOpts(item) {
-            cardWrap.querySelectorAll('.mock-opt').forEach(b =>
-                b.addEventListener('click', () => gradeMockAnswer(item, b.dataset.val)));
-        }
-
-        function renderHoeren(item, header) {
-            const d = item.data;
-            const canSpeak = state.speech && state.speech.supported;
-            cardWrap.innerHTML = `
-                <div class="card mock-card">
-                    ${header}
-                    <div class="mock-prompt">🎧 Hören Teil ${d.teil} — Nr. ${d.n}${d.plays > 1 ? ' · wird 2× gespielt' : ''}</div>
-                    <button class="mock-audio-btn" id="mockPlay">🔊 ${canSpeak ? 'Abspielen' : 'Transkript lesen'}</button>
-                    ${canSpeak ? `<button class="mock-transcript-toggle" id="mockTrToggle">Transkript anzeigen</button>` : ''}
-                    <div class="mock-transcript" id="mockTranscript" style="display:none">${escapeHtml(d.transcript)}</div>
-                    <div class="mock-question">${escapeHtml(d.q || d.statement)}</div>
-                    <div class="mock-opts">${mockOptsHtml(d)}</div>
-                </div>
-            `;
-            const playBtn = document.getElementById('mockPlay');
-            const trEl = document.getElementById('mockTranscript');
-            if (canSpeak) {
-                playBtn.addEventListener('click', () => { playBtn.textContent = '🔊 Wiederholen'; speak(d.transcript); });
-                const trToggle = document.getElementById('mockTrToggle');
-                trToggle.addEventListener('click', () => {
-                    const hidden = trEl.style.display === 'none';
-                    trEl.style.display = hidden ? 'block' : 'none';
-                    trToggle.textContent = hidden ? 'Transkript verbergen' : 'Transkript anzeigen';
-                });
-                if (state.autoSpeak) speak(d.transcript); // auto-play once (telc-style), honoring the mute toggle
-            } else {
-                playBtn.addEventListener('click', () => { trEl.style.display = 'block'; });
-            }
-            bindMockOpts(item);
-        }
-
-        function renderLesen(item, header) {
-            const d = item.data;
-            // Teil 1 statements 2/4/5 refer to the most recent preceding text.
-            let textForBody = d.text;
-            if (d.teil === 1 && !textForBody) {
-                for (let i = state.mock.idx - 1; i >= 0; i--) {
-                    const prev = state.mock.items[i];
-                    if (!(prev.kind === 'lesen' && prev.data.teil === 1)) break;
-                    if (prev.data.text) { textForBody = prev.data.text; break; }
-                }
-            }
-            let body = '';
-            if (textForBody) body = `<div class="mock-text">${escapeHtml(textForBody)}</div>`;
-            else if (d.sign) body = `<div class="mock-sign"><div class="mock-place">${escapeHtml(d.place)}</div>${escapeHtml(d.sign)}</div>`;
-            else if (d.situation) body = `<div class="mock-text">${escapeHtml(d.situation)}</div>`;
-            cardWrap.innerHTML = `
-                <div class="card mock-card">
-                    ${header}
-                    <div class="mock-prompt">📖 Lesen Teil ${d.teil} — Nr. ${d.n}</div>
-                    ${body}
-                    ${d.statement ? `<div class="mock-question">${escapeHtml(d.statement)}</div>` : ''}
-                    <div class="mock-opts">${mockOptsHtml(d)}</div>
-                </div>
-            `;
-            bindMockOpts(item);
-        }
-
-        function gradeMockAnswer(item, chosen) {
-            const m = state.mock;
-            const d = item.data;
-            const ok = chosen === d.correct;
-            m.answers.push({ n: d.n, kind: item.kind, teil: d.teil, chosen, correct: d.correct, ok });
-            if (ok) m.score++;
-            markDayPracticed(); // F2 — count the day even if the mock is abandoned early
-            cardWrap.querySelectorAll('.mock-opt').forEach(b => {
-                b.disabled = true;
-                if (b.dataset.val === d.correct) b.classList.add('mock-correct');
-                else if (b.dataset.val === chosen) b.classList.add('mock-wrong');
-            });
-            try { window.speechSynthesis.cancel(); } catch {}
-            showMockAdvance();
-        }
-
-        function renderReference(item, header) {
-            const d = item.data;
-            const label = item.kind === 'schreiben' ? `✍️ Schreiben Teil ${d.teil}` : `🗣️ Sprechen Teil ${d.teil}`;
-            const model = d.model || (d.fields || []).map(f => `${f.label}: ${f.model}`).join('\n');
-            cardWrap.innerHTML = `
-                <div class="card mock-card">
-                    ${header}
-                    <div class="mock-prompt">${label} <span class="mock-unscored">nicht bewertet</span></div>
-                    <div class="mock-question">${escapeHtml(d.prompt)}</div>
-                    ${item.kind === 'schreiben' ? `<textarea class="mock-write" rows="5" placeholder="Ihre Antwort …"></textarea>` : ''}
-                    <button class="mock-audio-btn" id="mockReveal">Musterlösung anzeigen</button>
-                    <div class="mock-model" id="mockModel" style="display:none">${escapeHtml(model)}</div>
-                </div>
-            `;
-            document.getElementById('mockReveal').addEventListener('click', () => {
-                document.getElementById('mockModel').style.display = 'block';
-            });
-            showMockAdvance();
-        }
-
-        function showMockAdvance() {
-            const card = cardWrap.querySelector('.mock-card');
-            if (!card) return;
-            const btn = document.createElement('button');
-            btn.className = 'next-btn';
-            btn.id = 'mockNext';
-            btn.style.marginTop = '4px';
-            btn.textContent = 'Weiter →';
-            btn.addEventListener('click', () => { state.mock.idx++; renderMockItem(); });
-            card.appendChild(btn);
-            btn.focus();
-        }
-
-        function startMockTimer() {
-            mockTimer.style.display = '';
-            const tick = () => {
-                if (!state.mock) return;
-                const s = Math.floor((Date.now() - state.mock.startTs) / 1000);
-                mockTimer.textContent = `⏱ ${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-            };
-            tick();
-            state.mock.timerId = setInterval(tick, 1000);
-        }
-
-        function stopMockTimer() {
-            if (state.mock && state.mock.timerId) clearInterval(state.mock.timerId);
-            if (mockTimer) mockTimer.style.display = 'none';
-        }
-
-        function computeMockGrade(points, max) {
-            const scaled = max ? Math.round((points / max) * 60) : 0;
-            let label;
-            if (scaled >= 54) label = 'sehr gut';
-            else if (scaled >= 48) label = 'gut';
-            else if (scaled >= 42) label = 'befriedigend';
-            else if (scaled >= 36) label = 'ausreichend';
-            else label = 'teilgenommen';
-            return { label, scaled };
-        }
-
-        function renderMockResults() {
-            const m = state.mock;
-            m.finished = true;
-            stopMockTimer();
-            const max = m.items.filter(i => i.gradable).length;
-            const pts = m.score;
-            const grade = computeMockGrade(pts, max);
-            const hoeren = m.answers.filter(a => a.kind === 'hoeren' && a.ok).length;
-            const lesen = m.answers.filter(a => a.kind === 'lesen' && a.ok).length;
-            const emoji = pts >= max * 0.8 ? '🎉' : pts >= max * 0.6 ? '💪' : '📚';
-
-            let streakHtml = '';
-            try {
-                markDayPracticed();
-                recordSession({ right: pts, wrong: max - pts, mode: 'mock' });
-                streakHtml = renderStreakBlock();
-            } catch { /* storage hiccup */ }
-
-            cardWrap.innerHTML = `
-                <div class="completion-card">
-                    <div class="completion-emoji">${emoji}</div>
-                    <div class="completion-title">Mock Test fertig</div>
-                    <div class="completion-sub mock-breakdown">${pts} / ${max} Punkte · Hören ${hoeren}/15 · Lesen ${lesen}/15</div>
-                    <div class="completion-sub">Note: <b>${escapeHtml(grade.label)}</b> (≈ ${grade.scaled}/60)</div>
-                    <div class="mock-disclaimer">Schreiben &amp; Sprechen wurden nicht automatisch bewertet. Die Note basiert nur auf den ${max} Punkten aus Hören + Lesen.</div>
-                    ${streakHtml}
-                    <div class="completion-btns">
-                        <button class="btn-retry" id="mockRetry">Mock Test wiederholen</button>
-                        <button class="next-btn" id="mockExit">Zurück zu den Karten</button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('mockRetry').addEventListener('click', () => enterMockMode());
-            document.getElementById('mockExit').addEventListener('click', () => exitMockMode());
-        }
-
         // ── Global keyboard handler ──
         document.addEventListener('keydown', e => {
             if (e.repeat) return; // ignore auto-repeat from a held key
-
-            // F9 — mock mode owns the keyboard (advance on Enter)
-            if (state.mode === 'mock') {
-                if (e.key === 'Enter') {
-                    const ae = document.activeElement;
-                    if (ae && ae.tagName === 'TEXTAREA') return; // let Enter add a newline while writing
-                    const mn = document.getElementById('mockNext');
-                    const mr = document.getElementById('mockRetry');
-                    if (mn) { e.preventDefault(); mn.click(); }
-                    else if (mr) { e.preventDefault(); mr.click(); }
-                }
-                return;
-            }
 
             // F7 — "P" replays the German pronunciation (never while typing the answer)
             if ((e.key === 'p' || e.key === 'P') && state.revealed
@@ -1874,6 +1518,7 @@
             buildDeck();
             renderTagStrip();
             renderDirectionToggle();
+            updateStreakDisplay();
             if (state.speech.supported) {
                 autoSpeakToggle.classList.toggle('on', state.autoSpeak);
             } else {
@@ -1884,7 +1529,6 @@
             // Toolbar wiring
             dirToggle.addEventListener('click', () => setDirection(isReverse() ? 'en2de' : 'de2en'));
             autoSpeakToggle.addEventListener('click', () => setAutoSpeak(!state.autoSpeak));
-            mockToggle.addEventListener('click', () => state.mode === 'mock' ? exitMockMode() : enterMockMode());
         })();
     </script>
 </body>
