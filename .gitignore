@@ -1,4 +1,5 @@
 # Angular specific
+.claude/*
 /dist/
 /out-tsc/
 /tmp/
