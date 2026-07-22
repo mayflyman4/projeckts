@@ -1,0 +1,79 @@
+projects/learn-german/exercises/farben.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-46
+projects/learn-german/exercises/artikel.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-172
+projects/learn-german/exercises/verben.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-52
+projects/learn-german/exercises/begruessungen.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-52
+projects/learn-german/exercises.yaml
+  s_c9624a46cd1866::t_eed9dceabc81ff 1-3,7-33
+projects/learn-german/exercises/gesundheit.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-61
+projects/learn-german/exercises/richtungen.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-55
+projects/learn-german/exercises/akkusativ.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-64
+projects/learn-german/exercises/uhrzeit.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-55
+projects/learn-german/exercises/zahlen.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-49
+projects/learn-german/exercises/personliche_info.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-55
+projects/learn-german/exercises/verkehrsmittel.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-52
+projects/learn-german/exercises/adjektive.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-46
+projects/learn-german/exercises/berufe.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-50
+projects/learn-german/exercises/wohnen.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-49
+projects/learn-german/index.html
+  s_c9624a46cd1866::t_e237b8a4cd2c10 1300
+  s_c9624a46cd1866::t_439faeef1277d6 1161-1166
+  s_c9624a46cd1866::t_766678de2da6f6 769
+  s_c9624a46cd1866::t_17e183d84cf049 1449
+  s_c9624a46cd1866::t_add53f6ea0c4bc 274-280
+projects/learn-german/exercises/modal_verb.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-118
+projects/learn-german/exercises/einkaufen.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-55
+projects/learn-german/exercises/essen_trinken.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-49
+projects/learn-german/exercises/kommunikation.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-56
+projects/learn-german/exercises/monate.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-49
+projects/learn-german/exercises/wetter.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-52
+projects/learn-german/exercises/nominativ.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-64
+projects/learn-german/exercises/dativ.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-64
+projects/learn-german/exercises/familie.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-49
+projects/learn-german/exercises/hobbys.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-56
+projects/learn-german/exercises/tagesablauf.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-60
+projects/learn-german/exercises/wochentage.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-53
+projects/learn-german/exercises/nomen.yaml
+  s_c9624a46cd1866::t_c13eed2e990d56 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "04017afed8f46db4134db1dd4bd69ceacf5c4072",
+  "prompts": {},
+  "sessions": {
+    "s_c9624a46cd1866": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6cb81e3e-024f-40b1-ad48-c53f63a8721e",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
