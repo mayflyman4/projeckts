@@ -286,6 +286,16 @@
             line-height: 1.5;
         }
 
+        .answer-case-example {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .answer-case-example strong {
+            color: #4F46E5;
+        }
+
         .comparison-row {
             display: flex;
             flex-direction: column;
@@ -788,7 +798,6 @@
             autoSpeak: false,
             speech: { supported: false, voice: null, voicesLoaded: false },
             // shared 5s auto-next countdown handle (cleared on any re-render)
-            autoNextTimer: null,
         };
 
         // ── DOM refs ──
@@ -1247,9 +1256,6 @@
 
         // ── Main card render ──
         function renderCard() {
-            // kill any pending auto-next countdown from a previous card (prevents phantom skips)
-            if (state.autoNextTimer) { clearInterval(state.autoNextTimer); state.autoNextTimer = null; }
-
             updateProgress();
 
             if (state.deck.length === 0) {
@@ -1299,6 +1305,8 @@
                             ${ex._tagLabel ? `<div class="answer-tag-label">${escapeHtml(ex._tagLabel)}</div>` : ''}
                             ${ex.plural ? `<div class="answer-plural">Plural: ${escapeHtml(ex.plural)}</div>` : ''}
                             ${ex.explanation ? `<div class="answer-explanation">${escapeHtml(ex.explanation)}</div>` : ''}
+                            ${ex.akkusativ ? `<div class="answer-case-example"><strong>Akkusativ:</strong> ${escapeHtml(ex.akkusativ)}</div>` : ''}
+                            ${ex.dativ ? `<div class="answer-case-example"><strong>Dativ:</strong> ${escapeHtml(ex.dativ)}</div>` : ''}
                         </div>
 
                         <div id="selfScore">
@@ -1377,7 +1385,7 @@
                 if (outcome === 'correct') {
                     answerInput.classList.add('correct');
                     selfScore.style.display = 'none';
-                    recordScore(true, true);
+                    recordScore(true);
                 } else if (outcome === 'almost') {
                     // F4 — right noun, missing/wrong article
                     answerInput.classList.add('almost');
@@ -1395,7 +1403,7 @@
                             <button class="btn-almost-next" id="btnNextAlmost">Next word →</button>
                         </div>
                     `;
-                    document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true, false));
+                    document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true));
                     document.getElementById('btnNextAlmost').addEventListener('click', goNext);
                 } else {
                     // Wrong: reveal answer, offer override or move on
@@ -1406,20 +1414,20 @@
                             <button class="btn-no" id="btnNextWrong">Next word →</button>
                         </div>
                     `;
-                    document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true, false));
+                    document.getElementById('btnMarkCorrect').addEventListener('click', () => recordScore(true));
                     document.getElementById('btnNextWrong').addEventListener('click', goNext);
                 }
             } else {
                 // Not typed: reveal answer, show Yes/No, no auto-advance
                 answerInput.style.display = 'none';
                 const btnYes = document.getElementById('btnYes');
-                btnYes.addEventListener('click', () => recordScore(true, false));
-                document.getElementById('btnNo').addEventListener('click', () => recordScore(false, false));
+                btnYes.addEventListener('click', () => recordScore(true));
+                document.getElementById('btnNo').addEventListener('click', () => recordScore(false));
                 btnYes.focus(); // keyboard users can press Enter to confirm (or Tab to "missed it")
             }
         }
 
-        function recordScore(correct, useTimer = false) {
+        function recordScore(correct) {
             if (state.scored) return;
             state.scored = true;
             markDayPracticed(); // F2 — count today as practiced on first scored card
@@ -1442,32 +1450,10 @@
 
             const nextBtn = document.getElementById('nextBtn');
             nextBtn.style.display = 'block';
+            nextBtn.textContent = 'Next card →';
             nextBtn.focus();
 
-            if (state.autoNextTimer) { clearInterval(state.autoNextTimer); state.autoNextTimer = null; }
-            if (useTimer && correct) {
-                let nt = 10;
-                nextBtn.textContent = `Next card → (${nt})`;
-                state.autoNextTimer = setInterval(() => {
-                    nt--;
-                    const btn = document.getElementById('nextBtn');
-                    if (!btn) { clearInterval(state.autoNextTimer); state.autoNextTimer = null; return; }
-                    if (nt <= 0) {
-                        clearInterval(state.autoNextTimer);
-                        state.autoNextTimer = null;
-                        state.deckIdx++;
-                        updateProgress();
-                        renderCard();
-                    } else {
-                        btn.textContent = `Next card → (${nt})`;
-                    }
-                }, 1000);
-            } else {
-                nextBtn.textContent = 'Next card →';
-            }
-
             nextBtn.addEventListener('click', () => {
-                if (state.autoNextTimer) { clearInterval(state.autoNextTimer); state.autoNextTimer = null; }
                 state.deckIdx++;
                 updateProgress();
                 renderCard();
