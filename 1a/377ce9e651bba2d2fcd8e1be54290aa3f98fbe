@@ -1,0 +1,33 @@
+projects/learn-german/exercises/dativ.yaml
+  s_c9624a46cd1866::t_e5c20cda70c021 7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58,61,64-94
+projects/learn-german/exercises/nominativ.yaml
+  s_c9624a46cd1866::t_667f8ce8def590 105-189
+  s_c9624a46cd1866::t_841c251ec0cda7 8-9,13-14,18-19,23-24,28-29,33-34,38-39,43-44,48-49,53-54,58-59,63-64,68-69,73-74,78-79,83-84,88-89,93-94,98-99,103-104
+  s_c9624a46cd1866::t_1352541bcb9ada 190-257
+projects/learn-german/index.html
+  s_c9624a46cd1866::t_44e13077cdc9ef 1453
+  s_c9624a46cd1866::t_d02a452c8b592f 289-298
+  s_c9624a46cd1866::t_3561d0fbd3701b 1308-1309
+  s_c9624a46cd1866::t_b2f2dd6fe2d5b0 1406,1417,1424
+  s_c9624a46cd1866::t_c0f881ff29f5f0 1425
+  s_c9624a46cd1866::t_cc18c403d16941 1430
+  s_c9624a46cd1866::t_833623c1e2dac4 1388
+projects/learn-german/exercises/akkusativ.yaml
+  s_c9624a46cd1866::t_a8ce75b7777528 8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1a377ce9e651bba2d2fcd8e1be54290aa3f98fbe",
+  "prompts": {},
+  "sessions": {
+    "s_c9624a46cd1866": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6cb81e3e-024f-40b1-ad48-c53f63a8721e",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
