@@ -1,0 +1,31 @@
+README.md
+  s_c9624a46cd1866::t_1d2ca555aa206a 1-10
+docs/support.html
+  s_0d5f914f923c95::t_2327446553feed 1-46
+projects/learn-german/exercises/tagesablauf.yaml
+  s_c9624a46cd1866::t_b809d12e041586 43-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a839e80dff57973da19cfafddb3639ebee3656a0",
+  "prompts": {},
+  "sessions": {
+    "s_0d5f914f923c95": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb7f754e-e578-4b63-8269-0cc8e958b140",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    },
+    "s_c9624a46cd1866": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6cb81e3e-024f-40b1-ad48-c53f63a8721e",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
