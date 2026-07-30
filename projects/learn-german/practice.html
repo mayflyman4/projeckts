@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammatik-Übungen — A1 Practice</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇩🇪</text></svg>">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-header {
+            width: 100%;
+            max-width: 760px;
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .app-title {
+            color: white;
+            font-size: clamp(18px, 5vw, 26px);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .score-bar { display: flex; align-items: center; gap: 10px; }
+
+        .back-link, .mock-test-link {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.45);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.18s, border-color 0.18s;
+        }
+        .back-link:hover, .mock-test-link:hover {
+            background: rgba(255,255,255,0.28);
+            border-color: rgba(255,255,255,0.75);
+        }
+
+        .score-pill {
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .score-pill.right { background: rgba(16, 185, 129, 0.25); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .score-pill.wrong { background: rgba(239, 68, 68, 0.22); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.35); }
+
+        /* ── Tab bar ── */
+        .tab-bar {
+            width: 100%;
+            max-width: 760px;
+            padding: 16px 20px 0;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.4) transparent;
+        }
+        .tab-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .tab-bar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .tab-bar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.4);
+            border-radius: 999px;
+        }
+        .tab-bar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.65);
+        }
+
+        .tab-btn {
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 2px solid rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.85);
+            background: transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.18s, color 0.18s, border-color 0.18s;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.6); }
+        .tab-btn.active { background: white; color: #4F46E5; border-color: white; }
+
+        /* ── Content card ── */
+        .content-wrap {
+            width: 100%;
+            max-width: 760px;
+            padding: 16px 20px 40px;
+            flex: 1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            padding: 28px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1E1B4B;
+        }
+
+        .card-sub { font-size: 13px; color: #6B7280; margin-top: -12px; }
+
+        .divider { height: 1px; background: #E8E5FF; }
+
+        .paragraph {
+            font-size: 19px;
+            line-height: 2.1;
+            color: #1E1B4B;
+        }
+
+        /* blanks */
+        .blank-wrap { display: inline-flex; align-items: center; gap: 4px; position: relative; }
+
+        .blank-input {
+            width: 92px;
+            padding: 4px 8px;
+            font-size: 17px;
+            font-family: inherit;
+            border: 2px solid #C7D2FE;
+            border-radius: 8px;
+            text-align: center;
+            color: #1E1B4B;
+            outline: none;
+        }
+        .blank-input.scaffold { color: #9CA3AF; }
+        .blank-input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+        .blank-input.correct { border-color: #10B981; background: #ECFDF5; color: #065F46; }
+        .blank-input.wrong { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
+
+        .hint-btn {
+            border: none;
+            background: none;
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 2px;
+        }
+
+        .hint-chips {
+            display: none;
+            flex-wrap: wrap;
+            gap: 6px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 6px;
+            background: #F5F3FF;
+            border: 1px solid #E8E5FF;
+            border-radius: 10px;
+            padding: 8px;
+            z-index: 5;
+            width: max-content;
+        }
+        .hint-chips.visible { display: flex; }
+
+        .chip {
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1.5px solid #C7D2FE;
+            background: white;
+            color: #4F46E5;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: background 0.15s, transform 0.1s;
+        }
+        .chip:hover { background: #EEF2FF; transform: translateY(-1px); }
+
+        .correct-answer-note {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #991B1B;
+            margin-top: -8px;
+        }
+
+        .btn-primary {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.4); }
+
+        .btn-secondary {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #4F46E5;
+            background: #EEF2FF;
+            border: 2px solid #C7D2FE;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.18s, transform 0.15s;
+        }
+        .btn-secondary:hover { background: #E0E7FF; transform: translateY(-1px); }
+
+        .result-banner {
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .result-banner.ok { background: #D1FAE5; color: #065F46; }
+        .result-banner.some-wrong { background: #FEF3C7; color: #92400E; }
+
+        /* ── Sentence builder ── */
+        .prompt-en {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1E1B4B;
+            text-align: center;
+        }
+
+        .sentence-line {
+            min-height: 52px;
+            border: 2px dashed #C7D2FE;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-content: flex-start;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .word-chip {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 2px solid #C7D2FE;
+            background: #EEF2FF;
+            color: #1E1B4B;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .word-chip:hover { background: #E0E7FF; }
+        .word-chip.placed { background: white; border-color: #A5B4FC; }
+
+        /* ── Conjugation / article prompt ── */
+        .verb-prompt {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1E1B4B;
+            text-align: center;
+        }
+        .verb-prompt .pronoun { color: #7C3AED; }
+
+        .form-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+        .chip.correct { background: #ECFDF5; border-color: #10B981; color: #065F46; }
+        .chip.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
+        .chip.disabled { pointer-events: none; opacity: 0.65; }
+
+        /* ── Error Spotting ── */
+        .error-sentence { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .word-chip.flagged { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
+        .word-chip.muted { opacity: 0.55; }
+        .word-chip.disabled { pointer-events: none; }
+        .fix-chips { display: none; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .fix-chips.visible { display: flex; }
+
+        .status-msg { color: #6B7280; text-align: center; padding: 20px; }
+
+        /* ── All-mixed progress + completion ── */
+        .progress-row {
+            width: 100%;
+            max-width: 760px;
+            padding: 14px 20px 0;
+            display: none;
+        }
+        .progress-bar-track {
+            height: 5px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.85);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        .completion-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            padding: 40px 28px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            animation: fadeSlideUp 0.35s ease;
+        }
+        .completion-emoji { font-size: 52px; }
+        .completion-title { font-size: 26px; font-weight: 800; color: #1E1B4B; }
+        .completion-sub { font-size: 15px; color: #6B7280; }
+        .completion-score { display: flex; gap: 16px; }
+        .completion-score-pill { padding: 10px 22px; border-radius: 14px; font-size: 18px; font-weight: 800; }
+        .completion-score-pill.right { background: #D1FAE5; color: #065F46; }
+        .completion-score-pill.wrong { background: #FEE2E2; color: #991B1B; }
+        .completion-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        .btn-retry {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-retry:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.4); }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 22px 18px; }
+            .paragraph { font-size: 17px; line-height: 2.3; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="app-title">🇩🇪 Grammatik-Übungen</div>
+        <div class="score-bar">
+            <a class="back-link" href="./index.html">← Flashcards</a>
+            <span class="score-pill right" id="scoreRight">✓ 0</span>
+            <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
+        </div>
+    </header>
+
+    <div class="tab-bar" id="tabBar">
+        <button class="tab-btn" data-tab="all">🎲 All</button>
+        <button class="tab-btn" data-tab="blanks">📝 Fill in the Blanks</button>
+        <button class="tab-btn" data-tab="builder">🔤 Sentence Builder</button>
+        <button class="tab-btn" data-tab="conj">🔁 Conjugation</button>
+        <button class="tab-btn" data-tab="errors">🚫 Error Spotting</button>
+        <button class="tab-btn" data-tab="wfrage">❓ W-Frage</button>
+    </div>
+
+    <div class="progress-row" id="progressRow">
+        <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <div class="content-wrap" id="contentWrap"></div>
+
+    <script>
+        // ── Exercise data (embedded — no fetch, works on file://) ──
+        const DATA = {
+            blanks: [
+                {
+                    title: 'Mein Morgen',
+                    tokens: [
+                        'Ich ', { answer: 'stehe', type: 'verb', options: ['stehe', 'stehst', 'steht', 'stehen'] },
+                        ' um 7 Uhr auf. Ich ', { answer: 'dusche', type: 'verb', options: ['dusche', 'duschst', 'duscht', 'duschen'] },
+                        ' und ', { answer: 'frühstücke', type: 'verb', options: ['frühstücke', 'frühstückst', 'frühstückt', 'frühstücken'] },
+                        '. Dann ', { answer: 'gehe', type: 'verb', options: ['gehe', 'gehst', 'geht', 'gehen'] },
+                        ' ich zur Arbeit.',
+                    ],
+                },
+                {
+                    title: 'Sein und Haben',
+                    tokens: [
+                        'Ich ', { answer: 'bin', type: 'verb', options: ['bin', 'bist', 'ist', 'sind'] },
+                        ' 25 Jahre alt. Du ', { answer: 'bist', type: 'verb', options: ['bin', 'bist', 'seid', 'sind'] },
+                        ' mein Freund. Wir ', { answer: 'haben', type: 'verb', options: ['habe', 'hast', 'hat', 'haben'] },
+                        ' eine Wohnung in Berlin. Sie ', { answer: 'hat', type: 'verb', options: ['habe', 'hast', 'hat', 'haben'] },
+                        ' zwei Kinder.',
+                    ],
+                },
+                {
+                    title: 'Meine Familie',
+                    tokens: [
+                        'Das ist ', { answer: 'meine', type: 'pronoun', options: ['mein', 'meine', 'meinen'] },
+                        ' Familie. ', { answer: 'Mein', type: 'pronoun', options: ['Mein', 'Meine', 'Meinen'] },
+                        ' Vater arbeitet als Lehrer. ', { answer: 'Meine', type: 'pronoun', options: ['Mein', 'Meine', 'Meinen'] },
+                        ' Mutter kocht gern, und ', { answer: 'meine', type: 'pronoun', options: ['mein', 'meine', 'meinen'] },
+                        ' Schwester wohnt in München.',
+                    ],
+                },
+                {
+                    title: 'Im Café',
+                    tokens: [
+                        { answer: 'Ich', type: 'pronoun', options: ['Ich', 'Du', 'Er'] }, ' trinke einen Tee. ',
+                        { answer: 'Du', type: 'pronoun', options: ['Ich', 'Du', 'Sie'] }, ' trinkst einen Kaffee. ',
+                        { answer: 'Er', type: 'pronoun', options: ['Er', 'Wir', 'Sie'] }, ' trinkt Wasser, und ',
+                        { answer: 'wir', type: 'pronoun', options: ['ich', 'wir', 'sie'] }, ' sprechen Deutsch.',
+                    ],
+                },
+                {
+                    title: 'Unterwegs',
+                    tokens: [
+                        'Ich fahre ', { answer: 'mit', type: 'preposition', options: ['mit', 'in', 'zu'] },
+                        ' dem Bus zur Arbeit. Am Abend gehe ich ', { answer: 'in', type: 'preposition', options: ['mit', 'in', 'zu'] },
+                        ' die Stadt. Danach gehe ich ', { answer: 'zu', type: 'preposition', options: ['mit', 'in', 'zu'] },
+                        ' meiner Freundin.',
+                    ],
+                },
+                {
+                    title: 'Meine Stadt',
+                    tokens: [
+                        { answer: 'Der', type: 'artikel', options: ['Der', 'Die', 'Das'] }, ' Park ist schön. ',
+                        { answer: 'Die', type: 'artikel', options: ['Der', 'Die', 'Das'] }, ' Kirche ist alt, und ',
+                        { answer: 'das', type: 'artikel', options: ['der', 'die', 'das'] }, ' Museum ist interessant.',
+                    ],
+                },
+                {
+                    title: 'Am Wochenende',
+                    tokens: [
+                        'Am Samstag ', { answer: 'möchte', type: 'verb', options: ['möchte', 'möchtest', 'möchten', 'möchtet'] },
+                        ' ich ins Kino gehen. Meine Schwester ', { answer: 'kann', type: 'verb', options: ['kann', 'kannst', 'können', 'könnt'] },
+                        ' gut kochen. Wir ', { answer: 'müssen', type: 'verb', options: ['muss', 'musst', 'müssen', 'müsst'] },
+                        ' am Sonntag einkaufen.',
+                    ],
+                },
+                {
+                    title: 'Wie geht es dir?',
+                    tokens: [
+                        'Wie geht es ', { answer: 'dir', type: 'pronoun', options: ['dir', 'mir', 'Ihnen'] },
+                        '? ', { answer: 'Mir', type: 'pronoun', options: ['Mir', 'Dir', 'Ihnen'] },
+                        ' geht es gut, danke. Und wie geht es ', { answer: 'Ihnen', type: 'pronoun', options: ['Ihnen', 'dir', 'mir'] },
+                        '?',
+                    ],
+                },
+                {
+                    title: 'Einkaufen',
+                    tokens: [
+                        'Ich ', { answer: 'kaufe', type: 'verb', options: ['kaufe', 'kaufst', 'kauft', 'kaufen'] },
+                        ' einen Rock. Er ', { answer: 'kauft', type: 'verb', options: ['kaufe', 'kaufst', 'kauft', 'kaufen'] },
+                        ' ein Hemd. Die Verkäuferin ', { answer: 'zeigt', type: 'verb', options: ['zeige', 'zeigst', 'zeigt', 'zeigen'] },
+                        ' mir die Größe. Ich ', { answer: 'nehme', type: 'verb', options: ['nehme', 'nimmst', 'nimmt', 'nehmen'] },
+                        ' die Jacke.',
+                    ],
+                },
+                {
+                    title: 'Beim Arzt',
+                    tokens: [
+                        'Ich ', { answer: 'habe', type: 'verb', options: ['habe', 'hast', 'hat', 'haben'] },
+                        ' Kopfschmerzen. Der Arzt ', { answer: 'sagt', type: 'verb', options: ['sage', 'sagst', 'sagt', 'sagen'] },
+                        ', ich soll Tee trinken. Ich ', { answer: 'muss', type: 'verb', options: ['muss', 'musst', 'müssen', 'müsst'] },
+                        ' auch Tabletten nehmen. Danach ', { answer: 'geht', type: 'verb', options: ['gehe', 'gehst', 'geht', 'gehen'] },
+                        ' es mir besser.',
+                    ],
+                },
+                {
+                    title: 'Das Wetter',
+                    tokens: [
+                        'Heute ', { answer: 'ist', type: 'verb', options: ['bin', 'bist', 'ist', 'sind'] },
+                        ' es kalt. Im Sommer ', { answer: 'scheint', type: 'verb', options: ['scheine', 'scheinst', 'scheint', 'scheinen'] },
+                        ' die Sonne. Im Winter ', { answer: 'schneit', type: 'verb', options: ['schneie', 'schneist', 'schneit', 'schneien'] },
+                        ' es oft. Morgen ', { answer: 'regnet', type: 'verb', options: ['regne', 'regnest', 'regnet', 'regnen'] },
+                        ' es vielleicht.',
+                    ],
+                },
+                {
+                    title: 'Nach dem Weg fragen',
+                    tokens: [
+                        'Entschuldigung, wie komme ich ', { answer: 'zum', type: 'preposition', options: ['zum', 'zur', 'ins'] },
+                        ' Bahnhof? Gehen Sie geradeaus und dann ', { answer: 'nach', type: 'preposition', options: ['nach', 'an', 'bei'] },
+                        ' links. Die Post ist ', { answer: 'neben', type: 'preposition', options: ['neben', 'zwischen', 'unter'] },
+                        ' der Bank.',
+                    ],
+                },
+                {
+                    title: 'Meine Hobbys',
+                    tokens: [
+                        'Am Wochenende ', { answer: 'spiele', type: 'verb', options: ['spiele', 'spielst', 'spielt', 'spielen'] },
+                        ' ich Fußball. Meine Freundin ', { answer: 'mag', type: 'verb', options: ['mag', 'magst', 'mögen', 'mögt'] },
+                        ' Lesen. Wir ', { answer: 'können', type: 'verb', options: ['kann', 'kannst', 'können', 'könnt'] },
+                        ' zusammen schwimmen gehen. Ich ', { answer: 'möchte', type: 'verb', options: ['möchte', 'möchtest', 'möchten', 'möchtet'] },
+                        ' auch Musik hören.',
+                    ],
+                },
+                {
+                    title: 'Am Telefon',
+                    tokens: [
+                        'Hallo, hier ', { answer: 'spricht', type: 'verb', options: ['spreche', 'sprichst', 'spricht', 'sprechen'] },
+                        ' Anna. Ich ', { answer: 'rufe', type: 'verb', options: ['rufe', 'rufst', 'ruft', 'rufen'] },
+                        ' dich um 18 Uhr an. Wir ', { answer: 'sprechen', type: 'verb', options: ['spreche', 'sprichst', 'spricht', 'sprechen'] },
+                        ' dann über die Party. Danach ', { answer: 'schreibe', type: 'verb', options: ['schreibe', 'schreibst', 'schreibt', 'schreiben'] },
+                        ' ich dir eine Nachricht.',
+                    ],
+                },
+                {
+                    title: 'Meine Wohnung',
+                    tokens: [
+                        'Ich ', { answer: 'wohne', type: 'verb', options: ['wohne', 'wohnst', 'wohnt', 'wohnen'] },
+                        ' in einer kleinen Wohnung. Das Wohnzimmer ', { answer: 'ist', type: 'verb', options: ['bin', 'bist', 'ist', 'sind'] },
+                        ' sehr hell. In der Küche ', { answer: 'koche', type: 'verb', options: ['koche', 'kochst', 'kocht', 'kochen'] },
+                        ' ich jeden Tag. Mein Schlafzimmer ', { answer: 'hat', type: 'verb', options: ['habe', 'hast', 'hat', 'haben'] },
+                        ' ein großes Fenster.',
+                    ],
+                },
+                {
+                    title: 'Essen und Trinken',
+                    tokens: [
+                        'Zum Frühstück ', { answer: 'esse', type: 'verb', options: ['esse', 'isst', 'essen', 'esst'] },
+                        ' ich Brot mit Marmelade. Mein Mann ', { answer: 'trinkt', type: 'verb', options: ['trinke', 'trinkst', 'trinkt', 'trinken'] },
+                        ' immer Kaffee. Zum Mittagessen ', { answer: 'kochen', type: 'verb', options: ['koche', 'kochst', 'kocht', 'kochen'] },
+                        ' wir Nudeln. Am Abend ', { answer: 'essen', type: 'verb', options: ['esse', 'isst', 'essen', 'esst'] },
+                        ' wir oft Salat.',
+                    ],
+                },
+                {
+                    title: 'Zahlen und Preise',
+                    tokens: [
+                        'Das Buch ', { answer: 'kostet', type: 'verb', options: ['koste', 'kostest', 'kostet', 'kosten'] },
+                        ' zwölf Euro. Ich ', { answer: 'brauche', type: 'verb', options: ['brauche', 'brauchst', 'braucht', 'brauchen'] },
+                        ' noch einen Stift. Der Verkäufer ', { answer: 'gibt', type: 'verb', options: ['gebe', 'gibst', 'gibt', 'geben'] },
+                        ' mir die Rechnung. Ich ', { answer: 'bezahle', type: 'verb', options: ['bezahle', 'bezahlst', 'bezahlt', 'bezahlen'] },
+                        ' mit Karte.',
+                    ],
+                },
+                {
+                    title: 'Meine Woche',
+                    tokens: [
+                        'Am Montag ', { answer: 'beginne', type: 'verb', options: ['beginne', 'beginnst', 'beginnt', 'beginnen'] },
+                        ' ich um 9 Uhr. Am Mittwoch ', { answer: 'habe', type: 'verb', options: ['habe', 'hast', 'hat', 'haben'] },
+                        ' ich frei. Am Freitag ', { answer: 'treffe', type: 'verb', options: ['treffe', 'triffst', 'trifft', 'treffen'] },
+                        ' ich meine Freunde. Am Sonntag ', { answer: 'bleibe', type: 'verb', options: ['bleibe', 'bleibst', 'bleibt', 'bleiben'] },
+                        ' ich zu Hause.',
+                    ],
+                },
+                {
+                    title: 'Persönliche Informationen',
+                    tokens: [
+                        'Ich komme aus Italien, aber ich ', { answer: 'wohne', type: 'verb', options: ['wohne', 'wohnst', 'wohnt', 'wohnen'] },
+                        ' jetzt in Deutschland. ', { answer: 'Meine', type: 'pronoun', options: ['Mein', 'Meine', 'Meinen'] },
+                        ' Adresse ist Hauptstraße 5. ', { answer: 'Meine', type: 'pronoun', options: ['Mein', 'Meine', 'Meinen'] },
+                        ' Telefonnummer ist neu. Ich ', { answer: 'spreche', type: 'verb', options: ['spreche', 'sprichst', 'spricht', 'sprechen'] },
+                        ' drei Sprachen.',
+                    ],
+                },
+                {
+                    title: 'Verkehrsmittel',
+                    tokens: [
+                        'Ich ', { answer: 'fahre', type: 'verb', options: ['fahre', 'fährst', 'fährt', 'fahren'] },
+                        ' jeden Tag mit dem Zug. Mein Kollege ', { answer: 'nimmt', type: 'verb', options: ['nehme', 'nimmst', 'nimmt', 'nehmen'] },
+                        ' lieber das Auto. Wir ', { answer: 'steigen', type: 'verb', options: ['steige', 'steigst', 'steigt', 'steigen'] },
+                        ' am Hauptbahnhof um. Manchmal ', { answer: 'gehe', type: 'verb', options: ['gehe', 'gehst', 'geht', 'gehen'] },
+                        ' ich auch zu Fuß.',
+                    ],
+                },
+            ],
+            builder: [
+                { prompt: 'I get up at 7 o’clock', answer: 'Ich stehe um 7 Uhr auf' },
+                { prompt: 'I go to work', answer: 'Ich gehe zur Arbeit' },
+                { prompt: 'On weekends I go for a walk', answer: 'Am Wochenende gehe ich spazieren' },
+                { prompt: 'Today I am tired', answer: 'Heute bin ich müde' },
+                { prompt: 'My sister lives in Munich', answer: 'Meine Schwester wohnt in München' },
+                { prompt: 'We speak German', answer: 'Wir sprechen Deutsch' },
+                { prompt: 'What is your name?', answer: 'Wie heißt du?' },
+                { prompt: 'I would like a coffee', answer: 'Ich möchte einen Kaffee' },
+                { prompt: 'I take the bus to work', answer: 'Ich fahre mit dem Bus zur Arbeit' },
+                { prompt: 'Tomorrow I must work', answer: 'Morgen muss ich arbeiten' },
+                { prompt: 'I don’t have time today', answer: 'Ich habe heute keine Zeit' },
+                { prompt: 'The weather is nice today', answer: 'Das Wetter ist heute schön' },
+                { prompt: 'Can you help me?', answer: 'Kannst du mir helfen?' },
+                { prompt: 'I am going to the doctor tomorrow', answer: 'Ich gehe morgen zum Arzt' },
+                { prompt: 'She works as a teacher', answer: 'Sie arbeitet als Lehrerin' },
+                { prompt: 'I like to read books', answer: 'Ich lese gern Bücher' },
+                { prompt: 'He doesn’t understand German', answer: 'Er versteht kein Deutsch' },
+                { prompt: 'We are going to the cinema tonight', answer: 'Wir gehen heute Abend ins Kino' },
+                { prompt: 'Please close the door', answer: 'Bitte schließen Sie die Tür' },
+                { prompt: 'My brother is older than me', answer: 'Mein Bruder ist älter als ich' },
+            ],
+            conj: [
+                { inf: 'sein', forms: { ich: 'bin', du: 'bist', 'er/sie/es': 'ist', wir: 'sind', ihr: 'seid', 'sie/Sie': 'sind' } },
+                { inf: 'haben', forms: { ich: 'habe', du: 'hast', 'er/sie/es': 'hat', wir: 'haben', ihr: 'habt', 'sie/Sie': 'haben' } },
+                { inf: 'gehen', forms: { ich: 'gehe', du: 'gehst', 'er/sie/es': 'geht', wir: 'gehen', ihr: 'geht', 'sie/Sie': 'gehen' } },
+                { inf: 'wohnen', forms: { ich: 'wohne', du: 'wohnst', 'er/sie/es': 'wohnt', wir: 'wohnen', ihr: 'wohnt', 'sie/Sie': 'wohnen' } },
+                { inf: 'arbeiten', forms: { ich: 'arbeite', du: 'arbeitest', 'er/sie/es': 'arbeitet', wir: 'arbeiten', ihr: 'arbeitet', 'sie/Sie': 'arbeiten' } },
+                { inf: 'machen', forms: { ich: 'mache', du: 'machst', 'er/sie/es': 'macht', wir: 'machen', ihr: 'macht', 'sie/Sie': 'machen' } },
+                { inf: 'heißen', forms: { ich: 'heiße', du: 'heißt', 'er/sie/es': 'heißt', wir: 'heißen', ihr: 'heißt', 'sie/Sie': 'heißen' } },
+                { inf: 'kommen', forms: { ich: 'komme', du: 'kommst', 'er/sie/es': 'kommt', wir: 'kommen', ihr: 'kommt', 'sie/Sie': 'kommen' } },
+                { inf: 'essen', forms: { ich: 'esse', du: 'isst', 'er/sie/es': 'isst', wir: 'essen', ihr: 'esst', 'sie/Sie': 'essen' } },
+                { inf: 'sprechen', forms: { ich: 'spreche', du: 'sprichst', 'er/sie/es': 'spricht', wir: 'sprechen', ihr: 'sprecht', 'sie/Sie': 'sprechen' } },
+                { inf: 'fahren', forms: { ich: 'fahre', du: 'fährst', 'er/sie/es': 'fährt', wir: 'fahren', ihr: 'fahrt', 'sie/Sie': 'fahren' } },
+                { inf: 'lesen', forms: { ich: 'lese', du: 'liest', 'er/sie/es': 'liest', wir: 'lesen', ihr: 'lest', 'sie/Sie': 'lesen' } },
+                { inf: 'schlafen', forms: { ich: 'schlafe', du: 'schläfst', 'er/sie/es': 'schläft', wir: 'schlafen', ihr: 'schlaft', 'sie/Sie': 'schlafen' } },
+                { inf: 'finden', forms: { ich: 'finde', du: 'findest', 'er/sie/es': 'findet', wir: 'finden', ihr: 'findet', 'sie/Sie': 'finden' } },
+                { inf: 'spielen', forms: { ich: 'spiele', du: 'spielst', 'er/sie/es': 'spielt', wir: 'spielen', ihr: 'spielt', 'sie/Sie': 'spielen' } },
+                { inf: 'sehen', forms: { ich: 'sehe', du: 'siehst', 'er/sie/es': 'sieht', wir: 'sehen', ihr: 'seht', 'sie/Sie': 'sehen' } },
+                { inf: 'nehmen', forms: { ich: 'nehme', du: 'nimmst', 'er/sie/es': 'nimmt', wir: 'nehmen', ihr: 'nehmt', 'sie/Sie': 'nehmen' } },
+                { inf: 'tragen', forms: { ich: 'trage', du: 'trägst', 'er/sie/es': 'trägt', wir: 'tragen', ihr: 'tragt', 'sie/Sie': 'tragen' } },
+                { inf: 'brauchen', forms: { ich: 'brauche', du: 'brauchst', 'er/sie/es': 'braucht', wir: 'brauchen', ihr: 'braucht', 'sie/Sie': 'brauchen' } },
+                { inf: 'lernen', forms: { ich: 'lerne', du: 'lernst', 'er/sie/es': 'lernt', wir: 'lernen', ihr: 'lernt', 'sie/Sie': 'lernen' } },
+            ],
+            errors: [
+                { tokens: ['Der', 'Frau', 'kocht', 'gern.'], wrongIdx: 0, correct: 'Die', options: ['Die', 'Der', 'Das'] },
+                { tokens: ['Ich', 'gehst', 'heute', 'ins', 'Kino.'], wrongIdx: 1, correct: 'gehe', options: ['gehe', 'gehst', 'geht', 'gehen'] },
+                { tokens: ['Wir', 'hat', 'zwei', 'Kinder.'], wrongIdx: 1, correct: 'haben', options: ['habe', 'hat', 'haben', 'habt'] },
+                { tokens: ['Ich', 'habe', 'kein', 'Zeit.'], wrongIdx: 2, correct: 'keine', options: ['kein', 'keine', 'keinen'] },
+                { tokens: ['Ich', 'trinke', 'nicht', 'Kaffee.'], wrongIdx: 2, correct: 'keinen', options: ['nicht', 'kein', 'keinen'] },
+                { tokens: ['Das', 'Buch', 'gehört', 'mich.'], wrongIdx: 3, correct: 'mir', options: ['mich', 'mir', 'ich'] },
+                { tokens: ['Meine', 'Bruder', 'wohnt', 'in', 'Berlin.'], wrongIdx: 0, correct: 'Mein', options: ['Mein', 'Meine', 'Meinen'] },
+                { tokens: ['Ich', 'sehe', 'der', 'Mann.'], wrongIdx: 2, correct: 'den', options: ['der', 'die', 'den'] },
+                { tokens: ['Ich', 'sehe', 'du.'], wrongIdx: 2, correct: 'dich', options: ['du', 'dich', 'dir'] },
+                { tokens: ['Die', 'Kinder', 'spielt', 'im', 'Garten.'], wrongIdx: 2, correct: 'spielen', options: ['spielt', 'spielen', 'spiele'] },
+                { tokens: ['Wir', 'fahren', 'mit', 'der', 'Bus.'], wrongIdx: 3, correct: 'dem', options: ['der', 'die', 'dem'] },
+                { tokens: ['Du', 'kannst', 'gut', 'Deutsch', 'sprichst.'], wrongIdx: 4, correct: 'sprechen', options: ['sprichst', 'spricht', 'sprechen'] },
+                { tokens: ['Ich', 'gebe', 'das', 'Kind', 'ein', 'Buch.'], wrongIdx: 2, correct: 'dem', options: ['das', 'der', 'dem'] },
+                { tokens: ['Er', 'trägt', 'einen', 'rote', 'Pullover.'], wrongIdx: 3, correct: 'roten', options: ['rote', 'roten', 'rotes'] },
+                { tokens: ['Ich', 'helfe', 'den', 'Mann.'], wrongIdx: 2, correct: 'dem', options: ['den', 'dem', 'der'] },
+                { tokens: ['Die', 'Frau', 'hat', 'zwei', 'Kind.'], wrongIdx: 4, correct: 'Kinder', options: ['Kind', 'Kinder', 'Kinds'] },
+                { tokens: ['Ich', 'bin', 'müde', 'und', 'gehst', 'schlafen.'], wrongIdx: 4, correct: 'gehe', options: ['gehst', 'geht', 'gehe'] },
+                { tokens: ['Er', 'kann', 'sehr', 'gut', 'schwimmt.'], wrongIdx: 4, correct: 'schwimmen', options: ['schwimmt', 'schwimmst', 'schwimmen'] },
+                { tokens: ['Ich', 'möchte', 'einen', 'Kaffee', 'trinkst.'], wrongIdx: 4, correct: 'trinken', options: ['trinkst', 'trinkt', 'trinken'] },
+                { tokens: ['Wir', 'müssen', 'jetzt', 'gehst.'], wrongIdx: 3, correct: 'gehen', options: ['gehst', 'geht', 'gehen'] },
+            ],
+            wfrage: [
+                { context: 'Ich heiße Anna.', question: 'Wie heißt du?' },
+                { context: 'Ich komme aus Deutschland.', question: 'Woher kommst du?' },
+                { context: 'Ich wohne in Berlin.', question: 'Wo wohnst du?' },
+                { context: 'Ich gehe ins Kino.', question: 'Wohin gehst du?' },
+                { context: 'Ich bin 25 Jahre alt.', question: 'Wie alt bist du?' },
+                { context: 'Es ist 8 Uhr.', question: 'Wie spät ist es?' },
+                { context: 'Der Kaffee kostet 3 Euro.', question: 'Was kostet der Kaffee?' },
+                { context: 'Ich fahre morgen nach Berlin.', question: 'Wann fährst du nach Berlin?' },
+                { context: 'Das ist mein Bruder.', question: 'Wer ist das?' },
+                { context: 'Ich trinke einen Tee.', question: 'Was trinkst du?' },
+                { context: 'Ich lerne Deutsch, weil ich in Berlin arbeiten möchte.', question: 'Warum lernst du Deutsch?' },
+                { context: 'Ich habe zwei Geschwister.', question: 'Wie viele Geschwister hast du?' },
+                { context: 'Ich gehe einmal pro Woche schwimmen.', question: 'Wie oft gehst du schwimmen?' },
+                { context: 'Der Film beginnt um 20 Uhr.', question: 'Um wie viel Uhr beginnt der Film?' },
+                { context: 'Ich fahre mit meinem Bruder nach Hamburg.', question: 'Mit wem fährst du nach Hamburg?' },
+                { context: 'Ich arbeite als Krankenschwester.', question: 'Was bist du von Beruf?' },
+                { context: 'Ich bleibe zwei Wochen in Spanien.', question: 'Wie lange bleibst du in Spanien?' },
+                { context: 'Mein Auto ist blau.', question: 'Welche Farbe hat dein Auto?' },
+                { context: 'Ich brauche ein Wörterbuch.', question: 'Was brauchst du?' },
+                { context: 'Die Bibliothek ist neben der Schule.', question: 'Wo ist die Bibliothek?' },
+            ],
+        };
+
+        // ── State ──
+        const state = { tab: 'all', score: { right: 0, wrong: 0 } };
+
+        // ── DOM refs ──
+        const contentWrap = document.getElementById('contentWrap');
+        const scoreRight  = document.getElementById('scoreRight');
+        const scoreWrong  = document.getElementById('scoreWrong');
+        const tabBar      = document.getElementById('tabBar');
+        const progressRow = document.getElementById('progressRow');
+        const progressFill = document.getElementById('progressFill');
+
+        // ── Utilities (copied from index.html for umlaut-tolerant matching) ──
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function normalize(s) {
+            return String(s).trim().toLowerCase()
+                .replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae')
+                .replace(/ß/g, 'ss').replace(/\s+/g, ' ');
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        function recordResult(correct) {
+            if (correct) state.score.right++; else state.score.wrong++;
+            scoreRight.textContent = `✓ ${state.score.right}`;
+            scoreWrong.textContent = `✗ ${state.score.wrong}`;
+        }
+
+        // ── Global keyboard handler — Enter submits/advances, same convention as index.html ──
+        document.addEventListener('keydown', e => {
+            if (e.repeat || e.key !== 'Enter') return;
+
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn && nextBtn.style.display !== 'none') {
+                e.preventDefault();
+                nextBtn.click();
+                return;
+            }
+
+            const checkBtn = document.getElementById('checkBtn');
+            if (checkBtn && checkBtn.style.display !== 'none') {
+                e.preventDefault();
+                checkBtn.click();
+                return;
+            }
+
+            const btnRetry = document.getElementById('btnRetry');
+            if (btnRetry) {
+                e.preventDefault();
+                btnRetry.click();
+            }
+        });
+
+        // ── Tab switching ──
+        function switchTab(tab) {
+            state.tab = tab;
+            state.score = { right: 0, wrong: 0 };
+            scoreRight.textContent = '✓ 0';
+            scoreWrong.textContent = '✗ 0';
+            progressRow.style.display = 'none';
+            [...tabBar.children].forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            ({
+                all: renderAll,
+                blanks: renderBlanks,
+                builder: () => builderDrill.render(),
+                conj: renderConj,
+                errors: renderErrors,
+                wfrage: () => wfrageDrill.render(),
+            })[tab]();
+        }
+
+        tabBar.addEventListener('click', e => {
+            const btn = e.target.closest('.tab-btn');
+            if (btn) switchTab(btn.dataset.tab);
+        });
+
+        // ── 1. Fill in the Blanks ──
+        let blanksOrder = [];
+        let blanksIdx = 0;
+
+        function nextOwnBlanksItem() {
+            if (blanksOrder.length === 0) blanksOrder = shuffle(DATA.blanks.map((_, i) => i));
+            if (blanksIdx >= blanksOrder.length) blanksIdx = 0;
+            return DATA.blanks[blanksOrder[blanksIdx]];
+        }
+
+        function renderBlanks(overrideItem, onNext) {
+            if (!overrideItem && state.tab !== 'blanks') return;
+            const para = overrideItem || nextOwnBlanksItem();
+            const html = para.tokens.map((tok, i) => {
+                if (typeof tok === 'string') return escapeHtml(tok);
+                const scaffold = tok.type === 'verb' ? tok.answer.slice(0, 3) : '';
+                return `
+                    <span class="blank-wrap">
+                        <input class="blank-input${scaffold ? ' scaffold' : ''}" data-blank="${i}"
+                               value="${escapeHtml(scaffold)}" autocomplete="off" autocorrect="off" spellcheck="false">
+                        <button class="hint-btn" data-hint="${i}" type="button" title="Show hint">💡</button>
+                        <span class="hint-chips" id="hintChips-${i}">
+                            ${tok.options.map(o => `<button class="chip" data-fill="${i}" data-val="${escapeHtml(o)}" type="button">${escapeHtml(o)}</button>`).join('')}
+                        </span>
+                        <span class="correct-answer-note" id="answerNote-${i}" style="display:none"></span>
+                    </span>`;
+            }).join('');
+
+            contentWrap.innerHTML = `
+                <div class="card">
+                    <div class="card-title">${escapeHtml(para.title)}</div>
+                    <div class="card-sub">Fill in each blank. Tap 💡 for multiple-choice options.</div>
+                    <div class="divider"></div>
+                    <div class="paragraph" id="paraText">${html}</div>
+                    <div id="resultBanner"></div>
+                    <button class="btn-primary" id="checkBtn">Check</button>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Next paragraph →</button>
+                </div>
+            `;
+
+            contentWrap.querySelectorAll('.hint-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById(`hintChips-${btn.dataset.hint}`).classList.toggle('visible');
+                });
+            });
+            contentWrap.querySelectorAll('.chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const input = contentWrap.querySelector(`.blank-input[data-blank="${chip.dataset.fill}"]`);
+                    input.value = chip.dataset.val;
+                    input.classList.remove('scaffold', 'correct', 'wrong');
+                });
+            });
+            const blankInputs = [...contentWrap.querySelectorAll('.blank-input')];
+            blankInputs.forEach((input, i) => {
+                input.addEventListener('input', () => input.classList.remove('scaffold'), { once: true });
+                input.addEventListener('keydown', e => {
+                    if (e.key !== 'Enter') return;
+                    const next = blankInputs[i + 1];
+                    if (next) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        next.focus();
+                        next.select();
+                    }
+                    // last blank: let it bubble up to the global handler, which clicks Check
+                });
+            });
+            if (blankInputs[0]) blankInputs[0].focus();
+
+            document.getElementById('checkBtn').addEventListener('click', () => {
+                let allCorrect = true;
+                let blankCount = 0;
+                para.tokens.forEach((tok, i) => {
+                    if (typeof tok === 'string') return;
+                    blankCount++;
+                    const input = contentWrap.querySelector(`.blank-input[data-blank="${i}"]`);
+                    const ok = normalize(input.value) === normalize(tok.answer);
+                    input.classList.remove('scaffold');
+                    input.classList.toggle('correct', ok);
+                    input.classList.toggle('wrong', !ok);
+                    recordResult(ok);
+                    if (!ok) {
+                        allCorrect = false;
+                        const note = document.getElementById(`answerNote-${i}`);
+                        note.textContent = `→ ${tok.answer}`;
+                        note.style.display = 'block';
+                    }
+                });
+                document.getElementById('resultBanner').innerHTML =
+                    `<div class="result-banner ${allCorrect ? 'ok' : 'some-wrong'}">${allCorrect ? '✓ All correct!' : 'Some answers need work — see corrections above.'}</div>`;
+                document.getElementById('checkBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'block';
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (onNext) { onNext(); return; }
+                blanksIdx++;
+                renderBlanks();
+            });
+        }
+
+        // ── 2. Word-order drill factory (shared by Sentence Builder + W-Frage Builder) ──
+        function createWordOrderDrill({ tab, dataset, promptField, answerField, cardTitle, cardSub, nextLabel, showPrompt = true }) {
+            let order = [];
+            let idx = 0;
+            let bank = [];
+            let placed = [];
+            let lastItem = null;
+
+            function nextOwnItem() {
+                if (order.length === 0) order = shuffle(dataset.map((_, i) => i));
+                if (idx >= order.length) idx = 0;
+                return dataset[order[idx]];
+            }
+
+            function render(overrideItem, onNext) {
+                if (!overrideItem && state.tab !== tab) return;
+                const item = overrideItem || nextOwnItem();
+                if (item !== lastItem) {
+                    bank = shuffle(item[answerField].split(' ').map((w, i) => ({ word: w, id: i })));
+                    placed = [];
+                    lastItem = item;
+                }
+
+                contentWrap.innerHTML = `
+                    <div class="card">
+                        <div class="card-title">${escapeHtml(cardTitle)}</div>
+                        <div class="card-sub">${escapeHtml(cardSub)}</div>
+                        <div class="divider"></div>
+                        ${showPrompt ? `<div class="prompt-en">${escapeHtml(item[promptField])}</div>` : ''}
+                        <div class="sentence-line" id="sentenceLine">
+                            ${placed.map(w => `<button class="word-chip placed" data-id="${w.id}" data-zone="placed" type="button">${escapeHtml(w.word)}</button>`).join('')}
+                        </div>
+                        <div class="word-bank" id="wordBank">
+                            ${bank.map(w => `<button class="word-chip" data-id="${w.id}" data-zone="bank" type="button">${escapeHtml(w.word)}</button>`).join('')}
+                        </div>
+                        <div id="resultBanner"></div>
+                        <button class="btn-primary" id="checkBtn">Check</button>
+                        <button class="btn-secondary" id="nextBtn" style="display:none">${escapeHtml(nextLabel)}</button>
+                    </div>
+                `;
+
+                contentWrap.querySelectorAll('.word-chip[data-zone="bank"]').forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        const id = Number(chip.dataset.id);
+                        const wIdx = bank.findIndex(w => w.id === id);
+                        placed.push(bank[wIdx]);
+                        bank.splice(wIdx, 1);
+                        render(overrideItem, onNext);
+                    });
+                });
+                contentWrap.querySelectorAll('.word-chip[data-zone="placed"]').forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        const id = Number(chip.dataset.id);
+                        const wIdx = placed.findIndex(w => w.id === id);
+                        bank.push(placed[wIdx]);
+                        placed.splice(wIdx, 1);
+                        render(overrideItem, onNext);
+                    });
+                });
+
+                document.getElementById('checkBtn').addEventListener('click', () => {
+                    const built = placed.map(w => w.word).join(' ');
+                    const ok = normalize(built) === normalize(item[answerField]);
+                    recordResult(ok);
+                    document.getElementById('resultBanner').innerHTML = ok
+                        ? `<div class="result-banner ok">✓ Correct!</div>`
+                        : `<div class="result-banner some-wrong">Not quite — correct order: <strong>${escapeHtml(item[answerField])}</strong></div>`;
+                    document.getElementById('checkBtn').style.display = 'none';
+                    document.getElementById('nextBtn').style.display = 'block';
+                });
+
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    if (onNext) { onNext(); return; }
+                    idx++;
+                    render();
+                });
+            }
+
+            return { render };
+        }
+
+        const builderDrill = createWordOrderDrill({
+            tab: 'builder', dataset: DATA.builder, promptField: 'prompt', answerField: 'answer',
+            cardTitle: 'Sentence Builder', cardSub: 'Tap the words in the right order to build the German sentence.',
+            nextLabel: 'Next sentence →',
+        });
+
+        const wfrageDrill = createWordOrderDrill({
+            tab: 'wfrage', dataset: DATA.wfrage, promptField: 'context', answerField: 'question', showPrompt: false,
+            cardTitle: 'W-Frage Builder', cardSub: 'Tap the words in the right order to form a correct W-question.',
+            nextLabel: 'Next question →',
+        });
+
+        // ── 3. Conjugation drill ──
+        const PRONOUNS = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
+        let conjCurrent = null;
+
+        function pickRandomConjItem() {
+            const verb = DATA.conj[Math.floor(Math.random() * DATA.conj.length)];
+            const pronoun = PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)];
+            return { verb, pronoun };
+        }
+
+        function renderConj(overrideItem, onNext) {
+            if (!overrideItem && state.tab !== 'conj') return;
+            if (!overrideItem && !conjCurrent) conjCurrent = pickRandomConjItem();
+            const { verb, pronoun } = overrideItem || conjCurrent;
+
+            contentWrap.innerHTML = `
+                <div class="card">
+                    <div class="card-title">Conjugation Drill</div>
+                    <div class="card-sub">Type the correct present-tense form. Tap 💡 to see all forms.</div>
+                    <div class="divider"></div>
+                    <div class="verb-prompt">${escapeHtml(verb.inf)} → <span class="pronoun">${escapeHtml(pronoun)}</span> ___</div>
+                    <input class="blank-input" id="conjInput" style="width:100%; text-align:left" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Type the conjugated form…">
+                    <button class="hint-btn" id="conjHintBtn" type="button" style="align-self:center; font-size:22px" title="Show all forms">💡 Hint</button>
+                    <div class="form-chips" id="conjHintChips" style="display:none"></div>
+                    <div id="resultBanner"></div>
+                    <button class="btn-primary" id="checkBtn">Check</button>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Next verb →</button>
+                </div>
+            `;
+
+            document.getElementById('conjInput').focus();
+            document.getElementById('conjHintBtn').addEventListener('click', () => {
+                const box = document.getElementById('conjHintChips');
+                box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+                box.innerHTML = PRONOUNS.map(p => `<button class="chip" data-val="${escapeHtml(verb.forms[p])}" type="button">${escapeHtml(p)}: ${escapeHtml(verb.forms[p])}</button>`).join('');
+                box.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+                    document.getElementById('conjInput').value = c.dataset.val;
+                }));
+            });
+
+            document.getElementById('checkBtn').addEventListener('click', () => {
+                const input = document.getElementById('conjInput');
+                const ok = normalize(input.value) === normalize(verb.forms[pronoun]);
+                input.classList.toggle('correct', ok);
+                input.classList.toggle('wrong', !ok);
+                recordResult(ok);
+                document.getElementById('resultBanner').innerHTML = ok
+                    ? `<div class="result-banner ok">✓ Correct!</div>`
+                    : `<div class="result-banner some-wrong">Not quite — correct: <strong>${escapeHtml(verb.forms[pronoun])}</strong></div>`;
+                document.getElementById('checkBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'block';
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (onNext) { onNext(); return; }
+                conjCurrent = pickRandomConjItem();
+                renderConj();
+            });
+        }
+
+        // ── 5. Error Spotting ──
+        let errorsOrder = [];
+        let errorsIdx = 0;
+
+        function nextOwnErrorsItem() {
+            if (errorsOrder.length === 0) errorsOrder = shuffle(DATA.errors.map((_, i) => i));
+            if (errorsIdx >= errorsOrder.length) errorsIdx = 0;
+            return DATA.errors[errorsOrder[errorsIdx]];
+        }
+
+        function renderErrors(overrideItem, onNext) {
+            if (!overrideItem && state.tab !== 'errors') return;
+            const ex = overrideItem || nextOwnErrorsItem();
+
+            contentWrap.innerHTML = `
+                <div class="card">
+                    <div class="card-title">Error Spotting</div>
+                    <div class="card-sub">One word in this sentence is wrong. Tap it, then pick the fix.</div>
+                    <div class="divider"></div>
+                    <div class="error-sentence" id="errorSentence">
+                        ${ex.tokens.map((w, i) => `<button class="word-chip" data-idx="${i}" type="button">${escapeHtml(w)}</button>`).join('')}
+                    </div>
+                    <div class="fix-chips" id="fixChips">
+                        ${ex.options.map(o => `<button class="chip" data-val="${escapeHtml(o)}" type="button">${escapeHtml(o)}</button>`).join('')}
+                    </div>
+                    <div id="resultBanner"></div>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Next sentence →</button>
+                </div>
+            `;
+
+            contentWrap.querySelectorAll('#errorSentence .word-chip').forEach(word => {
+                word.addEventListener('click', () => {
+                    const clickedIdx = Number(word.dataset.idx);
+                    contentWrap.querySelectorAll('#errorSentence .word-chip').forEach(w => w.classList.add('disabled'));
+                    word.classList.add(clickedIdx === ex.wrongIdx ? 'flagged' : 'muted');
+                    if (clickedIdx !== ex.wrongIdx) {
+                        contentWrap.querySelector(`#errorSentence .word-chip[data-idx="${ex.wrongIdx}"]`).classList.add('flagged');
+                    }
+                    recordResult(clickedIdx === ex.wrongIdx);
+                    document.getElementById('fixChips').classList.add('visible');
+                });
+            });
+
+            document.getElementById('fixChips').addEventListener('click', e => {
+                const chip = e.target.closest('.chip');
+                if (!chip) return;
+                const ok = chip.dataset.val === ex.correct;
+                contentWrap.querySelectorAll('#fixChips .chip').forEach(c => {
+                    c.classList.add('disabled');
+                    if (c.dataset.val === ex.correct) c.classList.add('correct');
+                    else if (c === chip) c.classList.add('wrong');
+                });
+                recordResult(ok);
+                document.getElementById('resultBanner').innerHTML = ok
+                    ? `<div class="result-banner ok">✓ Fixed correctly!</div>`
+                    : `<div class="result-banner some-wrong">Correct fix: <strong>${escapeHtml(ex.correct)}</strong></div>`;
+                document.getElementById('nextBtn').style.display = 'block';
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (onNext) { onNext(); return; }
+                errorsIdx++;
+                renderErrors();
+            });
+        }
+
+        // ── 6. All Mixed — shuffles every section into one deck, like the flashcard app's "All" tag ──
+        let allQueue = [];
+        let allIdx = 0;
+
+        function buildAllQueue() {
+            const entries = [];
+            DATA.blanks.forEach(item => entries.push({ type: 'blanks', item }));
+            DATA.builder.forEach(item => entries.push({ type: 'builder', item }));
+            DATA.conj.forEach(verb => entries.push({ type: 'conj', item: { verb, pronoun: PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)] } }));
+            DATA.errors.forEach(item => entries.push({ type: 'errors', item }));
+            DATA.wfrage.forEach(item => entries.push({ type: 'wfrage', item }));
+            allQueue = shuffle(entries);
+            allIdx = 0;
+        }
+
+        function updateAllProgress() {
+            if (state.tab !== 'all' || allQueue.length === 0) {
+                progressRow.style.display = 'none';
+                return;
+            }
+            progressRow.style.display = 'block';
+            const done = Math.min(allIdx, allQueue.length);
+            progressFill.style.width = (done / allQueue.length * 100) + '%';
+        }
+
+        function renderAllCompletion() {
+            progressRow.style.display = 'none';
+            const { right, wrong } = state.score;
+            const total = right + wrong;
+            const pct = total ? Math.round((right / total) * 100) : 0;
+            const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪';
+
+            contentWrap.innerHTML = `
+                <div class="completion-card">
+                    <div class="completion-emoji">${emoji}</div>
+                    <div class="completion-title">Round complete!</div>
+                    <div class="completion-sub">${pct}% correct across ${total} questions</div>
+                    <div class="completion-score">
+                        <div class="completion-score-pill right">✓ ${right} right</div>
+                        <div class="completion-score-pill wrong">✗ ${wrong} wrong</div>
+                    </div>
+                    <div class="completion-btns">
+                        <button class="btn-retry" id="btnRetry">Shuffle &amp; try again</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('btnRetry').addEventListener('click', () => {
+                state.score = { right: 0, wrong: 0 };
+                scoreRight.textContent = '✓ 0';
+                scoreWrong.textContent = '✗ 0';
+                allQueue = [];
+                renderAll();
+            });
+        }
+
+        function renderAll() {
+            if (state.tab !== 'all') return;
+            if (allQueue.length === 0) buildAllQueue();
+            updateAllProgress();
+            if (allIdx >= allQueue.length) { renderAllCompletion(); return; }
+
+            const entry = allQueue[allIdx];
+            const onNext = () => { allIdx++; renderAll(); };
+            ({
+                blanks: () => renderBlanks(entry.item, onNext),
+                builder: () => builderDrill.render(entry.item, onNext),
+                conj: () => renderConj(entry.item, onNext),
+                errors: () => renderErrors(entry.item, onNext),
+                wfrage: () => wfrageDrill.render(entry.item, onNext),
+            })[entry.type]();
+        }
+
+        // ── Self-check (fails loudly in console if core matching logic breaks) ──
+        (function selfTest() {
+            console.assert(normalize('Frühstücke') === normalize('fruehstuecke'), 'normalize() umlaut mapping broken');
+            console.assert(normalize('groß') === normalize('gross'), 'normalize() ß mapping broken');
+            console.assert(normalize(' Ich   bin ') === normalize('ich bin'), 'normalize() whitespace/case handling broken');
+        })();
+
+        // ── Boot ──
+        switchTab('all');
+    </script>
+</body>
+</html>
