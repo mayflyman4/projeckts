@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grammatik-Übungen — A1 Practice</title>
+    <title>A1 Challenge — Grammatik-Übungen</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇩🇪</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -59,50 +60,41 @@
             border-radius: 999px;
             font-size: 14px;
             font-weight: 700;
+            min-width: 20px;
+            text-align: center;
         }
-        .score-pill.right { background: rgba(16, 185, 129, 0.25); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
-        .score-pill.wrong { background: rgba(239, 68, 68, 0.22); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.35); }
+        .score-pill.timer { color: white; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); }
+        .score-pill.timer.low { background: rgba(239,68,68,0.35); color: #FEE2E2; border-color: rgba(239,68,68,0.6); animation: pulse 1s infinite; }
+        .score-pill.lives { color: white; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.35); letter-spacing: 2px; }
 
-        /* ── Tab bar ── */
-        .tab-bar {
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+        /* ── Progress + question counter ── */
+        .progress-row {
             width: 100%;
             max-width: 760px;
-            padding: 16px 20px 0;
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,0.4) transparent;
+            padding: 14px 20px 0;
+            display: none;
         }
-        .tab-bar::-webkit-scrollbar {
-            height: 4px;
-        }
-        .tab-bar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .tab-bar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.4);
-            border-radius: 999px;
-        }
-        .tab-bar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.65);
-        }
-
-        .tab-btn {
-            padding: 9px 16px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 700;
-            border: 2px solid rgba(255,255,255,0.35);
+        .progress-label {
             color: rgba(255,255,255,0.85);
-            background: transparent;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background 0.18s, color 0.18s, border-color 0.18s;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-align: center;
         }
-        .tab-btn:hover { background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.6); }
-        .tab-btn.active { background: white; color: #4F46E5; border-color: white; }
+        .progress-bar-track {
+            height: 5px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.85);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
 
         /* ── Content card ── */
         .content-wrap {
@@ -231,6 +223,7 @@
             transition: background 0.18s, transform 0.15s;
         }
         .btn-secondary:hover { background: #E0E7FF; transform: translateY(-1px); }
+        .btn-secondary:disabled { opacity: 0.6; cursor: default; transform: none; }
 
         .result-banner {
             font-size: 14px;
@@ -306,26 +299,7 @@
 
         .status-msg { color: #6B7280; text-align: center; padding: 20px; }
 
-        /* ── All-mixed progress + completion ── */
-        .progress-row {
-            width: 100%;
-            max-width: 760px;
-            padding: 14px 20px 0;
-            display: none;
-        }
-        .progress-bar-track {
-            height: 5px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background: rgba(255,255,255,0.85);
-            border-radius: 999px;
-            transition: width 0.4s ease;
-        }
-
+        /* ── Start + completion screens ── */
         .completion-card {
             background: white;
             border-radius: 24px;
@@ -341,7 +315,7 @@
         .completion-emoji { font-size: 52px; }
         .completion-title { font-size: 26px; font-weight: 800; color: #1E1B4B; }
         .completion-sub { font-size: 15px; color: #6B7280; }
-        .completion-score { display: flex; gap: 16px; }
+        .completion-score { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
         .completion-score-pill { padding: 10px 22px; border-radius: 14px; font-size: 18px; font-weight: 800; }
         .completion-score-pill.right { background: #D1FAE5; color: #065F46; }
         .completion-score-pill.wrong { background: #FEE2E2; color: #991B1B; }
@@ -373,24 +347,16 @@
 <body>
 
     <header class="app-header">
-        <div class="app-title">🇩🇪 Grammatik-Übungen</div>
+        <div class="app-title">🇩🇪 A1 Challenge</div>
         <div class="score-bar">
             <a class="back-link" href="./index.html">← Flashcards</a>
-            <span class="score-pill right" id="scoreRight">✓ 0</span>
-            <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
+            <span class="score-pill timer" id="timerPill"></span>
+            <span class="score-pill lives" id="livesPill"></span>
         </div>
     </header>
 
-    <div class="tab-bar" id="tabBar">
-        <button class="tab-btn" data-tab="all">🎲 All</button>
-        <button class="tab-btn" data-tab="blanks">📝 Fill in the Blanks</button>
-        <button class="tab-btn" data-tab="builder">🔤 Sentence Builder</button>
-        <button class="tab-btn" data-tab="conj">🔁 Conjugation</button>
-        <button class="tab-btn" data-tab="errors">🚫 Error Spotting</button>
-        <button class="tab-btn" data-tab="wfrage">❓ W-Frage</button>
-    </div>
-
     <div class="progress-row" id="progressRow">
+        <div class="progress-label" id="progressLabel"></div>
         <div class="progress-bar-track">
             <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
         </div>
@@ -399,8 +365,15 @@
     <div class="content-wrap" id="contentWrap"></div>
 
     <script>
-        // ── Exercise data (embedded — no fetch, works on file://) ──
-        const DATA = {
+        // ── Quiz constants ──
+        const QUIZ_LEN = 25;
+        const MAX_LIVES = 3;
+        const DURATION_MS = 5 * 60 * 1000; // 5:00
+
+        // ── Fallback exercise data — used when fetch fails (i.e. on file://). ──
+        // Mirrors practice_exercises/*.yaml. Keep in sync by hand when editing those
+        // files, same convention as index.html's FALLBACK_TAGS (see AGENT.md).
+        const FALLBACK_DATA = {
             blanks: [
                 {
                     title: 'Mein Morgen',
@@ -686,18 +659,19 @@
             ],
         };
 
-        // ── State ──
-        const state = { tab: 'all', score: { right: 0, wrong: 0 } };
+        // Editable source of truth over http(s): practice_exercises/*.yaml.
+        // On file://, fetch fails and this stays FALLBACK_DATA (see loadPracticeData below).
+        let DATA = FALLBACK_DATA;
 
         // ── DOM refs ──
-        const contentWrap = document.getElementById('contentWrap');
-        const scoreRight  = document.getElementById('scoreRight');
-        const scoreWrong  = document.getElementById('scoreWrong');
-        const tabBar      = document.getElementById('tabBar');
-        const progressRow = document.getElementById('progressRow');
-        const progressFill = document.getElementById('progressFill');
+        const contentWrap   = document.getElementById('contentWrap');
+        const timerPill     = document.getElementById('timerPill');
+        const livesPill     = document.getElementById('livesPill');
+        const progressRow   = document.getElementById('progressRow');
+        const progressFill  = document.getElementById('progressFill');
+        const progressLabel = document.getElementById('progressLabel');
 
-        // ── Utilities (copied from index.html for umlaut-tolerant matching) ──
+        // ── Utilities (umlaut-tolerant matching, same as index.html — keep identical) ──
         function shuffle(arr) {
             const a = [...arr];
             for (let i = a.length - 1; i > 0; i--) {
@@ -719,13 +693,32 @@
             }[c]));
         }
 
+        // ── Quiz state ──
+        const quiz = {
+            deck: [], idx: 0, lives: MAX_LIVES, correct: 0,
+            cardResults: [], endsAt: 0, timerId: null,
+        };
+
+        // Records one sub-answer's correctness within the current card. A card
+        // (paragraph / sentence / verb / error / question) can call this more than
+        // once (e.g. a blanks paragraph has several blanks) — the quiz collapses
+        // all of a card's results into a single right/wrong via cardResults.every().
         function recordResult(correct) {
-            if (correct) state.score.right++; else state.score.wrong++;
-            scoreRight.textContent = `✓ ${state.score.right}`;
-            scoreWrong.textContent = `✗ ${state.score.wrong}`;
+            quiz.cardResults.push(correct);
         }
 
-        // ── Global keyboard handler — Enter submits/advances, same convention as index.html ──
+        function quizEnded({ answered, lives, timeLeft }) {
+            return answered >= QUIZ_LEN || lives <= 0 || timeLeft <= 0;
+        }
+
+        function formatTime(ms) {
+            const totalSec = Math.max(0, Math.round(ms / 1000));
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            return `${m}:${String(s).padStart(2, '0')}`;
+        }
+
+        // ── Global keyboard handler — Enter submits/advances/starts ──
         document.addEventListener('keydown', e => {
             if (e.repeat || e.key !== 'Enter') return;
 
@@ -747,45 +740,19 @@
             if (btnRetry) {
                 e.preventDefault();
                 btnRetry.click();
+                return;
+            }
+
+            const btnStart = document.getElementById('btnStart');
+            if (btnStart) {
+                e.preventDefault();
+                btnStart.click();
             }
         });
 
-        // ── Tab switching ──
-        function switchTab(tab) {
-            state.tab = tab;
-            state.score = { right: 0, wrong: 0 };
-            scoreRight.textContent = '✓ 0';
-            scoreWrong.textContent = '✗ 0';
-            progressRow.style.display = 'none';
-            [...tabBar.children].forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-            ({
-                all: renderAll,
-                blanks: renderBlanks,
-                builder: () => builderDrill.render(),
-                conj: renderConj,
-                errors: renderErrors,
-                wfrage: () => wfrageDrill.render(),
-            })[tab]();
-        }
-
-        tabBar.addEventListener('click', e => {
-            const btn = e.target.closest('.tab-btn');
-            if (btn) switchTab(btn.dataset.tab);
-        });
-
         // ── 1. Fill in the Blanks ──
-        let blanksOrder = [];
-        let blanksIdx = 0;
-
-        function nextOwnBlanksItem() {
-            if (blanksOrder.length === 0) blanksOrder = shuffle(DATA.blanks.map((_, i) => i));
-            if (blanksIdx >= blanksOrder.length) blanksIdx = 0;
-            return DATA.blanks[blanksOrder[blanksIdx]];
-        }
-
         function renderBlanks(overrideItem, onNext) {
-            if (!overrideItem && state.tab !== 'blanks') return;
-            const para = overrideItem || nextOwnBlanksItem();
+            const para = overrideItem;
             const html = para.tokens.map((tok, i) => {
                 if (typeof tok === 'string') return escapeHtml(tok);
                 const scaffold = tok.type === 'verb' ? tok.answer.slice(0, 3) : '';
@@ -809,7 +776,7 @@
                     <div class="paragraph" id="paraText">${html}</div>
                     <div id="resultBanner"></div>
                     <button class="btn-primary" id="checkBtn">Check</button>
-                    <button class="btn-secondary" id="nextBtn" style="display:none">Next paragraph →</button>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Next →</button>
                 </div>
             `;
 
@@ -844,10 +811,8 @@
 
             document.getElementById('checkBtn').addEventListener('click', () => {
                 let allCorrect = true;
-                let blankCount = 0;
                 para.tokens.forEach((tok, i) => {
                     if (typeof tok === 'string') return;
-                    blankCount++;
                     const input = contentWrap.querySelector(`.blank-input[data-blank="${i}"]`);
                     const ok = normalize(input.value) === normalize(tok.answer);
                     input.classList.remove('scaffold');
@@ -868,29 +833,18 @@
             });
 
             document.getElementById('nextBtn').addEventListener('click', () => {
-                if (onNext) { onNext(); return; }
-                blanksIdx++;
-                renderBlanks();
+                onNext();
             });
         }
 
         // ── 2. Word-order drill factory (shared by Sentence Builder + W-Frage Builder) ──
-        function createWordOrderDrill({ tab, dataset, promptField, answerField, cardTitle, cardSub, nextLabel, showPrompt = true }) {
-            let order = [];
-            let idx = 0;
+        function createWordOrderDrill({ promptField, answerField, cardTitle, cardSub, showPrompt = true }) {
             let bank = [];
             let placed = [];
             let lastItem = null;
 
-            function nextOwnItem() {
-                if (order.length === 0) order = shuffle(dataset.map((_, i) => i));
-                if (idx >= order.length) idx = 0;
-                return dataset[order[idx]];
-            }
-
             function render(overrideItem, onNext) {
-                if (!overrideItem && state.tab !== tab) return;
-                const item = overrideItem || nextOwnItem();
+                const item = overrideItem;
                 if (item !== lastItem) {
                     bank = shuffle(item[answerField].split(' ').map((w, i) => ({ word: w, id: i })));
                     placed = [];
@@ -911,7 +865,7 @@
                         </div>
                         <div id="resultBanner"></div>
                         <button class="btn-primary" id="checkBtn">Check</button>
-                        <button class="btn-secondary" id="nextBtn" style="display:none">${escapeHtml(nextLabel)}</button>
+                        <button class="btn-secondary" id="nextBtn" style="display:none">Next →</button>
                     </div>
                 `;
 
@@ -946,9 +900,7 @@
                 });
 
                 document.getElementById('nextBtn').addEventListener('click', () => {
-                    if (onNext) { onNext(); return; }
-                    idx++;
-                    render();
+                    onNext();
                 });
             }
 
@@ -956,31 +908,20 @@
         }
 
         const builderDrill = createWordOrderDrill({
-            tab: 'builder', dataset: DATA.builder, promptField: 'prompt', answerField: 'answer',
+            promptField: 'prompt', answerField: 'answer',
             cardTitle: 'Sentence Builder', cardSub: 'Tap the words in the right order to build the German sentence.',
-            nextLabel: 'Next sentence →',
         });
 
         const wfrageDrill = createWordOrderDrill({
-            tab: 'wfrage', dataset: DATA.wfrage, promptField: 'context', answerField: 'question', showPrompt: false,
+            promptField: 'context', answerField: 'question', showPrompt: false,
             cardTitle: 'W-Frage Builder', cardSub: 'Tap the words in the right order to form a correct W-question.',
-            nextLabel: 'Next question →',
         });
 
         // ── 3. Conjugation drill ──
         const PRONOUNS = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
-        let conjCurrent = null;
-
-        function pickRandomConjItem() {
-            const verb = DATA.conj[Math.floor(Math.random() * DATA.conj.length)];
-            const pronoun = PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)];
-            return { verb, pronoun };
-        }
 
         function renderConj(overrideItem, onNext) {
-            if (!overrideItem && state.tab !== 'conj') return;
-            if (!overrideItem && !conjCurrent) conjCurrent = pickRandomConjItem();
-            const { verb, pronoun } = overrideItem || conjCurrent;
+            const { verb, pronoun } = overrideItem;
 
             contentWrap.innerHTML = `
                 <div class="card">
@@ -993,7 +934,7 @@
                     <div class="form-chips" id="conjHintChips" style="display:none"></div>
                     <div id="resultBanner"></div>
                     <button class="btn-primary" id="checkBtn">Check</button>
-                    <button class="btn-secondary" id="nextBtn" style="display:none">Next verb →</button>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Next →</button>
                 </div>
             `;
 
@@ -1021,25 +962,13 @@
             });
 
             document.getElementById('nextBtn').addEventListener('click', () => {
-                if (onNext) { onNext(); return; }
-                conjCurrent = pickRandomConjItem();
-                renderConj();
+                onNext();
             });
         }
 
-        // ── 5. Error Spotting ──
-        let errorsOrder = [];
-        let errorsIdx = 0;
-
-        function nextOwnErrorsItem() {
-            if (errorsOrder.length === 0) errorsOrder = shuffle(DATA.errors.map((_, i) => i));
-            if (errorsIdx >= errorsOrder.length) errorsIdx = 0;
-            return DATA.errors[errorsOrder[errorsIdx]];
-        }
-
+        // ── 4. Error Spotting ──
         function renderErrors(overrideItem, onNext) {
-            if (!overrideItem && state.tab !== 'errors') return;
-            const ex = overrideItem || nextOwnErrorsItem();
+            const ex = overrideItem;
 
             contentWrap.innerHTML = `
                 <div class="card">
@@ -1053,7 +982,7 @@
                         ${ex.options.map(o => `<button class="chip" data-val="${escapeHtml(o)}" type="button">${escapeHtml(o)}</button>`).join('')}
                     </div>
                     <div id="resultBanner"></div>
-                    <button class="btn-secondary" id="nextBtn" style="display:none">Next sentence →</button>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Next →</button>
                 </div>
             `;
 
@@ -1087,94 +1016,264 @@
             });
 
             document.getElementById('nextBtn').addEventListener('click', () => {
-                if (onNext) { onNext(); return; }
-                errorsIdx++;
-                renderErrors();
+                onNext();
             });
         }
 
-        // ── 6. All Mixed — shuffles every section into one deck, like the flashcard app's "All" tag ──
-        let allQueue = [];
-        let allIdx = 0;
-
-        function buildAllQueue() {
+        // ── 5. Quiz controller — 25 questions across all 5 activities, 5:00, 3 lives ──
+        function buildDeck() {
             const entries = [];
             DATA.blanks.forEach(item => entries.push({ type: 'blanks', item }));
             DATA.builder.forEach(item => entries.push({ type: 'builder', item }));
             DATA.conj.forEach(verb => entries.push({ type: 'conj', item: { verb, pronoun: PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)] } }));
             DATA.errors.forEach(item => entries.push({ type: 'errors', item }));
             DATA.wfrage.forEach(item => entries.push({ type: 'wfrage', item }));
-            allQueue = shuffle(entries);
-            allIdx = 0;
+            return shuffle(entries).slice(0, QUIZ_LEN);
         }
 
-        function updateAllProgress() {
-            if (state.tab !== 'all' || allQueue.length === 0) {
-                progressRow.style.display = 'none';
-                return;
+        function updateHeader() {
+            livesPill.textContent = '❤️'.repeat(quiz.lives) + '🖤'.repeat(MAX_LIVES - quiz.lives);
+            progressLabel.textContent = `Question ${Math.min(quiz.idx + 1, QUIZ_LEN)} / ${QUIZ_LEN}`;
+            progressFill.style.width = `${(quiz.idx / QUIZ_LEN) * 100}%`;
+        }
+
+        function tick() {
+            const msLeft = Math.max(0, quiz.endsAt - Date.now());
+            timerPill.textContent = `⏱ ${formatTime(msLeft)}`;
+            timerPill.classList.toggle('low', msLeft <= 30000);
+            if (quizEnded({ answered: quiz.idx, lives: quiz.lives, timeLeft: msLeft })) {
+                endQuiz();
             }
-            progressRow.style.display = 'block';
-            const done = Math.min(allIdx, allQueue.length);
-            progressFill.style.width = (done / allQueue.length * 100) + '%';
         }
 
-        function renderAllCompletion() {
+        function startTimer() {
+            clearInterval(quiz.timerId);
+            quiz.endsAt = Date.now() + DURATION_MS;
+            tick();
+            quiz.timerId = setInterval(tick, 250);
+        }
+
+        function renderQuizCard() {
+            quiz.cardResults = [];
+            const entry = quiz.deck[quiz.idx];
+            updateHeader();
+
+            const onNext = () => {
+                const cardCorrect = quiz.cardResults.length > 0 && quiz.cardResults.every(Boolean);
+                if (cardCorrect) quiz.correct++; else quiz.lives--;
+                quiz.idx++;
+                updateHeader();
+                const msLeft = Math.max(0, quiz.endsAt - Date.now());
+                if (quizEnded({ answered: quiz.idx, lives: quiz.lives, timeLeft: msLeft })) {
+                    endQuiz();
+                } else {
+                    renderQuizCard();
+                }
+            };
+
+            ({
+                blanks:  () => renderBlanks(entry.item, onNext),
+                builder: () => builderDrill.render(entry.item, onNext),
+                conj:    () => renderConj(entry.item, onNext),
+                errors:  () => renderErrors(entry.item, onNext),
+                wfrage:  () => wfrageDrill.render(entry.item, onNext),
+            })[entry.type]();
+        }
+
+        function startQuiz() {
+            quiz.deck = buildDeck();
+            quiz.idx = 0;
+            quiz.lives = MAX_LIVES;
+            quiz.correct = 0;
+            quiz.cardResults = [];
+            progressRow.style.display = 'block';
+            startTimer();
+            renderQuizCard();
+        }
+
+        function endQuiz() {
+            clearInterval(quiz.timerId);
+            const timeLeft = Math.max(0, quiz.endsAt - Date.now());
+            const reason = quiz.lives <= 0 ? 'lives' : quiz.idx >= QUIZ_LEN ? 'complete' : 'time';
+            renderResult(reason, timeLeft);
+        }
+
+        // ── Start screen ──
+        function renderStart() {
             progressRow.style.display = 'none';
-            const { right, wrong } = state.score;
-            const total = right + wrong;
-            const pct = total ? Math.round((right / total) * 100) : 0;
+            timerPill.textContent = '';
+            livesPill.textContent = '';
+            contentWrap.innerHTML = `
+                <div class="completion-card">
+                    <div class="completion-emoji">🏆</div>
+                    <div class="completion-title">A1 Challenge</div>
+                    <div class="completion-sub">25 questions · 5:00 on the clock · 3 lives</div>
+                    <div class="completion-sub">A wrong answer costs a life. Good luck!</div>
+                    <div class="completion-btns">
+                        <button class="btn-retry" id="btnStart">Start Challenge</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('btnStart').addEventListener('click', startQuiz);
+        }
+
+        // ── Result screen ──
+        function renderResult(reason, timeLeftMs) {
+            progressRow.style.display = 'none';
+            timerPill.textContent = '';
+            livesPill.textContent = '';
+
+            const answered = quiz.idx;
+            const pct = answered ? Math.round((quiz.correct / answered) * 100) : 0;
             const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪';
+            const livesUsed = MAX_LIVES - quiz.lives;
+            const elapsedStr = formatTime(DURATION_MS - timeLeftMs);
+            const reasonText = {
+                complete: '✅ Finished all 25!',
+                lives:    '💔 Out of lives',
+                time:     '⏱ Time’s up',
+            }[reason];
 
             contentWrap.innerHTML = `
                 <div class="completion-card">
                     <div class="completion-emoji">${emoji}</div>
-                    <div class="completion-title">Round complete!</div>
-                    <div class="completion-sub">${pct}% correct across ${total} questions</div>
+                    <div class="completion-title">${reasonText}</div>
+                    <div class="completion-sub">${pct}% correct — ${quiz.correct} of ${answered} answered</div>
                     <div class="completion-score">
-                        <div class="completion-score-pill right">✓ ${right} right</div>
-                        <div class="completion-score-pill wrong">✗ ${wrong} wrong</div>
+                        <div class="completion-score-pill right">✓ ${quiz.correct} correct</div>
+                        <div class="completion-score-pill wrong">${'❤️'.repeat(quiz.lives)}${'🖤'.repeat(livesUsed)}</div>
                     </div>
+                    <div class="completion-sub">${livesUsed} of ${MAX_LIVES} lives used · ${elapsedStr} on the clock</div>
                     <div class="completion-btns">
-                        <button class="btn-retry" id="btnRetry">Shuffle &amp; try again</button>
+                        <button class="btn-secondary" id="btnShare">📤 Share score</button>
+                        <button class="btn-retry" id="btnRetry">Retake ↻</button>
                     </div>
                 </div>
             `;
 
-            document.getElementById('btnRetry').addEventListener('click', () => {
-                state.score = { right: 0, wrong: 0 };
-                scoreRight.textContent = '✓ 0';
-                scoreWrong.textContent = '✗ 0';
-                allQueue = [];
-                renderAll();
+            document.getElementById('btnShare').addEventListener('click', async e => {
+                const btn = e.currentTarget;
+                const original = btn.textContent;
+                btn.disabled = true;
+                const result = await shareScore({ correct: quiz.correct, answered, livesUsed, timeStr: elapsedStr });
+                btn.disabled = false;
+                btn.textContent = result === 'shared' ? '✓ Shared!' : '✓ Saved — caption copied!';
+                setTimeout(() => { btn.textContent = original; }, 2200);
             });
+            document.getElementById('btnRetry').addEventListener('click', renderStart);
         }
 
-        function renderAll() {
-            if (state.tab !== 'all') return;
-            if (allQueue.length === 0) buildAllQueue();
-            updateAllProgress();
-            if (allIdx >= allQueue.length) { renderAllCompletion(); return; }
+        // ── Share — renders a score card to canvas, shares via OS share sheet
+        // where available (mobile/https), else downloads the PNG + copies a caption.
+        // Note: no web API posts directly to a specific app like Instagram — the
+        // OS share sheet (navigator.share) is the closest, and only exists on
+        // secure contexts, so it won't appear when opened via file://. ──
+        function drawScoreCard({ correct, answered, livesUsed, timeStr }) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1080;
+            canvas.height = 1080;
+            const ctx = canvas.getContext('2d');
 
-            const entry = allQueue[allIdx];
-            const onNext = () => { allIdx++; renderAll(); };
-            ({
-                blanks: () => renderBlanks(entry.item, onNext),
-                builder: () => builderDrill.render(entry.item, onNext),
-                conj: () => renderConj(entry.item, onNext),
-                errors: () => renderErrors(entry.item, onNext),
-                wfrage: () => wfrageDrill.render(entry.item, onNext),
-            })[entry.type]();
+            const grad = ctx.createLinearGradient(0, 0, 1080, 1080);
+            grad.addColorStop(0, '#4F46E5');
+            grad.addColorStop(1, '#7C3AED');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1080, 1080);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'white';
+            ctx.font = '700 56px -apple-system, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('🇩🇪 A1 German Challenge', 540, 250);
+
+            ctx.font = '800 180px -apple-system, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText(`${correct} / ${answered}`, 540, 490);
+
+            ctx.font = '400 48px -apple-system, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            ctx.fillText('correct', 540, 555);
+
+            const hearts = '❤️'.repeat(Math.max(0, MAX_LIVES - livesUsed)) + '🖤'.repeat(livesUsed);
+            ctx.font = '64px -apple-system, sans-serif';
+            ctx.fillStyle = 'white';
+            ctx.fillText(hearts, 540, 700);
+
+            ctx.font = '48px -apple-system, sans-serif';
+            ctx.fillText(`⏱ ${timeStr}`, 540, 790);
+
+            ctx.font = '700 40px -apple-system, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            ctx.fillText('#LernDeutsch', 540, 950);
+
+            return canvas;
         }
 
-        // ── Self-check (fails loudly in console if core matching logic breaks) ──
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function copyCaption(text) {
+            navigator.clipboard?.writeText(text).catch(() => {});
+        }
+
+        async function shareScore(scoreInfo) {
+            const canvas = drawScoreCard(scoreInfo);
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.answered} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch`;
+
+            if (blob) {
+                const file = new File([blob], 'a1-challenge.png', { type: 'image/png' });
+                if (navigator.canShare?.({ files: [file] })) {
+                    try {
+                        await navigator.share({ files: [file], text: caption });
+                        return 'shared';
+                    } catch {
+                        // user cancelled the share sheet — fall through to download
+                    }
+                }
+                downloadBlob(blob, 'a1-challenge.png');
+            }
+            copyCaption(caption);
+            return 'downloaded';
+        }
+
+        // ── Data loading — YAML over http(s), FALLBACK_DATA on file:// (fetch fails there) ──
+        async function loadPracticeData() {
+            const sections = ['blanks', 'builder', 'conj', 'errors', 'wfrage'];
+            try {
+                const entries = await Promise.all(sections.map(async s => {
+                    const r = await fetch(`./practice_exercises/${s}.yaml`, { cache: 'no-store' });
+                    if (!r.ok) throw new Error(`missing practice_exercises/${s}.yaml`);
+                    return [s, jsyaml.load(await r.text())];
+                }));
+                return Object.fromEntries(entries);
+            } catch {
+                return FALLBACK_DATA;
+            }
+        }
+
+        // ── Self-check (fails loudly in console if core logic breaks) ──
         (function selfTest() {
             console.assert(normalize('Frühstücke') === normalize('fruehstuecke'), 'normalize() umlaut mapping broken');
             console.assert(normalize('groß') === normalize('gross'), 'normalize() ß mapping broken');
             console.assert(normalize(' Ich   bin ') === normalize('ich bin'), 'normalize() whitespace/case handling broken');
+            console.assert(quizEnded({ answered: 25, lives: 3, timeLeft: 300000 }) === true, 'quizEnded() should end when all 25 answered');
+            console.assert(quizEnded({ answered: 0, lives: 0, timeLeft: 300000 }) === true, 'quizEnded() should end when out of lives');
+            console.assert(quizEnded({ answered: 0, lives: 3, timeLeft: 0 }) === true, 'quizEnded() should end when time is up');
+            console.assert(quizEnded({ answered: 10, lives: 3, timeLeft: 120000 }) === false, 'quizEnded() should not end mid-quiz');
         })();
 
         // ── Boot ──
-        switchTab('all');
+        (async function boot() {
+            DATA = await loadPracticeData();
+            renderStart();
+        })();
     </script>
 </body>
 </html>

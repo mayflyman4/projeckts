@@ -1,0 +1,42 @@
+# Conjugation drill verbs for practice.html's A1 Challenge.
+# Each item: infinitive + present-tense forms for all 6 pronouns.
+- inf: sein
+  forms: { ich: bin, du: bist, "er/sie/es": ist, wir: sind, ihr: seid, "sie/Sie": sind }
+- inf: haben
+  forms: { ich: habe, du: hast, "er/sie/es": hat, wir: haben, ihr: habt, "sie/Sie": haben }
+- inf: gehen
+  forms: { ich: gehe, du: gehst, "er/sie/es": geht, wir: gehen, ihr: geht, "sie/Sie": gehen }
+- inf: wohnen
+  forms: { ich: wohne, du: wohnst, "er/sie/es": wohnt, wir: wohnen, ihr: wohnt, "sie/Sie": wohnen }
+- inf: arbeiten
+  forms: { ich: arbeite, du: arbeitest, "er/sie/es": arbeitet, wir: arbeiten, ihr: arbeitet, "sie/Sie": arbeiten }
+- inf: machen
+  forms: { ich: mache, du: machst, "er/sie/es": macht, wir: machen, ihr: macht, "sie/Sie": machen }
+- inf: heißen
+  forms: { ich: heiße, du: heißt, "er/sie/es": heißt, wir: heißen, ihr: heißt, "sie/Sie": heißen }
+- inf: kommen
+  forms: { ich: komme, du: kommst, "er/sie/es": kommt, wir: kommen, ihr: kommt, "sie/Sie": kommen }
+- inf: essen
+  forms: { ich: esse, du: isst, "er/sie/es": isst, wir: essen, ihr: esst, "sie/Sie": essen }
+- inf: sprechen
+  forms: { ich: spreche, du: sprichst, "er/sie/es": spricht, wir: sprechen, ihr: sprecht, "sie/Sie": sprechen }
+- inf: fahren
+  forms: { ich: fahre, du: fährst, "er/sie/es": fährt, wir: fahren, ihr: fahrt, "sie/Sie": fahren }
+- inf: lesen
+  forms: { ich: lese, du: liest, "er/sie/es": liest, wir: lesen, ihr: lest, "sie/Sie": lesen }
+- inf: schlafen
+  forms: { ich: schlafe, du: schläfst, "er/sie/es": schläft, wir: schlafen, ihr: schlaft, "sie/Sie": schlafen }
+- inf: finden
+  forms: { ich: finde, du: findest, "er/sie/es": findet, wir: finden, ihr: findet, "sie/Sie": finden }
+- inf: spielen
+  forms: { ich: spiele, du: spielst, "er/sie/es": spielt, wir: spielen, ihr: spielt, "sie/Sie": spielen }
+- inf: sehen
+  forms: { ich: sehe, du: siehst, "er/sie/es": sieht, wir: sehen, ihr: seht, "sie/Sie": sehen }
+- inf: nehmen
+  forms: { ich: nehme, du: nimmst, "er/sie/es": nimmt, wir: nehmen, ihr: nehmt, "sie/Sie": nehmen }
+- inf: tragen
+  forms: { ich: trage, du: trägst, "er/sie/es": trägt, wir: tragen, ihr: tragt, "sie/Sie": tragen }
+- inf: brauchen
+  forms: { ich: brauche, du: brauchst, "er/sie/es": braucht, wir: brauchen, ihr: braucht, "sie/Sie": brauchen }
+- inf: lernen
+  forms: { ich: lerne, du: lernst, "er/sie/es": lernt, wir: lernen, ihr: lernt, "sie/Sie": lernen }

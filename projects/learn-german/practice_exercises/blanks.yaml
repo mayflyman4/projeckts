@@ -1,0 +1,231 @@
+# Fill-in-the-Blanks paragraphs for practice.html's A1 Challenge.
+# Each item: a title + a `tokens` list — plain quoted strings interleave with
+# blank maps { answer, type, options }. `type: verb` blanks get a 3-letter
+# scaffold pre-filled in the UI; other types start empty.
+- title: Mein Morgen
+  tokens:
+    - "Ich "
+    - { answer: stehe, type: verb, options: [stehe, stehst, steht, stehen] }
+    - " um 7 Uhr auf. Ich "
+    - { answer: dusche, type: verb, options: [dusche, duschst, duscht, duschen] }
+    - " und "
+    - { answer: frühstücke, type: verb, options: [frühstücke, frühstückst, frühstückt, frühstücken] }
+    - ". Dann "
+    - { answer: gehe, type: verb, options: [gehe, gehst, geht, gehen] }
+    - " ich zur Arbeit."
+
+- title: Sein und Haben
+  tokens:
+    - "Ich "
+    - { answer: bin, type: verb, options: [bin, bist, ist, sind] }
+    - " 25 Jahre alt. Du "
+    - { answer: bist, type: verb, options: [bin, bist, seid, sind] }
+    - " mein Freund. Wir "
+    - { answer: haben, type: verb, options: [habe, hast, hat, haben] }
+    - " eine Wohnung in Berlin. Sie "
+    - { answer: hat, type: verb, options: [habe, hast, hat, haben] }
+    - " zwei Kinder."
+
+- title: Meine Familie
+  tokens:
+    - "Das ist "
+    - { answer: meine, type: pronoun, options: [mein, meine, meinen] }
+    - " Familie. "
+    - { answer: Mein, type: pronoun, options: [Mein, Meine, Meinen] }
+    - " Vater arbeitet als Lehrer. "
+    - { answer: Meine, type: pronoun, options: [Mein, Meine, Meinen] }
+    - " Mutter kocht gern, und "
+    - { answer: meine, type: pronoun, options: [mein, meine, meinen] }
+    - " Schwester wohnt in München."
+
+- title: Im Café
+  tokens:
+    - { answer: Ich, type: pronoun, options: [Ich, Du, Er] }
+    - " trinke einen Tee. "
+    - { answer: Du, type: pronoun, options: [Ich, Du, Sie] }
+    - " trinkst einen Kaffee. "
+    - { answer: Er, type: pronoun, options: [Er, Wir, Sie] }
+    - " trinkt Wasser, und "
+    - { answer: wir, type: pronoun, options: [ich, wir, sie] }
+    - " sprechen Deutsch."
+
+- title: Unterwegs
+  tokens:
+    - "Ich fahre "
+    - { answer: mit, type: preposition, options: [mit, in, zu] }
+    - " dem Bus zur Arbeit. Am Abend gehe ich "
+    - { answer: in, type: preposition, options: [mit, in, zu] }
+    - " die Stadt. Danach gehe ich "
+    - { answer: zu, type: preposition, options: [mit, in, zu] }
+    - " meiner Freundin."
+
+- title: Meine Stadt
+  tokens:
+    - { answer: Der, type: artikel, options: [Der, Die, Das] }
+    - " Park ist schön. "
+    - { answer: Die, type: artikel, options: [Der, Die, Das] }
+    - " Kirche ist alt, und "
+    - { answer: das, type: artikel, options: [der, die, das] }
+    - " Museum ist interessant."
+
+- title: Am Wochenende
+  tokens:
+    - "Am Samstag "
+    - { answer: möchte, type: verb, options: [möchte, möchtest, möchten, möchtet] }
+    - " ich ins Kino gehen. Meine Schwester "
+    - { answer: kann, type: verb, options: [kann, kannst, können, könnt] }
+    - " gut kochen. Wir "
+    - { answer: müssen, type: verb, options: [muss, musst, müssen, müsst] }
+    - " am Sonntag einkaufen."
+
+- title: Wie geht es dir?
+  tokens:
+    - "Wie geht es "
+    - { answer: dir, type: pronoun, options: [dir, mir, Ihnen] }
+    - "? "
+    - { answer: Mir, type: pronoun, options: [Mir, Dir, Ihnen] }
+    - " geht es gut, danke. Und wie geht es "
+    - { answer: Ihnen, type: pronoun, options: [Ihnen, dir, mir] }
+    - "?"
+
+- title: Einkaufen
+  tokens:
+    - "Ich "
+    - { answer: kaufe, type: verb, options: [kaufe, kaufst, kauft, kaufen] }
+    - " einen Rock. Er "
+    - { answer: kauft, type: verb, options: [kaufe, kaufst, kauft, kaufen] }
+    - " ein Hemd. Die Verkäuferin "
+    - { answer: zeigt, type: verb, options: [zeige, zeigst, zeigt, zeigen] }
+    - " mir die Größe. Ich "
+    - { answer: nehme, type: verb, options: [nehme, nimmst, nimmt, nehmen] }
+    - " die Jacke."
+
+- title: Beim Arzt
+  tokens:
+    - "Ich "
+    - { answer: habe, type: verb, options: [habe, hast, hat, haben] }
+    - " Kopfschmerzen. Der Arzt "
+    - { answer: sagt, type: verb, options: [sage, sagst, sagt, sagen] }
+    - ", ich soll Tee trinken. Ich "
+    - { answer: muss, type: verb, options: [muss, musst, müssen, müsst] }
+    - " auch Tabletten nehmen. Danach "
+    - { answer: geht, type: verb, options: [gehe, gehst, geht, gehen] }
+    - " es mir besser."
+
+- title: Das Wetter
+  tokens:
+    - "Heute "
+    - { answer: ist, type: verb, options: [bin, bist, ist, sind] }
+    - " es kalt. Im Sommer "
+    - { answer: scheint, type: verb, options: [scheine, scheinst, scheint, scheinen] }
+    - " die Sonne. Im Winter "
+    - { answer: schneit, type: verb, options: [schneie, schneist, schneit, schneien] }
+    - " es oft. Morgen "
+    - { answer: regnet, type: verb, options: [regne, regnest, regnet, regnen] }
+    - " es vielleicht."
+
+- title: Nach dem Weg fragen
+  tokens:
+    - "Entschuldigung, wie komme ich "
+    - { answer: zum, type: preposition, options: [zum, zur, ins] }
+    - " Bahnhof? Gehen Sie geradeaus und dann "
+    - { answer: nach, type: preposition, options: [nach, an, bei] }
+    - " links. Die Post ist "
+    - { answer: neben, type: preposition, options: [neben, zwischen, unter] }
+    - " der Bank."
+
+- title: Meine Hobbys
+  tokens:
+    - "Am Wochenende "
+    - { answer: spiele, type: verb, options: [spiele, spielst, spielt, spielen] }
+    - " ich Fußball. Meine Freundin "
+    - { answer: mag, type: verb, options: [mag, magst, mögen, mögt] }
+    - " Lesen. Wir "
+    - { answer: können, type: verb, options: [kann, kannst, können, könnt] }
+    - " zusammen schwimmen gehen. Ich "
+    - { answer: möchte, type: verb, options: [möchte, möchtest, möchten, möchtet] }
+    - " auch Musik hören."
+
+- title: Am Telefon
+  tokens:
+    - "Hallo, hier "
+    - { answer: spricht, type: verb, options: [spreche, sprichst, spricht, sprechen] }
+    - " Anna. Ich "
+    - { answer: rufe, type: verb, options: [rufe, rufst, ruft, rufen] }
+    - " dich um 18 Uhr an. Wir "
+    - { answer: sprechen, type: verb, options: [spreche, sprichst, spricht, sprechen] }
+    - " dann über die Party. Danach "
+    - { answer: schreibe, type: verb, options: [schreibe, schreibst, schreibt, schreiben] }
+    - " ich dir eine Nachricht."
+
+- title: Meine Wohnung
+  tokens:
+    - "Ich "
+    - { answer: wohne, type: verb, options: [wohne, wohnst, wohnt, wohnen] }
+    - " in einer kleinen Wohnung. Das Wohnzimmer "
+    - { answer: ist, type: verb, options: [bin, bist, ist, sind] }
+    - " sehr hell. In der Küche "
+    - { answer: koche, type: verb, options: [koche, kochst, kocht, kochen] }
+    - " ich jeden Tag. Mein Schlafzimmer "
+    - { answer: hat, type: verb, options: [habe, hast, hat, haben] }
+    - " ein großes Fenster."
+
+- title: Essen und Trinken
+  tokens:
+    - "Zum Frühstück "
+    - { answer: esse, type: verb, options: [esse, isst, essen, esst] }
+    - " ich Brot mit Marmelade. Mein Mann "
+    - { answer: trinkt, type: verb, options: [trinke, trinkst, trinkt, trinken] }
+    - " immer Kaffee. Zum Mittagessen "
+    - { answer: kochen, type: verb, options: [koche, kochst, kocht, kochen] }
+    - " wir Nudeln. Am Abend "
+    - { answer: essen, type: verb, options: [esse, isst, essen, esst] }
+    - " wir oft Salat."
+
+- title: Zahlen und Preise
+  tokens:
+    - "Das Buch "
+    - { answer: kostet, type: verb, options: [koste, kostest, kostet, kosten] }
+    - " zwölf Euro. Ich "
+    - { answer: brauche, type: verb, options: [brauche, brauchst, braucht, brauchen] }
+    - " noch einen Stift. Der Verkäufer "
+    - { answer: gibt, type: verb, options: [gebe, gibst, gibt, geben] }
+    - " mir die Rechnung. Ich "
+    - { answer: bezahle, type: verb, options: [bezahle, bezahlst, bezahlt, bezahlen] }
+    - " mit Karte."
+
+- title: Meine Woche
+  tokens:
+    - "Am Montag "
+    - { answer: beginne, type: verb, options: [beginne, beginnst, beginnt, beginnen] }
+    - " ich um 9 Uhr. Am Mittwoch "
+    - { answer: habe, type: verb, options: [habe, hast, hat, haben] }
+    - " ich frei. Am Freitag "
+    - { answer: treffe, type: verb, options: [treffe, triffst, trifft, treffen] }
+    - " ich meine Freunde. Am Sonntag "
+    - { answer: bleibe, type: verb, options: [bleibe, bleibst, bleibt, bleiben] }
+    - " ich zu Hause."
+
+- title: Persönliche Informationen
+  tokens:
+    - "Ich komme aus Italien, aber ich "
+    - { answer: wohne, type: verb, options: [wohne, wohnst, wohnt, wohnen] }
+    - " jetzt in Deutschland. "
+    - { answer: Meine, type: pronoun, options: [Mein, Meine, Meinen] }
+    - " Adresse ist Hauptstraße 5. "
+    - { answer: Meine, type: pronoun, options: [Mein, Meine, Meinen] }
+    - " Telefonnummer ist neu. Ich "
+    - { answer: spreche, type: verb, options: [spreche, sprichst, spricht, sprechen] }
+    - " drei Sprachen."
+
+- title: Verkehrsmittel
+  tokens:
+    - "Ich "
+    - { answer: fahre, type: verb, options: [fahre, fährst, fährt, fahren] }
+    - " jeden Tag mit dem Zug. Mein Kollege "
+    - { answer: nimmt, type: verb, options: [nehme, nimmst, nimmt, nehmen] }
+    - " lieber das Auto. Wir "
+    - { answer: steigen, type: verb, options: [steige, steigst, steigt, steigen] }
+    - " am Hauptbahnhof um. Manchmal "
+    - { answer: gehe, type: verb, options: [gehe, gehst, geht, gehen] }
+    - " ich auch zu Fuß."

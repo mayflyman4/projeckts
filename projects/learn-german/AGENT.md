@@ -8,9 +8,10 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
 | Path | What it is |
 |---|---|
 | `index.html` | Vocabulary flashcard app (tag-filtered, scored) |
-| `practice.html` | Grammar/sentence-building drills (linked from index's header) |
+| `practice.html` | Timed grammar quiz — "A1 Challenge" (linked from index's header) |
 | `exercises.yaml` | Manifest: list of tag filenames for `index.html` |
 | `exercises/<id>.yaml` | One vocab tag's exercises (english/german pairs) |
+| `practice_exercises/<section>.yaml` | One `practice.html` activity's exercises (blanks/builder/conj/errors/wfrage) |
 | `a1-wortliste.txt` | Official Goethe A1 word list (~650 words) — grep before adding new vocab/verbs to confirm it's genuinely A1 |
 | `mock_test/uebungstest_1.md` | Reference telc exam extract — **not wired into the UI**, just study reference |
 
@@ -31,13 +32,15 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
 - Utilities worth knowing: `normalize()` (umlaut-tolerant: ä→ae, ö→oe, ü→ue, ß→ss, trims/lowers)
   and `shuffle()`. `practice.html` copies both — keep them identical if you change either.
 
-## `practice.html` — grammar drills
+## `practice.html` — "A1 Challenge" timed quiz
 
-Tab bar: **🎲 All** (default on load) + 5 activities. No der/die/das article drill here —
-that already exists as index.html's `artikel` tag; don't re-add a duplicate without checking
+No tabs, no standalone browsing mode. One flow: start screen → 25-question timed run
+(5:00 countdown, 3 lives) drawing randomly from all 5 activities below → result screen
+(score, lives used, time, share, retake). No der/die/das article drill here — that
+already exists as index.html's `artikel` tag; don't re-add a duplicate without checking
 with the user first.
 
-| Tab | Mechanic |
+| Activity | Mechanic |
 |---|---|
 | 📝 Fill in the Blanks | Paragraph cloze. Hidden multiple-choice hint chips per blank (💡 toggles them). Verb-type blanks pre-fill the first 3 letters as a scaffold; pronoun/article/preposition blanks start empty. Enter moves focus to the next blank; on the last blank it bubbles up and submits Check. |
 | 🔤 Sentence Builder | Tap shuffled word tiles into order. Shows the English prompt (`showPrompt: true`). |
@@ -47,26 +50,36 @@ with the user first.
 
 Architecture:
 
-- **Exercise data is embedded JS objects** in a `DATA` const — no YAML, no fetch. Fine as long as
-  a dataset stays roughly under a few dozen items; only graduate to YAML+fetch if one grows large.
-- **Every activity's render function has signature `renderX(overrideItem, onNext)`.** Called with
-  no args, it self-manages its own shuffled order/index (normal standalone tab behavior). Called
-  with an explicit item + a next-callback, it renders just that one item and defers "what happens
-  next" to the caller. This is what powers **🎲 All**: `buildAllQueue()` shuffles every dataset
-  into one combined deck (100 items as of now — 20 per activity, kept evenly balanced on purpose;
-  if you add more to one dataset, add the same count to the others to keep the balance) and
-  `renderAll()` drives each activity's render
-  function one item at a time, with its own progress bar + completion screen (copied from
-  `index.html`'s flashcard deck pattern: score %, "Shuffle & try again"). **Any new activity must
-  follow this same `(overrideItem, onNext)` signature** to plug into All mode.
+- **Exercise data lives in `practice_exercises/<section>.yaml`** (`blanks`, `builder`, `conj`,
+  `errors`, `wfrage` — one file per activity, same convention as `exercises/<id>.yaml`). Fetched +
+  parsed with `jsyaml` at boot. **On `file://` fetch fails**, so `practice.html` falls back whole-hog
+  to the embedded `FALLBACK_DATA` const — **keep that const in sync by hand** whenever you edit a
+  file under `practice_exercises/` (identical tradeoff to `index.html`'s `FALLBACK_TAGS`; no regen
+  script exists for either, by design — this is a static, no-build-step project).
+- **Every activity's render function has signature `renderX(overrideItem, onNext)`** — always called
+  with both args now (no more standalone/no-arg mode). It renders exactly that one item and calls
+  `onNext()` when the user advances. The quiz controller (`buildDeck()` + `renderQuizCard()`) shuffles
+  all 5 datasets into one combined deck (each `conj` entry gets a random pronoun, matching the old
+  balanced-mix behavior) and slices the first 25. **Any new activity must follow this same
+  `(overrideItem, onNext)` signature** to plug into the quiz.
+- **One card = one question, all-or-nothing.** `recordResult(bool)` — called once per sub-answer by
+  the renderers (blanks: once per blank; errors: once for word-spot + once for fix) — pushes into
+  `quiz.cardResults` instead of touching the DOM directly. The quiz's `onNext` wrapper collapses via
+  `cardResults.every(Boolean)`: a fully-correct card increments `quiz.correct`, anything else costs a
+  life (`quiz.lives--`). Renderer internals otherwise untouched.
+- **Quiz ends** when `quizEnded({answered, lives, timeLeft})` is true: 25 answered, 0 lives, or the
+  5:00 timer hits 0 — whichever comes first. Timer runs via `setInterval(tick, 250)` against a fixed
+  `quiz.endsAt` timestamp (not a naive per-tick decrement, to avoid drift).
 - Sentence Builder and W-Frage Builder share one factory:
-  `createWordOrderDrill({ tab, dataset, promptField, answerField, cardTitle, cardSub, nextLabel, showPrompt })`.
+  `createWordOrderDrill({ promptField, answerField, cardTitle, cardSub, showPrompt })`.
   Extend this factory (don't copy-paste) for any other tap-to-order activity.
-- **Global keydown handler**: Enter clicks `#nextBtn` if visible, else `#checkBtn` if visible, else
-  `#btnRetry` — mirrors `index.html`'s convention. Any new activity's card markup must use those
-  exact ids for Enter-to-submit/advance to keep working.
-- Tab bar's horizontal scrollbar is styled to match `index.html`'s `.tag-strip-wrapper` (thin,
-  semi-transparent white thumb) — keep that pairing if either changes.
+- **Global keydown handler**: Enter clicks `#nextBtn` if visible, else `#checkBtn`, else `#btnRetry`,
+  else `#btnStart` — mirrors `index.html`'s convention. Any new screen's markup must use those exact
+  ids for Enter-to-submit/advance/start to keep working.
+- **Share** (`shareScore()`): draws a 1080×1080 canvas score card, uses `navigator.share({files})`
+  where available (mobile/https → OS share sheet, e.g. Instagram) and falls back to a PNG download +
+  clipboard-copied caption otherwise (always the fallback on `file://`, since share/clipboard need a
+  secure context). No web API posts directly to a specific app — the OS share sheet is the closest.
 - Scoring is session-only (no `localStorage` persistence) — deliberate, not a gap.
 
 ## Verifying changes (no test framework)

@@ -1,0 +1,23 @@
+# Sentence Builder items for practice.html's A1 Challenge.
+# Each item: an English prompt + the target German sentence (word order the
+# user must reconstruct from shuffled tiles).
+- { prompt: "I get up at 7 o’clock", answer: "Ich stehe um 7 Uhr auf" }
+- { prompt: "I go to work", answer: "Ich gehe zur Arbeit" }
+- { prompt: "On weekends I go for a walk", answer: "Am Wochenende gehe ich spazieren" }
+- { prompt: "Today I am tired", answer: "Heute bin ich müde" }
+- { prompt: "My sister lives in Munich", answer: "Meine Schwester wohnt in München" }
+- { prompt: "We speak German", answer: "Wir sprechen Deutsch" }
+- { prompt: "What is your name?", answer: "Wie heißt du?" }
+- { prompt: "I would like a coffee", answer: "Ich möchte einen Kaffee" }
+- { prompt: "I take the bus to work", answer: "Ich fahre mit dem Bus zur Arbeit" }
+- { prompt: "Tomorrow I must work", answer: "Morgen muss ich arbeiten" }
+- { prompt: "I don’t have time today", answer: "Ich habe heute keine Zeit" }
+- { prompt: "The weather is nice today", answer: "Das Wetter ist heute schön" }
+- { prompt: "Can you help me?", answer: "Kannst du mir helfen?" }
+- { prompt: "I am going to the doctor tomorrow", answer: "Ich gehe morgen zum Arzt" }
+- { prompt: "She works as a teacher", answer: "Sie arbeitet als Lehrerin" }
+- { prompt: "I like to read books", answer: "Ich lese gern Bücher" }
+- { prompt: "He doesn’t understand German", answer: "Er versteht kein Deutsch" }
+- { prompt: "We are going to the cinema tonight", answer: "Wir gehen heute Abend ins Kino" }
+- { prompt: "Please close the door", answer: "Bitte schließen Sie die Tür" }
+- { prompt: "My brother is older than me", answer: "Mein Bruder ist älter als ich" }

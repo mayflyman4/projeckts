@@ -1,0 +1,23 @@
+# Error Spotting sentences for practice.html's A1 Challenge.
+# Each item: tokens (the sentence split into words), wrongIdx (index of the
+# wrong word), correct (the fix), options (multiple-choice fix chips).
+- { tokens: [Der, Frau, kocht, "gern."], wrongIdx: 0, correct: Die, options: [Die, Der, Das] }
+- { tokens: [Ich, gehst, heute, ins, "Kino."], wrongIdx: 1, correct: gehe, options: [gehe, gehst, geht, gehen] }
+- { tokens: [Wir, hat, zwei, "Kinder."], wrongIdx: 1, correct: haben, options: [habe, hat, haben, habt] }
+- { tokens: [Ich, habe, kein, "Zeit."], wrongIdx: 2, correct: keine, options: [kein, keine, keinen] }
+- { tokens: [Ich, trinke, nicht, "Kaffee."], wrongIdx: 2, correct: keinen, options: [nicht, kein, keinen] }
+- { tokens: [Das, Buch, gehört, "mich."], wrongIdx: 3, correct: mir, options: [mich, mir, ich] }
+- { tokens: [Meine, Bruder, wohnt, in, "Berlin."], wrongIdx: 0, correct: Mein, options: [Mein, Meine, Meinen] }
+- { tokens: [Ich, sehe, der, "Mann."], wrongIdx: 2, correct: den, options: [der, die, den] }
+- { tokens: [Ich, sehe, "du."], wrongIdx: 2, correct: dich, options: [du, dich, dir] }
+- { tokens: [Die, Kinder, spielt, im, "Garten."], wrongIdx: 2, correct: spielen, options: [spielt, spielen, spiele] }
+- { tokens: [Wir, fahren, mit, der, "Bus."], wrongIdx: 3, correct: dem, options: [der, die, dem] }
+- { tokens: [Du, kannst, gut, Deutsch, "sprichst."], wrongIdx: 4, correct: sprechen, options: [sprichst, spricht, sprechen] }
+- { tokens: [Ich, gebe, das, Kind, ein, "Buch."], wrongIdx: 2, correct: dem, options: [das, der, dem] }
+- { tokens: [Er, trägt, einen, rote, "Pullover."], wrongIdx: 3, correct: roten, options: [rote, roten, rotes] }
+- { tokens: [Ich, helfe, den, "Mann."], wrongIdx: 2, correct: dem, options: [den, dem, der] }
+- { tokens: [Die, Frau, hat, zwei, "Kind."], wrongIdx: 4, correct: Kinder, options: [Kind, Kinder, Kinds] }
+- { tokens: [Ich, bin, müde, und, gehst, "schlafen."], wrongIdx: 4, correct: gehe, options: [gehst, geht, gehe] }
+- { tokens: [Er, kann, sehr, gut, "schwimmt."], wrongIdx: 4, correct: schwimmen, options: [schwimmt, schwimmst, schwimmen] }
+- { tokens: [Ich, möchte, einen, Kaffee, "trinkst."], wrongIdx: 4, correct: trinken, options: [trinkst, trinkt, trinken] }
+- { tokens: [Wir, müssen, jetzt, "gehst."], wrongIdx: 3, correct: gehen, options: [gehst, geht, gehen] }

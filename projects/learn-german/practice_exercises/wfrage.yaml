@@ -1,0 +1,24 @@
+# W-Frage Builder items for practice.html's A1 Challenge.
+# Each item: a context statement (the answer) + the W-question that would
+# produce it. Rendered with showPrompt:false — the user gets no context hint,
+# just shuffled tiles to build the question from. Keep it that way (see AGENT.md).
+- { context: "Ich heiße Anna.", question: "Wie heißt du?" }
+- { context: "Ich komme aus Deutschland.", question: "Woher kommst du?" }
+- { context: "Ich wohne in Berlin.", question: "Wo wohnst du?" }
+- { context: "Ich gehe ins Kino.", question: "Wohin gehst du?" }
+- { context: "Ich bin 25 Jahre alt.", question: "Wie alt bist du?" }
+- { context: "Es ist 8 Uhr.", question: "Wie spät ist es?" }
+- { context: "Der Kaffee kostet 3 Euro.", question: "Was kostet der Kaffee?" }
+- { context: "Ich fahre morgen nach Berlin.", question: "Wann fährst du nach Berlin?" }
+- { context: "Das ist mein Bruder.", question: "Wer ist das?" }
+- { context: "Ich trinke einen Tee.", question: "Was trinkst du?" }
+- { context: "Ich lerne Deutsch, weil ich in Berlin arbeiten möchte.", question: "Warum lernst du Deutsch?" }
+- { context: "Ich habe zwei Geschwister.", question: "Wie viele Geschwister hast du?" }
+- { context: "Ich gehe einmal pro Woche schwimmen.", question: "Wie oft gehst du schwimmen?" }
+- { context: "Der Film beginnt um 20 Uhr.", question: "Um wie viel Uhr beginnt der Film?" }
+- { context: "Ich fahre mit meinem Bruder nach Hamburg.", question: "Mit wem fährst du nach Hamburg?" }
+- { context: "Ich arbeite als Krankenschwester.", question: "Was bist du von Beruf?" }
+- { context: "Ich bleibe zwei Wochen in Spanien.", question: "Wie lange bleibst du in Spanien?" }
+- { context: "Mein Auto ist blau.", question: "Welche Farbe hat dein Auto?" }
+- { context: "Ich brauche ein Wörterbuch.", question: "Was brauchst du?" }
+- { context: "Die Bibliothek ist neben der Schule.", question: "Wo ist die Bibliothek?" }
