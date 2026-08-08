@@ -1,0 +1,21 @@
+projects/learn-german/index.html
+  s_d344aa60614406::t_4c331e9751d305 748
+projects/learn-german/AGENT.md
+  s_d344aa60614406::t_460c8292d704e0 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6608030317a48c2b32af6844d9bfe2f570df4b2b",
+  "prompts": {},
+  "sessions": {
+    "s_d344aa60614406": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "999497e9-cd04-4110-a9c6-5d86e643c323",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
