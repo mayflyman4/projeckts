@@ -24,7 +24,7 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
   whenever you edit a file under `exercises/`.
 - **"Mock Test ↗"** in the header is just an external link
   (`https://open-exam-prep.com/practice/telc-deutsch-a1`) — there is no embedded mock-exam mode.
-- **"Practice"** pill next to it links to `practice.html`.
+- **"Challenge yourself"** pill next to it links to `practice.html`.
 - `localStorage` keys, all `lg_`-prefixed: `lg_history` (streak/session history), `lg_direction`
   (EN↔DE toggle), `lg_autospeak` (SpeechSynthesis auto-play).
 - DOM id contract: `#germanAnswer` always holds the German string (audio binds here);
