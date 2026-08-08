@@ -1,0 +1,32 @@
+projects/learn-german/practice.html
+  s_d344aa60614406::t_578d793ca3efcd 6,8,63-64,66-70,72-73,76-77,79-84,86-88,90,92-94,96,226,302,318,350,353-354,359,368-376,662-664,667-674,696-705,707-718,721,743,746-750,755,779,836,841,847,868,903,911,916,924,937,965,969,971,985,1019,1023-1024,1031,1034-1045,1047-1088,1090-1091,1094-1121,1123-1127,1129-1135,1140-1141,1143-1144,1146,1148-1149,1154-1161,1163,1166-1208,1210-1243,1246-1261,1266-1269,1273-1276
+projects/learn-german/practice_exercises/errors.yaml
+  s_d344aa60614406::t_eb728adb3691fb 1-23
+projects/learn-german/practice_exercises/conj.yaml
+  s_d344aa60614406::t_b76d66acc4fbff 1-42
+projects/learn-german/AGENT.md
+  s_d344aa60614406::t_c26ae4b07f40b6 11,14
+  s_d344aa60614406::t_5ac9e75024a759 35,37-40,43,53-72,74,76-82
+projects/learn-german/practice_exercises/wfrage.yaml
+  s_d344aa60614406::t_abb9dcae2d4f95 1-24
+projects/learn-german/practice_exercises/blanks.yaml
+  s_d344aa60614406::t_e23349c4100cd3 1-231
+projects/learn-german/practice_exercises/builder.yaml
+  s_d344aa60614406::t_5b9e56c1694c0c 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1749f9e24eb2feb792cd0659f4ffd276185f82a2",
+  "prompts": {},
+  "sessions": {
+    "s_d344aa60614406": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "999497e9-cd04-4110-a9c6-5d86e643c323",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
