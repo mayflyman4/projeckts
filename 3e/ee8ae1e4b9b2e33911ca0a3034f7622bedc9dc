@@ -1,0 +1,28 @@
+projects/learn-german/practice.html
+  s_d344aa60614406::t_bcad7a4732c075 379-380
+  s_d344aa60614406::t_159d1c279c7e6b 1241
+  s_d344aa60614406::t_1bc0c0d4f2a383 313-314,319-330
+  s_d344aa60614406::t_f85c1785dccf6c 1137
+  s_d344aa60614406::t_1dc43b556f4b86 1129-1130,1143-1146
+  s_d344aa60614406::t_14a32dc0926ced 1205-1218
+  s_d344aa60614406::t_dd662bab717b88 770-778,784,789-790,798,807-811
+  s_d344aa60614406::t_5fa926c1f85b15 148-174
+projects/learn-german/AGENT.md
+  s_d344aa60614406::t_63529141aaa41e 47,49,53-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3eee8ae1e4b9b2e33911ca0a3034f7622bedc9dc",
+  "prompts": {},
+  "sessions": {
+    "s_d344aa60614406": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "999497e9-cd04-4110-a9c6-5d86e643c323",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
