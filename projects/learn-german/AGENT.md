@@ -44,19 +44,27 @@ re-add a duplicate without checking with the user first.
 
 | Activity | Mechanic |
 |---|---|
-| 📝 Fill in the Blanks | Paragraph cloze. Verb-type blanks pre-fill the first 3 letters as a scaffold; pronoun/article/preposition blanks start empty. Wrong blanks reveal the correct answer only *after* Check (no pre-answer hint — see below). Enter moves focus to the next blank; on the last blank it bubbles up and submits Check. |
+| 📝 Fill in the Blanks | Paragraph cloze. Verb-type blanks pre-fill the first 3 letters as a scaffold; pronoun/article/preposition blanks start empty but get a 💡 grammar-category hint (see below). Wrong blanks reveal the correct answer only *after* Check. Enter moves focus to the next blank; on the last blank it bubbles up and submits Check. |
 | 🔤 Sentence Builder | Tap shuffled word tiles into order. Shows the English prompt (`showPrompt: true`). |
-| 🔁 Conjugation | verb × pronoun → type the present-tense form. Wrong answers reveal the correct form only after Check. |
+| 🔁 Conjugation | verb × pronoun → type the present-tense form. Wrong answers reveal the correct form only after Check. No pre-answer hint (see below). |
 | 🚫 Error Spotting | One sentence, one wrong word. Tap the wrong word, then pick the fix from revealed chips. |
 | ❓ W-Frage Builder | Tap shuffled word tiles into order — **`showPrompt: false`**, deliberately shows *no* context statement, just the tiles. User must derive correct German word order with zero semantic hint (this was a deliberate ask — don't add the context sentence back, and don't switch this to multiple-choice; both were tried and explicitly reverted). |
 
-**No pre-answer hints.** Fill in the Blanks and Conjugation used to have a 💡 button that
-revealed multiple-choice options *before* checking — removed deliberately (it's a timed
-challenge now, revealing answers up front defeats the point). The only hint a user gets is
-the post-Check reveal on a wrong answer (`.correct-answer-note` for blanks, the "Not quite —
-correct: X" line in `#resultBanner` for conjugation) — don't reintroduce a pre-answer hint
-without checking with the user first. `tok.options` still exists in the blanks YAML data but
-is currently unused (harmless leftover from the old hint UI, not a bug).
+**Hints reveal the grammar category, never the answer.** Fill in the Blanks and Conjugation
+used to have a 💡 button that revealed multiple-choice options *before* checking — removed
+deliberately (it's a timed challenge; revealing answers up front defeats the point). But
+verb-type blanks get a 3-letter scaffold as an implicit hint while pronoun/artikel/preposition
+blanks got nothing at all, which felt broken — so Fill in the Blanks now has a 💡 per blank
+that toggles a `.hint-note` with a **generic German sentence naming the word category**
+(`BLANK_TYPE_HINTS`, keyed by `tok.type`: verb/pronoun/artikel/preposition), e.g. "Hier fehlt
+ein Pronomen." — never the specific word or its options list. Conjugation has no such bulb
+(the prompt itself already names the verb + pronoun, so there's nothing left to hint at
+without giving the form away). The only other hint anywhere is the post-Check reveal on a
+wrong answer (`.correct-answer-note` for blanks, the "Not quite — correct: X" line in
+`#resultBanner` for conjugation). Don't reintroduce an *answer-revealing* pre-answer hint
+(multiple-choice options, autofill chips) without checking with the user first — the
+category-only hint above is the agreed middle ground. `tok.options` still exists in the
+blanks YAML data but is unused by the UI (harmless leftover from the old hint UI, not a bug).
 
 Architecture:
 

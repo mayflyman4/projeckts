@@ -145,6 +145,33 @@
         .blank-input.correct { border-color: #10B981; background: #ECFDF5; color: #065F46; }
         .blank-input.wrong { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
 
+        .hint-btn {
+            border: none;
+            background: none;
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 2px;
+        }
+        .hint-note {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 6px;
+            background: #F5F3FF;
+            border: 1px solid #E8E5FF;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4F46E5;
+            z-index: 5;
+            width: max-content;
+            max-width: 220px;
+        }
+        .hint-note.visible { display: block; }
+
         .chip {
             padding: 5px 12px;
             border-radius: 999px;
@@ -283,10 +310,24 @@
         .completion-emoji { font-size: 52px; }
         .completion-title { font-size: 26px; font-weight: 800; color: #1E1B4B; }
         .completion-sub { font-size: 15px; color: #6B7280; }
+        .completion-highlight { font-size: 19px; font-weight: 600; color: #1E1B4B; }
+        .completion-highlight strong { color: #7C3AED; }
         .completion-score { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
         .completion-score-pill { padding: 10px 22px; border-radius: 14px; font-size: 18px; font-weight: 800; }
         .completion-score-pill.right { background: #D1FAE5; color: #065F46; }
         .completion-score-pill.wrong { background: #FEE2E2; color: #991B1B; }
+        .challenge-friend { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .challenge-url {
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #4F46E5;
+            background: #EEF2FF;
+            border: 1.5px dashed #C7D2FE;
+            border-radius: 10px;
+            padding: 8px 14px;
+            word-break: break-all;
+        }
         .completion-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .btn-retry {
             padding: 14px;
@@ -335,6 +376,8 @@
         // ── Quiz constants ──
         const QUIZ_LEN = 15;
         const MAX_LIVES = 3;
+        const CHALLENGE_URL = 'https://mayflyman4.github.io/projeckts/projects/learn-german/practice.html';
+        const CHALLENGE_URL_DISPLAY = CHALLENGE_URL.replace(/^https?:\/\//, '');
         const SECTIONS = [
             { key: 'all',     label: '🎲 All sections' },
             { key: 'blanks',  label: '📝 Fill in the Blanks' },
@@ -724,15 +767,27 @@
         });
 
         // ── 1. Fill in the Blanks ──
+        // Grammar-category hints (German) shown via 💡 — never the answer or its
+        // options, just what kind of word belongs there. Keeps the challenge intact.
+        const BLANK_TYPE_HINTS = {
+            verb:        'Hier fehlt ein Verb im Präsens.',
+            pronoun:     'Hier fehlt ein Pronomen.',
+            artikel:     'Hier fehlt ein Artikel.',
+            preposition: 'Hier fehlt eine Präposition.',
+        };
+
         function renderBlanks(overrideItem, onNext) {
             const para = overrideItem;
             const html = para.tokens.map((tok, i) => {
                 if (typeof tok === 'string') return escapeHtml(tok);
                 const scaffold = tok.type === 'verb' ? tok.answer.slice(0, 3) : '';
+                const hint = BLANK_TYPE_HINTS[tok.type];
                 return `
                     <span class="blank-wrap">
                         <input class="blank-input${scaffold ? ' scaffold' : ''}" data-blank="${i}"
                                value="${escapeHtml(scaffold)}" autocomplete="off" autocorrect="off" spellcheck="false">
+                        ${hint ? `<button class="hint-btn" data-hint="${i}" type="button" title="Hinweis anzeigen">💡</button>
+                        <span class="hint-note" id="hintNote-${i}">${escapeHtml(hint)}</span>` : ''}
                         <span class="correct-answer-note" id="answerNote-${i}" style="display:none"></span>
                     </span>`;
             }).join('');
@@ -740,7 +795,7 @@
             contentWrap.innerHTML = `
                 <div class="card">
                     <div class="card-title">${escapeHtml(para.title)}</div>
-                    <div class="card-sub">Fill in each blank, then check your answers.</div>
+                    <div class="card-sub">Fill in each blank, then check your answers. Tap 💡 for a grammar hint.</div>
                     <div class="divider"></div>
                     <div class="paragraph" id="paraText">${html}</div>
                     <div id="resultBanner"></div>
@@ -749,6 +804,11 @@
                 </div>
             `;
 
+            contentWrap.querySelectorAll('.hint-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById(`hintNote-${btn.dataset.hint}`).classList.toggle('visible');
+                });
+            });
             const blankInputs = [...contentWrap.querySelectorAll('.blank-input')];
             blankInputs.forEach((input, i) => {
                 input.addEventListener('input', () => input.classList.remove('scaffold'), { once: true });
@@ -1066,20 +1126,24 @@
             const livesUsed = MAX_LIVES - quiz.lives;
             const elapsedStr = formatTime(Date.now() - quiz.startedAt);
             const reasonText = {
-                complete: `✅ Finished all ${total}!`,
-                lives:    '💔 Out of lives',
+                complete: '🎉 Challenge complete!',
+                lives:    '💔 Out of lives!',
             }[reason];
 
             contentWrap.innerHTML = `
                 <div class="completion-card">
                     <div class="completion-emoji">${emoji}</div>
                     <div class="completion-title">${reasonText}</div>
-                    <div class="completion-sub">${pct}% correct — ${quiz.correct} of ${total}</div>
+                    <div class="completion-highlight">You answered <strong>${quiz.correct}</strong> correctly!</div>
                     <div class="completion-score">
                         <div class="completion-score-pill right">✓ ${quiz.correct} correct</div>
                         <div class="completion-score-pill wrong">${'❤️'.repeat(quiz.lives)}${'🖤'.repeat(livesUsed)}</div>
                     </div>
                     <div class="completion-sub">${livesUsed} of ${MAX_LIVES} lives used · finished in ${elapsedStr}</div>
+                    <div class="challenge-friend">
+                        <div class="completion-sub">🔥 Think you can beat me? Try the A1 Challenge:</div>
+                        <div class="challenge-url">${escapeHtml(CHALLENGE_URL_DISPLAY)}</div>
+                    </div>
                     <div class="completion-btns">
                         <button class="btn-secondary" id="btnShare">📤 Share score</button>
                         <button class="btn-retry" id="btnRetry">Retake ↻</button>
@@ -1138,7 +1202,20 @@
 
             ctx.font = '700 40px -apple-system, sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
-            ctx.fillText('#LernDeutsch', 540, 950);
+            ctx.fillText('#LernDeutsch', 540, 900);
+
+            ctx.font = '400 32px -apple-system, sans-serif';
+            ctx.fillText('Think you can beat me? Try it:', 540, 970);
+
+            // Shrink the URL to fit the card width rather than letting it clip off the edge.
+            let urlSize = 36;
+            while (urlSize > 16) {
+                ctx.font = `600 ${urlSize}px ui-monospace, SFMono-Regular, monospace`;
+                if (ctx.measureText(CHALLENGE_URL_DISPLAY).width <= 960) break;
+                urlSize -= 2;
+            }
+            ctx.fillStyle = 'white';
+            ctx.fillText(CHALLENGE_URL_DISPLAY, 540, 1020);
 
             return canvas;
         }
@@ -1161,7 +1238,7 @@
         async function shareScore(scoreInfo) {
             const canvas = drawScoreCard(scoreInfo);
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.total} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch`;
+            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.total} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch\nThink you can beat me? Try it: ${CHALLENGE_URL}`;
 
             if (blob) {
                 const file = new File([blob], 'a1-challenge.png', { type: 'image/png' });
