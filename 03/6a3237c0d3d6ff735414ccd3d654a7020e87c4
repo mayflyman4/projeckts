@@ -1,0 +1,33 @@
+projects/learn-german/practice.html
+  s_d344aa60614406::t_d15d84a6511927 336,338-345
+  s_d344aa60614406::t_0458470fe819b9 1049
+  s_d344aa60614406::t_3f9b0b9aa8f243 743
+  s_d344aa60614406::t_1b1a77472697f7 1046
+  s_d344aa60614406::t_b7e3645b02c722 683-684
+  s_d344aa60614406::t_1a9e55bd736af5 1107
+  s_d344aa60614406::t_28bb1ad77ed6cb 671-672
+  s_d344aa60614406::t_eabb8afeb88997 1125
+  s_d344aa60614406::t_89fd4d23e3f84f 1164
+  s_d344aa60614406::t_f144a49b2687cd 1059,1063-1064,1067,1069,1077,1082,1094
+  s_d344aa60614406::t_04ab1cde88cd82 1202-1204
+  s_d344aa60614406::t_d814dd57f43582 886
+  s_d344aa60614406::t_c53617d4894d16 970-971,973-985,991-992,1005,1021-1023,1028,1034-1035,1038,1047,1053-1055
+projects/learn-german/AGENT.md
+  s_d344aa60614406::t_f9e019257c1a49 35,37-43,47,49,53-60,70-79,85-90,95-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "036a3237c0d3d6ff735414ccd3d654a7020e87c4",
+  "prompts": {},
+  "sessions": {
+    "s_d344aa60614406": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "999497e9-cd04-4110-a9c6-5d86e643c323",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Bharath kumar <shettybharath4@gmail.com>"
+    }
+  }
+}
