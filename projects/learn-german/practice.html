@@ -378,6 +378,10 @@
         const MAX_LIVES = 3;
         const CHALLENGE_URL = 'https://mayflyman4.github.io/projeckts/projects/learn-german/practice.html';
         const CHALLENGE_URL_DISPLAY = CHALLENGE_URL.replace(/^https?:\/\//, '');
+        // Touch devices: don't auto-focus inputs — it pops the on-screen keyboard over
+        // half the screen before the user has even read the question. Let them tap in
+        // when ready. Desktop keeps auto-focus since there's no keyboard takeover cost.
+        const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
         const SECTIONS = [
             { key: 'all',     label: '🎲 All sections' },
             { key: 'blanks',  label: '📝 Fill in the Blanks' },
@@ -904,7 +908,7 @@
                     // last blank: let it bubble up to the global handler, which clicks Check
                 });
             });
-            if (blankInputs[0]) blankInputs[0].focus();
+            if (blankInputs[0] && !IS_TOUCH) blankInputs[0].focus();
 
             document.getElementById('checkBtn').addEventListener('click', () => {
                 let allCorrect = true;
@@ -1033,7 +1037,7 @@
                 </div>
             `;
 
-            document.getElementById('conjInput').focus();
+            if (!IS_TOUCH) document.getElementById('conjInput').focus();
 
             document.getElementById('checkBtn').addEventListener('click', () => {
                 const input = document.getElementById('conjInput');

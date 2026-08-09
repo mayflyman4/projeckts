@@ -92,6 +92,12 @@ Architecture:
   life (`quiz.lives--`). Renderer internals otherwise untouched.
 - **Quiz ends** when `quizEnded({answered, lives, total})` is true: `answered >= total` or
   `lives <= 0` — no time-based end condition.
+- **No auto-focus on touch devices.** `IS_TOUCH = matchMedia('(pointer: coarse)').matches`, checked
+  before every `.focus()` call on the Fill in the Blanks and Conjugation inputs. On phones,
+  auto-focusing pops the keyboard over roughly half the screen the instant a new card renders,
+  before the user has read the question — reported as "irritating" on iPhone/SwiftKey. Desktop
+  (`pointer: fine`) keeps auto-focus since there's no keyboard-takeover cost. Any new input-based
+  activity should follow the same `if (!IS_TOUCH) input.focus()` pattern.
 - **Elapsed time is a count-up, not a countdown.** `quiz.startedAt = Date.now()` set once in
   `startQuiz()`; the result screen computes `Date.now() - quiz.startedAt` via `formatTime()`.
   There is no ticking interval and no time display during play — don't add one back without
