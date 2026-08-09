@@ -32,21 +32,31 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
 - Utilities worth knowing: `normalize()` (umlaut-tolerant: ä→ae, ö→oe, ü→ue, ß→ss, trims/lowers)
   and `shuffle()`. `practice.html` copies both — keep them identical if you change either.
 
-## `practice.html` — "A1 Challenge" timed quiz
+## `practice.html` — "A1 Challenge" quiz
 
-No tabs, no standalone browsing mode. One flow: start screen → 25-question timed run
-(5:00 countdown, 3 lives) drawing randomly from all 5 activities below → result screen
-(score, lives used, time, share, retake). No der/die/das article drill here — that
-already exists as index.html's `artikel` tag; don't re-add a duplicate without checking
-with the user first.
+No tabs, no standalone browsing mode, **no countdown clock** (tried it — a tester found it
+too stressful, dropped it; time is only ever shown after the run finishes). One flow: start
+screen (pick **All sections** or a single one) → up to 15-question run (3 lives, no time
+limit) drawing from the chosen section(s) → result screen (score, lives used, elapsed time,
+share, retake — retake returns to the section picker, not straight into a new run). No
+der/die/das article drill here — that already exists as index.html's `artikel` tag; don't
+re-add a duplicate without checking with the user first.
 
 | Activity | Mechanic |
 |---|---|
-| 📝 Fill in the Blanks | Paragraph cloze. Hidden multiple-choice hint chips per blank (💡 toggles them). Verb-type blanks pre-fill the first 3 letters as a scaffold; pronoun/article/preposition blanks start empty. Enter moves focus to the next blank; on the last blank it bubbles up and submits Check. |
+| 📝 Fill in the Blanks | Paragraph cloze. Verb-type blanks pre-fill the first 3 letters as a scaffold; pronoun/article/preposition blanks start empty. Wrong blanks reveal the correct answer only *after* Check (no pre-answer hint — see below). Enter moves focus to the next blank; on the last blank it bubbles up and submits Check. |
 | 🔤 Sentence Builder | Tap shuffled word tiles into order. Shows the English prompt (`showPrompt: true`). |
-| 🔁 Conjugation | verb × pronoun → type the present-tense form. 💡 reveals all 6 forms. |
+| 🔁 Conjugation | verb × pronoun → type the present-tense form. Wrong answers reveal the correct form only after Check. |
 | 🚫 Error Spotting | One sentence, one wrong word. Tap the wrong word, then pick the fix from revealed chips. |
 | ❓ W-Frage Builder | Tap shuffled word tiles into order — **`showPrompt: false`**, deliberately shows *no* context statement, just the tiles. User must derive correct German word order with zero semantic hint (this was a deliberate ask — don't add the context sentence back, and don't switch this to multiple-choice; both were tried and explicitly reverted). |
+
+**No pre-answer hints.** Fill in the Blanks and Conjugation used to have a 💡 button that
+revealed multiple-choice options *before* checking — removed deliberately (it's a timed
+challenge now, revealing answers up front defeats the point). The only hint a user gets is
+the post-Check reveal on a wrong answer (`.correct-answer-note` for blanks, the "Not quite —
+correct: X" line in `#resultBanner` for conjugation) — don't reintroduce a pre-answer hint
+without checking with the user first. `tok.options` still exists in the blanks YAML data but
+is currently unused (harmless leftover from the old hint UI, not a bug).
 
 Architecture:
 
@@ -57,25 +67,34 @@ Architecture:
   file under `practice_exercises/` (identical tradeoff to `index.html`'s `FALLBACK_TAGS`; no regen
   script exists for either, by design — this is a static, no-build-step project).
 - **Every activity's render function has signature `renderX(overrideItem, onNext)`** — always called
-  with both args now (no more standalone/no-arg mode). It renders exactly that one item and calls
-  `onNext()` when the user advances. The quiz controller (`buildDeck()` + `renderQuizCard()`) shuffles
-  all 5 datasets into one combined deck (each `conj` entry gets a random pronoun, matching the old
-  balanced-mix behavior) and slices the first 25. **Any new activity must follow this same
-  `(overrideItem, onNext)` signature** to plug into the quiz.
+  with both args (no standalone/no-arg mode). It renders exactly that one item and calls
+  `onNext()` when the user advances. **Any new activity must follow this same signature** to plug
+  into the quiz.
+- **Section picker**: `SECTIONS` (const list of `{key, label}`) drives the start-screen buttons.
+  `buildDeck(section)` builds `entries` from either all 5 datasets (`section === 'all'`, each
+  `conj` entry getting a random pronoun) or just `DATA[section]`, shuffles, and slices to
+  `QUIZ_LEN` (15). **`quiz.len` (not the raw `QUIZ_LEN` constant) is the source of truth** for the
+  denominator, progress display, and end condition — it's set to `quiz.deck.length` after
+  building, so a single-section run scoped to a smaller dataset degrades gracefully instead of
+  showing a wrong "X of 15".
 - **One card = one question, all-or-nothing.** `recordResult(bool)` — called once per sub-answer by
   the renderers (blanks: once per blank; errors: once for word-spot + once for fix) — pushes into
   `quiz.cardResults` instead of touching the DOM directly. The quiz's `onNext` wrapper collapses via
   `cardResults.every(Boolean)`: a fully-correct card increments `quiz.correct`, anything else costs a
   life (`quiz.lives--`). Renderer internals otherwise untouched.
-- **Quiz ends** when `quizEnded({answered, lives, timeLeft})` is true: 25 answered, 0 lives, or the
-  5:00 timer hits 0 — whichever comes first. Timer runs via `setInterval(tick, 250)` against a fixed
-  `quiz.endsAt` timestamp (not a naive per-tick decrement, to avoid drift).
+- **Quiz ends** when `quizEnded({answered, lives, total})` is true: `answered >= total` or
+  `lives <= 0` — no time-based end condition.
+- **Elapsed time is a count-up, not a countdown.** `quiz.startedAt = Date.now()` set once in
+  `startQuiz()`; the result screen computes `Date.now() - quiz.startedAt` via `formatTime()`.
+  There is no ticking interval and no time display during play — don't add one back without
+  checking with the user first (this was explicitly removed after negative feedback).
 - Sentence Builder and W-Frage Builder share one factory:
   `createWordOrderDrill({ promptField, answerField, cardTitle, cardSub, showPrompt })`.
   Extend this factory (don't copy-paste) for any other tap-to-order activity.
 - **Global keydown handler**: Enter clicks `#nextBtn` if visible, else `#checkBtn`, else `#btnRetry`,
-  else `#btnStart` — mirrors `index.html`'s convention. Any new screen's markup must use those exact
-  ids for Enter-to-submit/advance/start to keep working.
+  else `#btnStart` (the "All sections" button on the start screen) — mirrors `index.html`'s
+  convention. Any new screen's markup must use those exact ids for Enter-to-submit/advance/start to
+  keep working.
 - **Share** (`shareScore()`): draws a 1080×1080 canvas score card, uses `navigator.share({files})`
   where available (mobile/https → OS share sheet, e.g. Instagram) and falls back to a PNG download +
   clipboard-copied caption otherwise (always the fallback on `file://`, since share/clipboard need a

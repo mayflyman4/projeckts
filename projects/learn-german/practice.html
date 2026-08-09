@@ -63,11 +63,7 @@
             min-width: 20px;
             text-align: center;
         }
-        .score-pill.timer { color: white; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); }
-        .score-pill.timer.low { background: rgba(239,68,68,0.35); color: #FEE2E2; border-color: rgba(239,68,68,0.6); animation: pulse 1s infinite; }
         .score-pill.lives { color: white; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.35); letter-spacing: 2px; }
-
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 
         /* ── Progress + question counter ── */
         .progress-row {
@@ -148,32 +144,6 @@
         .blank-input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
         .blank-input.correct { border-color: #10B981; background: #ECFDF5; color: #065F46; }
         .blank-input.wrong { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
-
-        .hint-btn {
-            border: none;
-            background: none;
-            font-size: 16px;
-            cursor: pointer;
-            line-height: 1;
-            padding: 2px;
-        }
-
-        .hint-chips {
-            display: none;
-            flex-wrap: wrap;
-            gap: 6px;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            margin-top: 6px;
-            background: #F5F3FF;
-            border: 1px solid #E8E5FF;
-            border-radius: 10px;
-            padding: 8px;
-            z-index: 5;
-            width: max-content;
-        }
-        .hint-chips.visible { display: flex; }
 
         .chip {
             padding: 5px 12px;
@@ -283,8 +253,6 @@
         }
         .verb-prompt .pronoun { color: #7C3AED; }
 
-        .form-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-
         .chip.correct { background: #ECFDF5; border-color: #10B981; color: #065F46; }
         .chip.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
         .chip.disabled { pointer-events: none; opacity: 0.65; }
@@ -350,7 +318,6 @@
         <div class="app-title">🇩🇪 A1 Challenge</div>
         <div class="score-bar">
             <a class="back-link" href="./index.html">← Flashcards</a>
-            <span class="score-pill timer" id="timerPill"></span>
             <span class="score-pill lives" id="livesPill"></span>
         </div>
     </header>
@@ -366,9 +333,16 @@
 
     <script>
         // ── Quiz constants ──
-        const QUIZ_LEN = 25;
+        const QUIZ_LEN = 15;
         const MAX_LIVES = 3;
-        const DURATION_MS = 5 * 60 * 1000; // 5:00
+        const SECTIONS = [
+            { key: 'all',     label: '🎲 All sections' },
+            { key: 'blanks',  label: '📝 Fill in the Blanks' },
+            { key: 'builder', label: '🔤 Sentence Builder' },
+            { key: 'conj',    label: '🔁 Conjugation' },
+            { key: 'errors',  label: '🚫 Error Spotting' },
+            { key: 'wfrage',  label: '❓ W-Frage Builder' },
+        ];
 
         // ── Fallback exercise data — used when fetch fails (i.e. on file://). ──
         // Mirrors practice_exercises/*.yaml. Keep in sync by hand when editing those
@@ -665,7 +639,6 @@
 
         // ── DOM refs ──
         const contentWrap   = document.getElementById('contentWrap');
-        const timerPill     = document.getElementById('timerPill');
         const livesPill     = document.getElementById('livesPill');
         const progressRow   = document.getElementById('progressRow');
         const progressFill  = document.getElementById('progressFill');
@@ -695,8 +668,8 @@
 
         // ── Quiz state ──
         const quiz = {
-            deck: [], idx: 0, lives: MAX_LIVES, correct: 0,
-            cardResults: [], endsAt: 0, timerId: null,
+            deck: [], len: QUIZ_LEN, idx: 0, lives: MAX_LIVES, correct: 0,
+            cardResults: [], startedAt: 0,
         };
 
         // Records one sub-answer's correctness within the current card. A card
@@ -707,8 +680,8 @@
             quiz.cardResults.push(correct);
         }
 
-        function quizEnded({ answered, lives, timeLeft }) {
-            return answered >= QUIZ_LEN || lives <= 0 || timeLeft <= 0;
+        function quizEnded({ answered, lives, total }) {
+            return answered >= total || lives <= 0;
         }
 
         function formatTime(ms) {
@@ -760,10 +733,6 @@
                     <span class="blank-wrap">
                         <input class="blank-input${scaffold ? ' scaffold' : ''}" data-blank="${i}"
                                value="${escapeHtml(scaffold)}" autocomplete="off" autocorrect="off" spellcheck="false">
-                        <button class="hint-btn" data-hint="${i}" type="button" title="Show hint">💡</button>
-                        <span class="hint-chips" id="hintChips-${i}">
-                            ${tok.options.map(o => `<button class="chip" data-fill="${i}" data-val="${escapeHtml(o)}" type="button">${escapeHtml(o)}</button>`).join('')}
-                        </span>
                         <span class="correct-answer-note" id="answerNote-${i}" style="display:none"></span>
                     </span>`;
             }).join('');
@@ -771,7 +740,7 @@
             contentWrap.innerHTML = `
                 <div class="card">
                     <div class="card-title">${escapeHtml(para.title)}</div>
-                    <div class="card-sub">Fill in each blank. Tap 💡 for multiple-choice options.</div>
+                    <div class="card-sub">Fill in each blank, then check your answers.</div>
                     <div class="divider"></div>
                     <div class="paragraph" id="paraText">${html}</div>
                     <div id="resultBanner"></div>
@@ -780,18 +749,6 @@
                 </div>
             `;
 
-            contentWrap.querySelectorAll('.hint-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.getElementById(`hintChips-${btn.dataset.hint}`).classList.toggle('visible');
-                });
-            });
-            contentWrap.querySelectorAll('.chip').forEach(chip => {
-                chip.addEventListener('click', () => {
-                    const input = contentWrap.querySelector(`.blank-input[data-blank="${chip.dataset.fill}"]`);
-                    input.value = chip.dataset.val;
-                    input.classList.remove('scaffold', 'correct', 'wrong');
-                });
-            });
             const blankInputs = [...contentWrap.querySelectorAll('.blank-input')];
             blankInputs.forEach((input, i) => {
                 input.addEventListener('input', () => input.classList.remove('scaffold'), { once: true });
@@ -926,12 +883,10 @@
             contentWrap.innerHTML = `
                 <div class="card">
                     <div class="card-title">Conjugation Drill</div>
-                    <div class="card-sub">Type the correct present-tense form. Tap 💡 to see all forms.</div>
+                    <div class="card-sub">Type the correct present-tense form.</div>
                     <div class="divider"></div>
                     <div class="verb-prompt">${escapeHtml(verb.inf)} → <span class="pronoun">${escapeHtml(pronoun)}</span> ___</div>
                     <input class="blank-input" id="conjInput" style="width:100%; text-align:left" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Type the conjugated form…">
-                    <button class="hint-btn" id="conjHintBtn" type="button" style="align-self:center; font-size:22px" title="Show all forms">💡 Hint</button>
-                    <div class="form-chips" id="conjHintChips" style="display:none"></div>
                     <div id="resultBanner"></div>
                     <button class="btn-primary" id="checkBtn">Check</button>
                     <button class="btn-secondary" id="nextBtn" style="display:none">Next →</button>
@@ -939,14 +894,6 @@
             `;
 
             document.getElementById('conjInput').focus();
-            document.getElementById('conjHintBtn').addEventListener('click', () => {
-                const box = document.getElementById('conjHintChips');
-                box.style.display = box.style.display === 'none' ? 'flex' : 'none';
-                box.innerHTML = PRONOUNS.map(p => `<button class="chip" data-val="${escapeHtml(verb.forms[p])}" type="button">${escapeHtml(p)}: ${escapeHtml(verb.forms[p])}</button>`).join('');
-                box.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
-                    document.getElementById('conjInput').value = c.dataset.val;
-                }));
-            });
 
             document.getElementById('checkBtn').addEventListener('click', () => {
                 const input = document.getElementById('conjInput');
@@ -1020,37 +967,29 @@
             });
         }
 
-        // ── 5. Quiz controller — 25 questions across all 5 activities, 5:00, 3 lives ──
-        function buildDeck() {
+        // ── 5. Quiz controller — up to 15 questions, 3 lives, no clock during play ──
+        function buildDeck(section) {
             const entries = [];
-            DATA.blanks.forEach(item => entries.push({ type: 'blanks', item }));
-            DATA.builder.forEach(item => entries.push({ type: 'builder', item }));
-            DATA.conj.forEach(verb => entries.push({ type: 'conj', item: { verb, pronoun: PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)] } }));
-            DATA.errors.forEach(item => entries.push({ type: 'errors', item }));
-            DATA.wfrage.forEach(item => entries.push({ type: 'wfrage', item }));
+            const addConj = () => DATA.conj.forEach(verb =>
+                entries.push({ type: 'conj', item: { verb, pronoun: PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)] } }));
+            if (section === 'all') {
+                DATA.blanks.forEach(item => entries.push({ type: 'blanks', item }));
+                DATA.builder.forEach(item => entries.push({ type: 'builder', item }));
+                addConj();
+                DATA.errors.forEach(item => entries.push({ type: 'errors', item }));
+                DATA.wfrage.forEach(item => entries.push({ type: 'wfrage', item }));
+            } else if (section === 'conj') {
+                addConj();
+            } else {
+                DATA[section].forEach(item => entries.push({ type: section, item }));
+            }
             return shuffle(entries).slice(0, QUIZ_LEN);
         }
 
         function updateHeader() {
             livesPill.textContent = '❤️'.repeat(quiz.lives) + '🖤'.repeat(MAX_LIVES - quiz.lives);
-            progressLabel.textContent = `Question ${Math.min(quiz.idx + 1, QUIZ_LEN)} / ${QUIZ_LEN}`;
-            progressFill.style.width = `${(quiz.idx / QUIZ_LEN) * 100}%`;
-        }
-
-        function tick() {
-            const msLeft = Math.max(0, quiz.endsAt - Date.now());
-            timerPill.textContent = `⏱ ${formatTime(msLeft)}`;
-            timerPill.classList.toggle('low', msLeft <= 30000);
-            if (quizEnded({ answered: quiz.idx, lives: quiz.lives, timeLeft: msLeft })) {
-                endQuiz();
-            }
-        }
-
-        function startTimer() {
-            clearInterval(quiz.timerId);
-            quiz.endsAt = Date.now() + DURATION_MS;
-            tick();
-            quiz.timerId = setInterval(tick, 250);
+            progressLabel.textContent = `Question ${Math.min(quiz.idx + 1, quiz.len)} / ${quiz.len}`;
+            progressFill.style.width = `${(quiz.idx / quiz.len) * 100}%`;
         }
 
         function renderQuizCard() {
@@ -1063,8 +1002,7 @@
                 if (cardCorrect) quiz.correct++; else quiz.lives--;
                 quiz.idx++;
                 updateHeader();
-                const msLeft = Math.max(0, quiz.endsAt - Date.now());
-                if (quizEnded({ answered: quiz.idx, lives: quiz.lives, timeLeft: msLeft })) {
+                if (quizEnded({ answered: quiz.idx, lives: quiz.lives, total: quiz.len })) {
                     endQuiz();
                 } else {
                     renderQuizCard();
@@ -1080,70 +1018,68 @@
             })[entry.type]();
         }
 
-        function startQuiz() {
-            quiz.deck = buildDeck();
+        function startQuiz(section) {
+            quiz.deck = buildDeck(section);
+            quiz.len = quiz.deck.length;
             quiz.idx = 0;
             quiz.lives = MAX_LIVES;
             quiz.correct = 0;
             quiz.cardResults = [];
+            quiz.startedAt = Date.now();
             progressRow.style.display = 'block';
-            startTimer();
             renderQuizCard();
         }
 
         function endQuiz() {
-            clearInterval(quiz.timerId);
-            const timeLeft = Math.max(0, quiz.endsAt - Date.now());
-            const reason = quiz.lives <= 0 ? 'lives' : quiz.idx >= QUIZ_LEN ? 'complete' : 'time';
-            renderResult(reason, timeLeft);
+            const reason = quiz.lives <= 0 ? 'lives' : 'complete';
+            renderResult(reason);
         }
 
-        // ── Start screen ──
+        // ── Start screen — pick All sections or a single section ──
         function renderStart() {
             progressRow.style.display = 'none';
-            timerPill.textContent = '';
             livesPill.textContent = '';
             contentWrap.innerHTML = `
                 <div class="completion-card">
                     <div class="completion-emoji">🏆</div>
                     <div class="completion-title">A1 Challenge</div>
-                    <div class="completion-sub">25 questions · 5:00 on the clock · 3 lives</div>
-                    <div class="completion-sub">A wrong answer costs a life. Good luck!</div>
+                    <div class="completion-sub">${QUIZ_LEN} questions · 3 lives</div>
+                    <div class="completion-sub">A wrong answer costs a life. Pick a mode to start.</div>
                     <div class="completion-btns">
-                        <button class="btn-retry" id="btnStart">Start Challenge</button>
+                        ${SECTIONS.map(s => `<button class="${s.key === 'all' ? 'btn-retry' : 'btn-secondary'}"${s.key === 'all' ? ' id="btnStart"' : ''} data-section="${s.key}" type="button">${escapeHtml(s.label)}</button>`).join('')}
                     </div>
                 </div>
             `;
-            document.getElementById('btnStart').addEventListener('click', startQuiz);
+            contentWrap.querySelectorAll('[data-section]').forEach(btn => {
+                btn.addEventListener('click', () => startQuiz(btn.dataset.section));
+            });
         }
 
         // ── Result screen ──
-        function renderResult(reason, timeLeftMs) {
+        function renderResult(reason) {
             progressRow.style.display = 'none';
-            timerPill.textContent = '';
             livesPill.textContent = '';
 
-            const answered = quiz.idx;
-            const pct = answered ? Math.round((quiz.correct / answered) * 100) : 0;
+            const total = quiz.len;
+            const pct = total ? Math.round((quiz.correct / total) * 100) : 0;
             const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪';
             const livesUsed = MAX_LIVES - quiz.lives;
-            const elapsedStr = formatTime(DURATION_MS - timeLeftMs);
+            const elapsedStr = formatTime(Date.now() - quiz.startedAt);
             const reasonText = {
-                complete: '✅ Finished all 25!',
+                complete: `✅ Finished all ${total}!`,
                 lives:    '💔 Out of lives',
-                time:     '⏱ Time’s up',
             }[reason];
 
             contentWrap.innerHTML = `
                 <div class="completion-card">
                     <div class="completion-emoji">${emoji}</div>
                     <div class="completion-title">${reasonText}</div>
-                    <div class="completion-sub">${pct}% correct — ${quiz.correct} of ${answered} answered</div>
+                    <div class="completion-sub">${pct}% correct — ${quiz.correct} of ${total}</div>
                     <div class="completion-score">
                         <div class="completion-score-pill right">✓ ${quiz.correct} correct</div>
                         <div class="completion-score-pill wrong">${'❤️'.repeat(quiz.lives)}${'🖤'.repeat(livesUsed)}</div>
                     </div>
-                    <div class="completion-sub">${livesUsed} of ${MAX_LIVES} lives used · ${elapsedStr} on the clock</div>
+                    <div class="completion-sub">${livesUsed} of ${MAX_LIVES} lives used · finished in ${elapsedStr}</div>
                     <div class="completion-btns">
                         <button class="btn-secondary" id="btnShare">📤 Share score</button>
                         <button class="btn-retry" id="btnRetry">Retake ↻</button>
@@ -1155,7 +1091,7 @@
                 const btn = e.currentTarget;
                 const original = btn.textContent;
                 btn.disabled = true;
-                const result = await shareScore({ correct: quiz.correct, answered, livesUsed, timeStr: elapsedStr });
+                const result = await shareScore({ correct: quiz.correct, total, livesUsed, timeStr: elapsedStr });
                 btn.disabled = false;
                 btn.textContent = result === 'shared' ? '✓ Shared!' : '✓ Saved — caption copied!';
                 setTimeout(() => { btn.textContent = original; }, 2200);
@@ -1168,7 +1104,7 @@
         // Note: no web API posts directly to a specific app like Instagram — the
         // OS share sheet (navigator.share) is the closest, and only exists on
         // secure contexts, so it won't appear when opened via file://. ──
-        function drawScoreCard({ correct, answered, livesUsed, timeStr }) {
+        function drawScoreCard({ correct, total, livesUsed, timeStr }) {
             const canvas = document.createElement('canvas');
             canvas.width = 1080;
             canvas.height = 1080;
@@ -1186,7 +1122,7 @@
             ctx.fillText('🇩🇪 A1 German Challenge', 540, 250);
 
             ctx.font = '800 180px -apple-system, "Segoe UI", Roboto, sans-serif';
-            ctx.fillText(`${correct} / ${answered}`, 540, 490);
+            ctx.fillText(`${correct} / ${total}`, 540, 490);
 
             ctx.font = '400 48px -apple-system, "Segoe UI", Roboto, sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
@@ -1225,7 +1161,7 @@
         async function shareScore(scoreInfo) {
             const canvas = drawScoreCard(scoreInfo);
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.answered} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch`;
+            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.total} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch`;
 
             if (blob) {
                 const file = new File([blob], 'a1-challenge.png', { type: 'image/png' });
@@ -1263,10 +1199,9 @@
             console.assert(normalize('Frühstücke') === normalize('fruehstuecke'), 'normalize() umlaut mapping broken');
             console.assert(normalize('groß') === normalize('gross'), 'normalize() ß mapping broken');
             console.assert(normalize(' Ich   bin ') === normalize('ich bin'), 'normalize() whitespace/case handling broken');
-            console.assert(quizEnded({ answered: 25, lives: 3, timeLeft: 300000 }) === true, 'quizEnded() should end when all 25 answered');
-            console.assert(quizEnded({ answered: 0, lives: 0, timeLeft: 300000 }) === true, 'quizEnded() should end when out of lives');
-            console.assert(quizEnded({ answered: 0, lives: 3, timeLeft: 0 }) === true, 'quizEnded() should end when time is up');
-            console.assert(quizEnded({ answered: 10, lives: 3, timeLeft: 120000 }) === false, 'quizEnded() should not end mid-quiz');
+            console.assert(quizEnded({ answered: 15, lives: 3, total: 15 }) === true, 'quizEnded() should end when all questions answered');
+            console.assert(quizEnded({ answered: 0, lives: 0, total: 15 }) === true, 'quizEnded() should end when out of lives');
+            console.assert(quizEnded({ answered: 10, lives: 3, total: 15 }) === false, 'quizEnded() should not end mid-quiz');
         })();
 
         // ── Boot ──
