@@ -22,3 +22,13 @@
 - { context: "Mein Auto ist blau.", question: "Welche Farbe hat dein Auto?" }
 - { context: "Ich brauche ein Wörterbuch.", question: "Was brauchst du?" }
 - { context: "Die Bibliothek ist neben der Schule.", question: "Wo ist die Bibliothek?" }
+- { context: "Ich kaufe Brot in der Bäckerei.", question: "Wo kaufst du Brot?" }
+- { context: "Ich schreibe meinem Chef eine E-Mail.", question: "Wem schreibst du eine E-Mail?" }
+- { context: "Ich koche Reis zum Abendessen.", question: "Was kochst du zum Abendessen?" }
+- { context: "Ich höre gern Radio.", question: "Was hörst du gern?" }
+- { context: "Ich helfe meinem Vater im Garten.", question: "Wem hilfst du im Garten?" }
+- { context: "Der Zug bringt mich nach München.", question: "Wohin bringt dich der Zug?" }
+- { context: "Ich warte seit zehn Minuten auf den Bus.", question: "Wie lange wartest du auf den Bus?" }
+- { context: "Ich trinke morgens immer Kaffee.", question: "Was trinkst du morgens?" }
+- { context: "Ich sage meinen Namen am Telefon.", question: "Was sagst du am Telefon?" }
+- { context: "Ich gebe dem Verkäufer das Geld.", question: "Wem gibst du das Geld?" }

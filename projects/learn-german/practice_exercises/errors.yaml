@@ -21,3 +21,33 @@
 - { tokens: [Er, kann, sehr, gut, "schwimmt."], wrongIdx: 4, correct: schwimmen, options: [schwimmt, schwimmst, schwimmen] }
 - { tokens: [Ich, möchte, einen, Kaffee, "trinkst."], wrongIdx: 4, correct: trinken, options: [trinkst, trinkt, trinken] }
 - { tokens: [Wir, müssen, jetzt, "gehst."], wrongIdx: 3, correct: gehen, options: [gehst, geht, gehen] }
+- { tokens: [Du, musst, mir, "helfst."], wrongIdx: 3, correct: helfen, options: [helfst, hilft, helfen] }
+- { tokens: [Ich, gebe, die, Frau, ein, "Geschenk."], wrongIdx: 2, correct: der, options: [die, der, das] }
+- { tokens: [Du, sagt, nicht, die, "Adresse."], wrongIdx: 1, correct: sagst, options: [sagt, sagst, sage] }
+- { tokens: [Ich, trinke, kein, "Kaffee."], wrongIdx: 2, correct: keinen, options: [kein, keine, keinen] }
+- { tokens: [Wir, kaufen, zwei, "Brot."], wrongIdx: 3, correct: Brote, options: [Brot, Brote, Broten] }
+- { tokens: [Ich, warte, auf, der, "Bus."], wrongIdx: 3, correct: den, options: [der, dem, den] }
+- { tokens: [Er, bringt, einen, "Blume."], wrongIdx: 2, correct: eine, options: [einen, eine, ein] }
+- { tokens: [Ich, möchte, Musik, "hörst."], wrongIdx: 3, correct: hören, options: [hörst, hört, hören] }
+- { tokens: [Ich, helfe, die, "Schwester."], wrongIdx: 2, correct: der, options: [die, der, das] }
+- { tokens: [Sie, gibst, mir, die, "Rechnung."], wrongIdx: 1, correct: gibt, options: [gibst, gibt, geben] }
+- { tokens: [Ich, kann, gut, Deutsch, "sprichst."], wrongIdx: 4, correct: sprechen, options: [sprichst, spricht, sprechen] }
+- { tokens: [Wir, müssen, die, Rechnung, "bezahlst."], wrongIdx: 4, correct: bezahlen, options: [bezahlst, bezahlt, bezahlen] }
+- { tokens: [Ich, will, meine, Freunde, "triffst."], wrongIdx: 4, correct: treffen, options: [triffst, trifft, treffen] }
+- { tokens: [Du, darfst, hier, nicht, "schwimmst."], wrongIdx: 4, correct: schwimmen, options: [schwimmst, schwimmt, schwimmen] }
+- { tokens: [Ihr, sollt, eure, Eltern, "besuchst."], wrongIdx: 4, correct: besuchen, options: [besuchst, besucht, besuchen] }
+- { tokens: [Er, weißt, die, Antwort, "nicht."], wrongIdx: 1, correct: weiß, options: [weißt, weiß, wissen] }
+- { tokens: [Die, Kinder, mag, "Kuchen."], wrongIdx: 2, correct: mögen, options: [mag, magst, mögen] }
+- { tokens: [Der, Mann, stehst, vor, der, "Tür."], wrongIdx: 2, correct: steht, options: [stehst, steht, stehen] }
+- { tokens: [Das, Zimmer, kostest, fünfzig, "Euro."], wrongIdx: 2, correct: kostet, options: [kostest, kostet, kosten] }
+- { tokens: [Du, wäscht, das, "Auto."], wrongIdx: 1, correct: wäschst, options: [wäscht, wäschst, wasche] }
+- { tokens: [Ich, zeige, die, Frau, den, "Weg."], wrongIdx: 2, correct: der, options: [die, der, das] }
+- { tokens: [Ich, frage, der, "Lehrer."], wrongIdx: 2, correct: den, options: [der, dem, den] }
+- { tokens: [Ich, antworte, den, Lehrer, "nicht."], wrongIdx: 2, correct: dem, options: [den, dem, der] }
+- { tokens: [Ich, bekomme, einen, "Karte."], wrongIdx: 2, correct: eine, options: [einen, eine, ein] }
+- { tokens: [Ich, besuche, zwei, "Freund."], wrongIdx: 3, correct: Freunde, options: [Freund, Freunde, Freunds] }
+- { tokens: [Er, kauft, einen, große, "Tisch."], wrongIdx: 3, correct: großen, options: [große, großen, großes] }
+- { tokens: [Ich, verstehe, keine, "Wort."], wrongIdx: 2, correct: kein, options: [keine, kein, keinen] }
+- { tokens: [Wir, laufen, in, das, "Park."], wrongIdx: 3, correct: den, options: [das, dem, den] }
+- { tokens: [Ich, treffe, er, am, "Bahnhof."], wrongIdx: 2, correct: ihn, options: [er, ihn, ihm] }
+- { tokens: [Ich, besuche, mein, "Bruder."], wrongIdx: 2, correct: meinen, options: [mein, meinen, meine] }

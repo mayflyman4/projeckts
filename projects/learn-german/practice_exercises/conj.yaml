@@ -40,3 +40,63 @@
   forms: { ich: brauche, du: brauchst, "er/sie/es": braucht, wir: brauchen, ihr: braucht, "sie/Sie": brauchen }
 - inf: lernen
   forms: { ich: lerne, du: lernst, "er/sie/es": lernt, wir: lernen, ihr: lernt, "sie/Sie": lernen }
+- inf: trinken
+  forms: { ich: trinke, du: trinkst, "er/sie/es": trinkt, wir: trinken, ihr: trinkt, "sie/Sie": trinken }
+- inf: kaufen
+  forms: { ich: kaufe, du: kaufst, "er/sie/es": kauft, wir: kaufen, ihr: kauft, "sie/Sie": kaufen }
+- inf: kochen
+  forms: { ich: koche, du: kochst, "er/sie/es": kocht, wir: kochen, ihr: kocht, "sie/Sie": kochen }
+- inf: schreiben
+  forms: { ich: schreibe, du: schreibst, "er/sie/es": schreibt, wir: schreiben, ihr: schreibt, "sie/Sie": schreiben }
+- inf: hören
+  forms: { ich: höre, du: hörst, "er/sie/es": hört, wir: hören, ihr: hört, "sie/Sie": hören }
+- inf: sagen
+  forms: { ich: sage, du: sagst, "er/sie/es": sagt, wir: sagen, ihr: sagt, "sie/Sie": sagen }
+- inf: geben
+  forms: { ich: gebe, du: gibst, "er/sie/es": gibt, wir: geben, ihr: gebt, "sie/Sie": geben }
+- inf: helfen
+  forms: { ich: helfe, du: hilfst, "er/sie/es": hilft, wir: helfen, ihr: helft, "sie/Sie": helfen }
+- inf: bringen
+  forms: { ich: bringe, du: bringst, "er/sie/es": bringt, wir: bringen, ihr: bringt, "sie/Sie": bringen }
+- inf: warten
+  forms: { ich: warte, du: wartest, "er/sie/es": wartet, wir: warten, ihr: wartet, "sie/Sie": warten }
+- inf: können
+  forms: { ich: kann, du: kannst, "er/sie/es": kann, wir: können, ihr: könnt, "sie/Sie": können }
+- inf: müssen
+  forms: { ich: muss, du: musst, "er/sie/es": muss, wir: müssen, ihr: müsst, "sie/Sie": müssen }
+- inf: wollen
+  forms: { ich: will, du: willst, "er/sie/es": will, wir: wollen, ihr: wollt, "sie/Sie": wollen }
+- inf: sollen
+  forms: { ich: soll, du: sollst, "er/sie/es": soll, wir: sollen, ihr: sollt, "sie/Sie": sollen }
+- inf: dürfen
+  forms: { ich: darf, du: darfst, "er/sie/es": darf, wir: dürfen, ihr: dürft, "sie/Sie": dürfen }
+- inf: mögen
+  forms: { ich: mag, du: magst, "er/sie/es": mag, wir: mögen, ihr: mögt, "sie/Sie": mögen }
+- inf: wissen
+  forms: { ich: weiß, du: weißt, "er/sie/es": weiß, wir: wissen, ihr: wisst, "sie/Sie": wissen }
+- inf: kosten
+  forms: { ich: koste, du: kostest, "er/sie/es": kostet, wir: kosten, ihr: kostet, "sie/Sie": kosten }
+- inf: zeigen
+  forms: { ich: zeige, du: zeigst, "er/sie/es": zeigt, wir: zeigen, ihr: zeigt, "sie/Sie": zeigen }
+- inf: fragen
+  forms: { ich: frage, du: fragst, "er/sie/es": fragt, wir: fragen, ihr: fragt, "sie/Sie": fragen }
+- inf: antworten
+  forms: { ich: antworte, du: antwortest, "er/sie/es": antwortet, wir: antworten, ihr: antwortet, "sie/Sie": antworten }
+- inf: bezahlen
+  forms: { ich: bezahle, du: bezahlst, "er/sie/es": bezahlt, wir: bezahlen, ihr: bezahlt, "sie/Sie": bezahlen }
+- inf: treffen
+  forms: { ich: treffe, du: triffst, "er/sie/es": trifft, wir: treffen, ihr: trefft, "sie/Sie": treffen }
+- inf: besuchen
+  forms: { ich: besuche, du: besuchst, "er/sie/es": besucht, wir: besuchen, ihr: besucht, "sie/Sie": besuchen }
+- inf: verstehen
+  forms: { ich: verstehe, du: verstehst, "er/sie/es": versteht, wir: verstehen, ihr: versteht, "sie/Sie": verstehen }
+- inf: bekommen
+  forms: { ich: bekomme, du: bekommst, "er/sie/es": bekommt, wir: bekommen, ihr: bekommt, "sie/Sie": bekommen }
+- inf: schwimmen
+  forms: { ich: schwimme, du: schwimmst, "er/sie/es": schwimmt, wir: schwimmen, ihr: schwimmt, "sie/Sie": schwimmen }
+- inf: laufen
+  forms: { ich: laufe, du: läufst, "er/sie/es": läuft, wir: laufen, ihr: lauft, "sie/Sie": laufen }
+- inf: stehen
+  forms: { ich: stehe, du: stehst, "er/sie/es": steht, wir: stehen, ihr: steht, "sie/Sie": stehen }
+- inf: waschen
+  forms: { ich: wasche, du: wäschst, "er/sie/es": wäscht, wir: waschen, ihr: wascht, "sie/Sie": waschen }

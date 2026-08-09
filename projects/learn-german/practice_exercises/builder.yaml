@@ -21,3 +21,13 @@
 - { prompt: "We are going to the cinema tonight", answer: "Wir gehen heute Abend ins Kino" }
 - { prompt: "Please close the door", answer: "Bitte schließen Sie die Tür" }
 - { prompt: "My brother is older than me", answer: "Mein Bruder ist älter als ich" }
+- { prompt: "I drink coffee every morning", answer: "Ich trinke jeden Morgen Kaffee" }
+- { prompt: "She writes a letter", answer: "Sie schreibt einen Brief" }
+- { prompt: "We buy bread at the bakery", answer: "Wir kaufen Brot in der Bäckerei" }
+- { prompt: "He cooks dinner for his family", answer: "Er kocht Abendessen für seine Familie" }
+- { prompt: "I listen to the radio in the park", answer: "Ich höre Radio im Park" }
+- { prompt: "Can you give me the book?", answer: "Kannst du mir das Buch geben?" }
+- { prompt: "I always help my mother", answer: "Ich helfe immer meiner Mutter" }
+- { prompt: "They are waiting for the bus", answer: "Sie warten auf den Bus" }
+- { prompt: "Please bring me a glass of water", answer: "Bitte bringen Sie mir ein Glas Wasser" }
+- { prompt: "What do you say?", answer: "Was sagst du?" }
