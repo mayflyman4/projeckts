@@ -822,10 +822,75 @@
             return a;
         }
 
+        // ── number-word/digit equivalence (e.g. "fünf" === "5") ──
+        const GERMAN_ONES = { eins: 1, zwei: 2, drei: 3, vier: 4, fuenf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9 };
+        // "ein" (not "eins") is the compound-prefix form used in einundzwanzig, einhundert, eintausend.
+        // Deliberately NOT matched as a standalone token so the indefinite article "ein/eine/einen/..."
+        // used throughout the other vocab exercises is never misread as the numeral "1".
+        const GERMAN_ONES_PREFIX = { ein: 1, zwei: 2, drei: 3, vier: 4, fuenf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9 };
+        const GERMAN_TEENS = { zehn: 10, elf: 11, zwoelf: 12, dreizehn: 13, vierzehn: 14, fuenfzehn: 15, sechzehn: 16, siebzehn: 17, achtzehn: 18, neunzehn: 19 };
+        const GERMAN_TENS = { zwanzig: 20, dreissig: 30, vierzig: 40, fuenfzig: 50, sechzig: 60, siebzig: 70, achtzig: 80, neunzig: 90 };
+        const GERMAN_COMPOUND_TENS = (() => {
+            const m = {};
+            for (const [tw, tv] of Object.entries(GERMAN_TENS)) {
+                for (const [ow, ov] of Object.entries(GERMAN_ONES_PREFIX)) {
+                    m[ow + 'und' + tw] = tv + ov; // "einundzwanzig" -> 21, "fuenfundsechzig" -> 65
+                }
+            }
+            return m;
+        })();
+
+        function germanWordToNumber(token) {
+            if (token === 'null') return 0;
+            if (token in GERMAN_ONES) return GERMAN_ONES[token];
+            if (token in GERMAN_TEENS) return GERMAN_TEENS[token];
+            if (token in GERMAN_TENS) return GERMAN_TENS[token];
+            if (token in GERMAN_COMPOUND_TENS) return GERMAN_COMPOUND_TENS[token];
+
+            if (token.includes('hundert')) {
+                const idx = token.indexOf('hundert');
+                const prefix = token.slice(0, idx);
+                const suffix = token.slice(idx + 'hundert'.length);
+                let multiplier = 1;
+                if (prefix) {
+                    if (prefix !== 'ein' && !(prefix in GERMAN_ONES_PREFIX)) return null;
+                    multiplier = prefix === 'ein' ? 1 : GERMAN_ONES_PREFIX[prefix];
+                }
+                if (!suffix) return multiplier * 100;
+                const remainder = germanWordToNumber(suffix);
+                return (remainder == null || remainder >= 100) ? null : multiplier * 100 + remainder;
+            }
+
+            if (token.includes('tausend')) {
+                const idx = token.indexOf('tausend');
+                const prefix = token.slice(0, idx);
+                const suffix = token.slice(idx + 'tausend'.length);
+                let multiplier = 1;
+                if (prefix) {
+                    if (prefix === 'ein') {
+                        multiplier = 1;
+                    } else {
+                        const p = germanWordToNumber(prefix);
+                        if (p == null) return null;
+                        multiplier = p;
+                    }
+                }
+                if (!suffix) return multiplier * 1000;
+                const remainder = germanWordToNumber(suffix);
+                return remainder == null ? null : multiplier * 1000 + remainder;
+            }
+
+            return null;
+        }
+
         function normalize(s) {
-            return String(s).trim().toLowerCase()
+            const folded = String(s).trim().toLowerCase()
                 .replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae')
                 .replace(/ß/g, 'ss').replace(/\s+/g, ' ');
+            return folded.split(' ').map(tok => {
+                const n = germanWordToNumber(tok);
+                return n != null ? String(n) : tok;
+            }).join(' ');
         }
 
         function escapeHtml(s) {
