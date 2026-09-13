@@ -3,6 +3,15 @@
 A1 German study app. Two static, self-contained HTML pages — **no build step, no bundler,
 no npm, no framework**. Both must keep working when opened directly as a `file://` URL.
 
+**Scoped exception (F8 — account/Google Sign-In):** the `functions/` directory is a
+deliberate, narrow exception to the "no backend" rule above — see the
+[Account backend](#account-backend-f8--google-sign-in) section near the end of this
+file. Login cannot work over `file://` or without server-side token verification, so
+that one feature gets a small Cloudflare Pages Functions backend + D1 database.
+Everything else in both HTML files remains 100% static and still works over `file://`
+exactly as before — don't let this exception creep into any other feature without
+checking with the user first.
+
 ## Files
 
 | Path | What it is |
@@ -14,6 +23,9 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
 | `practice_exercises/<section>.yaml` | One `practice.html` activity's exercises (blanks/builder/conj/errors/wfrage) |
 | `a1-wortliste.txt` | Official Goethe A1 word list (~650 words) — grep before adding new vocab/verbs to confirm it's genuinely A1 |
 | `mock_test/uebungstest_1.md` | Reference telc exam extract — **not wired into the UI**, just study reference |
+| `functions/` | Cloudflare Pages Functions backend for Google Sign-In only — see below |
+| `schema.sql` | D1 table definition for the `users` table (run by hand via the Cloudflare dashboard's D1 Console — no wrangler CLI is used in this project) |
+| `privacy.html`, `impressum.html` | GDPR privacy policy + German legal notice, footer-linked from both HTML pages |
 
 ## `index.html` — flashcard app
 
@@ -129,3 +141,56 @@ Architecture:
    ```
 2. Then actually open it — `open index.html` / `open practice.html` — both work directly via
    `file://`, no server needed. Click through the change before calling it done.
+
+   If `node` isn't installed in your environment, `osascript -l JavaScript` (JXA, built
+   into macOS) can run the same `new Function(script)` syntax check — extract the
+   `<script>...</script>` contents to a temp `.js` file first (matching the exact source
+   bytes matters — building the string through a shell command that reinterprets escapes,
+   e.g. `python -c "...\n..."`, can silently corrupt it) and read it back with
+   `$.NSString.stringWithContentsOfFileEncodingError(...)`.
+
+## Account backend (F8 — Google Sign-In)
+
+A small, deliberate exception to this file's "no backend" rule at the top — see that
+note before touching anything below.
+
+- **What it's for**: "just identity" — showing who's signed in, nothing else depends on
+  it yet. Don't build features that assume a signed-in user without checking with the
+  user first; that would be a bigger step than what was originally agreed.
+- **Flow**: Google Identity Services (GIS) client-side SDK — not a redirect/OAuth-code
+  flow, no client secret anywhere. The `Sign in with Google` pill in the header is the
+  gate: nothing loads from Google until it's clicked (deliberate data-minimization —
+  no third-party request happens before an explicit user action). Click →
+  lazy-inject `accounts.google.com/gsi/client` → `google.accounts.id.renderButton(...)`
+  into a popover so the user clicks Google's own official button → the returned ID
+  token (JWT) is POSTed to `/api/auth/google`.
+- **Backend**: `functions/` is a Cloudflare Pages Functions app (plain JS, file-based
+  routing, auto-bundled by Cloudflare with esbuild — no bundler config needed on our
+  end). Four endpoints: `POST /api/auth/google` (verify token, upsert D1 row, set
+  session cookie), `GET /api/me` (verify session cookie, return `{email,name}`),
+  `POST /api/logout`, `POST /api/account/delete` (GDPR erasure). Shared logic lives in
+  `functions/_lib/session.js` (HMAC-signed, **stateless** session token — no D1 read on
+  `/api/me`) and `functions/_lib/google.js` (verifies the Google ID token against
+  Google's JWKS via Web Crypto, no external JWT library).
+- **Session lifetime is 7 days, not something longer** — this is a deliberate tradeoff:
+  since sessions are stateless, deleting a user's D1 row doesn't revoke tokens already
+  issued to other devices. Keeping the lifetime short bounds that exposure window
+  instead of adding a D1 read to the `/api/me` hot path. Don't extend this without
+  reconsidering that tradeoff.
+- **No CSRF token, and this is intentional**: `SameSite=Lax` on the `__Host-session`
+  cookie plus a `Content-Type: application/json` check on every mutating endpoint is
+  the whole defense (cross-site form submits can't set that header without a CORS
+  preflight, which these endpoints never allow). **Never add CORS headers** to any
+  `/api/*` endpoint — that would undo this.
+- **Widget is duplicated, not shared**: `index.html` and `practice.html` each have their
+  own independent copy of the entire account widget (CSS, DOM refs, all the JS
+  functions) — same convention this file already documents for `normalize()`/`shuffle()`.
+  There's no shared-include mechanism in this codebase and none should be introduced
+  just for this. If you change the widget's behavior, change it in both files.
+- **`GOOGLE_CLIENT_ID` is a plaintext constant** near the top of each file's account
+  section — Google Client IDs are public by design (unlike the client secret, which
+  this design never uses anywhere).
+- **Infra note for anyone touching Cloudflare Pages settings**: Pages Functions are
+  discovered relative to the project's *Root Directory* setting, not its Build output
+  directory — this project's Root Directory is set to `projects/learn-german` (with
+  Build output directory `.`) specifically so `functions/` here gets picked up.

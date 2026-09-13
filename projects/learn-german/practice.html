@@ -65,6 +65,65 @@
         }
         .score-pill.lives { color: white; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.35); letter-spacing: 2px; }
 
+        /* ── F8: account (Google Sign-In) — kept identical to index.html's copy ── */
+        .account-widget {
+            position: relative;
+        }
+
+        .account-popover {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 20;
+            min-width: 220px;
+            padding: 14px;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .account-popover-email {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4F46E5;
+            word-break: break-all;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(79,70,229,0.15);
+        }
+
+        .account-popover-item {
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(79,70,229,0.08);
+            color: #1e1b4b;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .account-popover-item:hover { background: rgba(79,70,229,0.16); }
+        .account-popover-item.danger { color: #B91C1C; background: rgba(239,68,68,0.08); }
+        .account-popover-item.danger:hover { background: rgba(239,68,68,0.16); }
+
+        .site-footer {
+            width: 100%;
+            max-width: 760px;
+            padding: 24px 20px 32px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .site-footer a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        .site-footer a:hover { color: white; text-decoration: underline; }
+
         /* ── Progress + question counter ── */
         .progress-row {
             width: 100%;
@@ -360,6 +419,10 @@
         <div class="score-bar">
             <a class="back-link" href="./index.html">← Flashcards</a>
             <span class="score-pill lives" id="livesPill"></span>
+            <div class="account-widget">
+                <button class="mock-test-link" id="accountBtn" type="button">Sign in with Google</button>
+                <div class="account-popover" id="accountPopover" hidden></div>
+            </div>
         </div>
     </header>
 
@@ -371,6 +434,11 @@
     </div>
 
     <div class="content-wrap" id="contentWrap"></div>
+
+    <footer class="site-footer">
+        <a href="./privacy.html">Privacy</a>
+        <a href="./impressum.html">Impressum</a>
+    </footer>
 
     <script>
         // ── Quiz constants ──
@@ -770,6 +838,8 @@
         const progressRow   = document.getElementById('progressRow');
         const progressFill  = document.getElementById('progressFill');
         const progressLabel = document.getElementById('progressLabel');
+        const accountBtn     = document.getElementById('accountBtn');
+        const accountPopover = document.getElementById('accountPopover');
 
         // ── Utilities (umlaut-tolerant matching, same as index.html — keep identical) ──
         function shuffle(arr) {
@@ -1365,8 +1435,121 @@
             console.assert(quizEnded({ answered: 10, lives: 3, total: 15 }) === false, 'quizEnded() should not end mid-quiz');
         })();
 
+        // ── F8: account (Google Sign-In) — kept identical to index.html's copy ──
+        // Replace with the Client ID from Google Cloud Console → Credentials.
+        // Client IDs are public by design (unlike a client secret, which this app never uses).
+        const GOOGLE_CLIENT_ID = '710309459063-n2a5iiksoc0ngsstejv2qee7j9oscjvo.apps.googleusercontent.com';
+        let gsiScriptLoaded = false;
+        let currentUser = null;
+
+        function loadGsiScript() {
+            return new Promise((resolve, reject) => {
+                if (gsiScriptLoaded) return resolve();
+                const s = document.createElement('script');
+                s.src = 'https://accounts.google.com/gsi/client';
+                s.async = true;
+                s.defer = true;
+                s.onload = () => { gsiScriptLoaded = true; resolve(); };
+                s.onerror = reject;
+                document.head.appendChild(s);
+            });
+        }
+
+        async function fetchMe() {
+            try {
+                const res = await fetch('/api/me');
+                if (!res.ok) return null;
+                return await res.json();
+            } catch {
+                return null; // network error, or running under file:// — treat as signed out
+            }
+        }
+
+        function closeAccountPopover() {
+            accountPopover.hidden = true;
+        }
+
+        function renderAccountUI() {
+            if (currentUser) {
+                accountBtn.textContent = currentUser.name || currentUser.email;
+                accountPopover.innerHTML = `
+                    <div class="account-popover-email">${escapeHtml(currentUser.email)}</div>
+                    <button class="account-popover-item" id="signOutBtn" type="button">Sign out</button>
+                    <button class="account-popover-item danger" id="deleteAccountBtn" type="button">Delete account</button>
+                `;
+            } else {
+                accountBtn.textContent = 'Sign in with Google';
+                accountPopover.innerHTML = '<div id="gsiButtonContainer"></div>';
+            }
+        }
+
+        async function openAccountPopover() {
+            accountPopover.hidden = !accountPopover.hidden;
+            if (accountPopover.hidden || currentUser) return;
+
+            try {
+                await loadGsiScript();
+                google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
+                google.accounts.id.renderButton(document.getElementById('gsiButtonContainer'), { theme: 'outline', size: 'large' });
+            } catch {
+                accountPopover.innerHTML = '<div class="account-popover-email">Sign-in unavailable right now.</div>';
+            }
+        }
+
+        async function handleCredentialResponse(response) {
+            try {
+                const res = await fetch('/api/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credential: response.credential }),
+                });
+                if (!res.ok) throw new Error('sign-in failed');
+                currentUser = await res.json();
+            } catch {
+                currentUser = null;
+            }
+            closeAccountPopover();
+            renderAccountUI();
+        }
+
+        async function signOut() {
+            try {
+                await fetch('/api/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+            } catch { /* best-effort */ }
+            currentUser = null;
+            closeAccountPopover();
+            renderAccountUI();
+        }
+
+        async function deleteAccount() {
+            const btn = document.getElementById('deleteAccountBtn');
+            if (btn && btn.dataset.confirm !== '1') {
+                btn.dataset.confirm = '1';
+                btn.textContent = 'Really delete? Click again';
+                return;
+            }
+            try {
+                await fetch('/api/account/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+            } catch { /* best-effort */ }
+            currentUser = null;
+            closeAccountPopover();
+            renderAccountUI();
+        }
+
         // ── Boot ──
         (async function boot() {
+            renderAccountUI();
+            fetchMe().then(user => { currentUser = user; renderAccountUI(); });
+
+            accountBtn.addEventListener('click', () => openAccountPopover());
+            accountPopover.addEventListener('click', e => {
+                if (e.target.id === 'signOutBtn') signOut();
+                if (e.target.id === 'deleteAccountBtn') deleteAccount();
+            });
+            document.addEventListener('click', e => {
+                if (!accountPopover.hidden && !e.target.closest('.account-widget')) closeAccountPopover();
+            });
+
             DATA = await loadPracticeData();
             renderStart();
         })();
