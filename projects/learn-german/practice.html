@@ -7,6 +7,65 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇩🇪</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <style>
+        :root {
+            --card-bg: #ffffff;
+            --card-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            --text-primary: #1E1B4B;
+            --text-secondary: #6B7280;
+            --divider: #E8E5FF;
+            --input-border: #C7D2FE;
+            --input-text: #1E1B4B;
+            --input-bg: #ffffff;
+            --input-placeholder: #9CA3AF;
+            --input-correct-bg: #ECFDF5; --input-correct-text: #065F46; --input-correct-border: #10B981;
+            --input-wrong-bg: #FEF2F2;   --input-wrong-text: #991B1B;  --input-wrong-border: #EF4444;
+            --hint-bg: #F5F3FF; --hint-border: #E8E5FF; --hint-color: #4F46E5;
+            --chip-bg: #ffffff; --chip-border: #C7D2FE; --chip-color: #4F46E5;
+            --chip-hover: #EEF2FF;
+            --word-chip-bg: #EEF2FF; --word-chip-border: #C7D2FE; --word-chip-color: #1E1B4B;
+            --word-chip-hover: #E0E7FF;
+            --sentence-line-border: #C7D2FE;
+            --result-ok-bg: #D1FAE5; --result-ok-color: #065F46;
+            --result-warn-bg: #FEF3C7; --result-warn-color: #92400E;
+            --secondary-btn-color: #4F46E5; --secondary-btn-bg: #EEF2FF; --secondary-btn-border: #C7D2FE;
+            --secondary-btn-hover: #E0E7FF;
+            --challenge-url-bg: #EEF2FF; --challenge-url-border: #C7D2FE; --challenge-url-color: #4F46E5;
+            --completion-right-bg: #D1FAE5; --completion-right-color: #065F46;
+            --completion-wrong-bg: #FEE2E2; --completion-wrong-color: #991B1B;
+            --verb-prompt-color: #1E1B4B;
+            --wrong-note-color: #991B1B;
+            --status-color: #6B7280;
+        }
+        html.dark {
+            --card-bg: #1a1730;
+            --card-shadow: 0 20px 60px rgba(0,0,0,0.55);
+            --text-primary: #E0E7FF;
+            --text-secondary: #9CA3AF;
+            --divider: #2D2B5E;
+            --input-border: #4338CA;
+            --input-text: #E0E7FF;
+            --input-bg: #211E47;
+            --input-placeholder: #6366F1;
+            --input-correct-bg: #064E3B; --input-correct-text: #6EE7B7; --input-correct-border: #10B981;
+            --input-wrong-bg: #450A0A;   --input-wrong-text: #FCA5A5;  --input-wrong-border: #EF4444;
+            --hint-bg: #211E47; --hint-border: #4338CA; --hint-color: #A78BFA;
+            --chip-bg: #211E47; --chip-border: #4338CA; --chip-color: #A78BFA;
+            --chip-hover: #2D2570;
+            --word-chip-bg: #2D2570; --word-chip-border: #4338CA; --word-chip-color: #E0E7FF;
+            --word-chip-hover: #312E7B;
+            --sentence-line-border: #4338CA;
+            --result-ok-bg: #064E3B; --result-ok-color: #6EE7B7;
+            --result-warn-bg: #451A03; --result-warn-color: #FDE68A;
+            --secondary-btn-color: #A78BFA; --secondary-btn-bg: #2D2570; --secondary-btn-border: #4338CA;
+            --secondary-btn-hover: #312E7B;
+            --challenge-url-bg: #2D2570; --challenge-url-border: #4338CA; --challenge-url-color: #A78BFA;
+            --completion-right-bg: #064E3B; --completion-right-color: #6EE7B7;
+            --completion-wrong-bg: #450A0A; --completion-wrong-color: #FCA5A5;
+            --verb-prompt-color: #E0E7FF;
+            --wrong-note-color: #FCA5A5;
+            --status-color: #9CA3AF;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
@@ -117,29 +176,30 @@
         }
 
         .card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            box-shadow: var(--card-shadow);
             padding: 28px 26px;
             display: flex;
             flex-direction: column;
             gap: 18px;
+            transition: background 0.25s;
         }
 
         .card-title {
             font-size: 18px;
             font-weight: 800;
-            color: #1E1B4B;
+            color: var(--text-primary);
         }
 
-        .card-sub { font-size: 13px; color: #6B7280; margin-top: -12px; }
+        .card-sub { font-size: 13px; color: var(--text-secondary); margin-top: -12px; }
 
-        .divider { height: 1px; background: #E8E5FF; }
+        .divider { height: 1px; background: var(--divider); }
 
         .paragraph {
             font-size: 19px;
             line-height: 2.1;
-            color: #1E1B4B;
+            color: var(--text-primary);
         }
 
         /* blanks */
@@ -150,16 +210,17 @@
             padding: 4px 8px;
             font-size: 17px;
             font-family: inherit;
-            border: 2px solid #C7D2FE;
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             text-align: center;
-            color: #1E1B4B;
+            color: var(--input-text);
+            background: var(--input-bg);
             outline: none;
         }
-        .blank-input.scaffold { color: #9CA3AF; }
+        .blank-input.scaffold { color: var(--input-placeholder); }
         .blank-input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
-        .blank-input.correct { border-color: #10B981; background: #ECFDF5; color: #065F46; }
-        .blank-input.wrong { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
+        .blank-input.correct { border-color: var(--input-correct-border); background: var(--input-correct-bg); color: var(--input-correct-text); }
+        .blank-input.wrong   { border-color: var(--input-wrong-border);   background: var(--input-wrong-bg);   color: var(--input-wrong-text); }
 
         .hint-btn {
             border: none;
@@ -175,13 +236,13 @@
             top: 100%;
             left: 0;
             margin-top: 6px;
-            background: #F5F3FF;
-            border: 1px solid #E8E5FF;
+            background: var(--hint-bg);
+            border: 1px solid var(--hint-border);
             border-radius: 10px;
             padding: 8px 12px;
             font-size: 13px;
             font-weight: 600;
-            color: #4F46E5;
+            color: var(--hint-color);
             z-index: 5;
             width: max-content;
             max-width: 220px;
@@ -191,9 +252,9 @@
         .chip {
             padding: 5px 12px;
             border-radius: 999px;
-            border: 1.5px solid #C7D2FE;
-            background: white;
-            color: #4F46E5;
+            border: 1.5px solid var(--chip-border);
+            background: var(--chip-bg);
+            color: var(--chip-color);
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
@@ -201,13 +262,13 @@
             white-space: nowrap;
             transition: background 0.15s, transform 0.1s;
         }
-        .chip:hover { background: #EEF2FF; transform: translateY(-1px); }
+        .chip:hover { background: var(--chip-hover); transform: translateY(-1px); }
 
         .correct-answer-note {
             display: block;
             font-size: 12px;
             font-weight: 700;
-            color: #991B1B;
+            color: var(--wrong-note-color);
             margin-top: -8px;
         }
 
@@ -228,14 +289,14 @@
             padding: 14px;
             font-size: 16px;
             font-weight: 700;
-            color: #4F46E5;
-            background: #EEF2FF;
-            border: 2px solid #C7D2FE;
+            color: var(--secondary-btn-color);
+            background: var(--secondary-btn-bg);
+            border: 2px solid var(--secondary-btn-border);
             border-radius: 14px;
             cursor: pointer;
             transition: background 0.18s, transform 0.15s;
         }
-        .btn-secondary:hover { background: #E0E7FF; transform: translateY(-1px); }
+        .btn-secondary:hover { background: var(--secondary-btn-hover); transform: translateY(-1px); }
         .btn-secondary:disabled { opacity: 0.6; cursor: default; transform: none; }
 
         .result-banner {
@@ -245,20 +306,20 @@
             border-radius: 12px;
             text-align: center;
         }
-        .result-banner.ok { background: #D1FAE5; color: #065F46; }
-        .result-banner.some-wrong { background: #FEF3C7; color: #92400E; }
+        .result-banner.ok { background: var(--result-ok-bg); color: var(--result-ok-color); }
+        .result-banner.some-wrong { background: var(--result-warn-bg); color: var(--result-warn-color); }
 
         /* ── Sentence builder ── */
         .prompt-en {
             font-size: 20px;
             font-weight: 700;
-            color: #1E1B4B;
+            color: var(--text-primary);
             text-align: center;
         }
 
         .sentence-line {
             min-height: 52px;
-            border: 2px dashed #C7D2FE;
+            border: 2px dashed var(--sentence-line-border);
             border-radius: 12px;
             padding: 10px;
             display: flex;
@@ -276,45 +337,45 @@
         .word-chip {
             padding: 8px 14px;
             border-radius: 10px;
-            border: 2px solid #C7D2FE;
-            background: #EEF2FF;
-            color: #1E1B4B;
+            border: 2px solid var(--word-chip-border);
+            background: var(--word-chip-bg);
+            color: var(--word-chip-color);
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
         }
-        .word-chip:hover { background: #E0E7FF; }
-        .word-chip.placed { background: white; border-color: #A5B4FC; }
+        .word-chip:hover { background: var(--word-chip-hover); }
+        .word-chip.placed { background: var(--card-bg); border-color: #A5B4FC; }
 
         /* ── Conjugation / article prompt ── */
         .verb-prompt {
             font-size: 22px;
             font-weight: 800;
-            color: #1E1B4B;
+            color: var(--verb-prompt-color);
             text-align: center;
         }
         .verb-prompt .pronoun { color: #7C3AED; }
 
-        .chip.correct { background: #ECFDF5; border-color: #10B981; color: #065F46; }
-        .chip.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
+        .chip.correct { background: var(--input-correct-bg); border-color: var(--input-correct-border); color: var(--input-correct-text); }
+        .chip.wrong   { background: var(--input-wrong-bg);   border-color: var(--input-wrong-border);   color: var(--input-wrong-text); }
         .chip.disabled { pointer-events: none; opacity: 0.65; }
 
         /* ── Error Spotting ── */
         .error-sentence { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-        .word-chip.flagged { border-color: #EF4444; background: #FEF2F2; color: #991B1B; }
+        .word-chip.flagged { border-color: var(--input-wrong-border); background: var(--input-wrong-bg); color: var(--input-wrong-text); }
         .word-chip.muted { opacity: 0.55; }
         .word-chip.disabled { pointer-events: none; }
         .fix-chips { display: none; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .fix-chips.visible { display: flex; }
 
-        .status-msg { color: #6B7280; text-align: center; padding: 20px; }
+        .status-msg { color: var(--status-color); text-align: center; padding: 20px; }
 
         /* ── Start + completion screens ── */
         .completion-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            box-shadow: var(--card-shadow);
             padding: 40px 28px;
             text-align: center;
             display: flex;
@@ -322,24 +383,25 @@
             align-items: center;
             gap: 18px;
             animation: fadeSlideUp 0.35s ease;
+            transition: background 0.25s;
         }
         .completion-emoji { font-size: 52px; }
-        .completion-title { font-size: 26px; font-weight: 800; color: #1E1B4B; }
-        .completion-sub { font-size: 15px; color: #6B7280; }
-        .completion-highlight { font-size: 19px; font-weight: 600; color: #1E1B4B; }
+        .completion-title { font-size: 26px; font-weight: 800; color: var(--text-primary); }
+        .completion-sub { font-size: 15px; color: var(--text-secondary); }
+        .completion-highlight { font-size: 19px; font-weight: 600; color: var(--text-primary); }
         .completion-highlight strong { color: #7C3AED; }
         .completion-score { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
         .completion-score-pill { padding: 10px 22px; border-radius: 14px; font-size: 18px; font-weight: 800; }
-        .completion-score-pill.right { background: #D1FAE5; color: #065F46; }
-        .completion-score-pill.wrong { background: #FEE2E2; color: #991B1B; }
+        .completion-score-pill.right { background: var(--completion-right-bg); color: var(--completion-right-color); }
+        .completion-score-pill.wrong { background: var(--completion-wrong-bg); color: var(--completion-wrong-color); }
         .challenge-friend { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .challenge-url {
             font-family: ui-monospace, SFMono-Regular, monospace;
             font-size: 13px;
             font-weight: 700;
-            color: #4F46E5;
-            background: #EEF2FF;
-            border: 1.5px dashed #C7D2FE;
+            color: var(--challenge-url-color);
+            background: var(--challenge-url-bg);
+            border: 1.5px dashed var(--challenge-url-border);
             border-radius: 10px;
             padding: 8px 14px;
             word-break: break-all;
@@ -367,6 +429,19 @@
             .card { padding: 22px 18px; }
             .paragraph { font-size: 17px; line-height: 2.3; }
         }
+
+        .theme-toggle {
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 16px;
+            border: 1.5px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.12);
+            cursor: pointer;
+            line-height: 1;
+            transition: background 0.18s;
+            flex-shrink: 0;
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.25); }
     </style>
 </head>
 <body>
@@ -376,6 +451,7 @@
         <div class="score-bar">
             <a class="back-link" href="./index.html">← Flashcards</a>
             <span class="score-pill lives" id="livesPill"></span>
+            <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
         </div>
     </header>
 
@@ -393,6 +469,15 @@
     </footer>
 
     <script>
+        // ── Theme toggle ──
+        (function() {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+
         // ── Quiz constants ──
         const QUIZ_LEN = 15;
         const MAX_LIVES = 3;
@@ -1388,6 +1473,20 @@
         (async function boot() {
             DATA = await loadPracticeData();
             renderStart();
+        })();
+
+        // ── Theme toggle wiring ──
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            function applyTheme(dark) {
+                document.documentElement.classList.toggle('dark', dark);
+                themeToggle.textContent = dark ? '☀️' : '🌙';
+                localStorage.setItem('theme', dark ? 'dark' : 'light');
+            }
+            applyTheme(document.documentElement.classList.contains('dark'));
+            themeToggle.addEventListener('click', () => {
+                applyTheme(!document.documentElement.classList.contains('dark'));
+            });
         })();
     </script>
 </body>
