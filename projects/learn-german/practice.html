@@ -34,9 +34,11 @@
             font-size: clamp(18px, 5vw, 26px);
             font-weight: 800;
             letter-spacing: -0.5px;
+            flex-shrink: 1;
+            min-width: 0;
         }
 
-        .score-bar { display: flex; align-items: center; gap: 10px; }
+        .score-bar { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
         .back-link, .mock-test-link {
             padding: 6px 14px;

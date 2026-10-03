@@ -26,7 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -35,21 +35,25 @@
             font-size: clamp(20px, 5vw, 28px);
             font-weight: 800;
             letter-spacing: -0.5px;
+            flex-shrink: 1;
+            min-width: 0;
         }
 
 
         .score-bar {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             font-size: 15px;
             font-weight: 700;
+            flex-shrink: 0;
         }
 
         .score-pill {
-            padding: 5px 14px;
+            padding: 5px 10px;
             border-radius: 999px;
             font-size: 14px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .score-pill.right {
