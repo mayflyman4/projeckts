@@ -31,3 +31,102 @@
 - { prompt: "They are waiting for the bus", answer: "Sie warten auf den Bus" }
 - { prompt: "Please bring me a glass of water", answer: "Bitte bringen Sie mir ein Glas Wasser" }
 - { prompt: "What do you say?", answer: "Was sagst du?" }
+- { prompt: "Where do you live?", answer: "Wo wohnst du?" }
+- { prompt: "I am from Germany", answer: "Ich komme aus Deutschland" }
+- { prompt: "How old are you?", answer: "Wie alt bist du?" }
+- { prompt: "I am 25 years old", answer: "Ich bin 25 Jahre alt" }
+- { prompt: "Do you speak German?", answer: "Sprichst du Deutsch?" }
+- { prompt: "I don't understand", answer: "Ich verstehe nicht" }
+- { prompt: "Can you speak more slowly?", answer: "Können Sie langsamer sprechen?" }
+- { prompt: "What does that mean?", answer: "Was bedeutet das?" }
+- { prompt: "I need a doctor", answer: "Ich brauche einen Arzt" }
+- { prompt: "Where is the train station?", answer: "Wo ist der Bahnhof?" }
+- { prompt: "The train arrives at 10 o'clock", answer: "Der Zug kommt um 10 Uhr an" }
+- { prompt: "I would like a single room", answer: "Ich möchte ein Einzelzimmer" }
+- { prompt: "How much does this cost?", answer: "Wie viel kostet das?" }
+- { prompt: "That is too expensive", answer: "Das ist zu teuer" }
+- { prompt: "I take this one", answer: "Ich nehme das" }
+- { prompt: "Where can I pay?", answer: "Wo kann ich bezahlen?" }
+- { prompt: "The bill please", answer: "Die Rechnung bitte" }
+- { prompt: "I am hungry", answer: "Ich habe Hunger" }
+- { prompt: "I am thirsty", answer: "Ich habe Durst" }
+- { prompt: "What would you like to eat?", answer: "Was möchten Sie essen?" }
+- { prompt: "The food tastes good", answer: "Das Essen schmeckt gut" }
+- { prompt: "I don't eat meat", answer: "Ich esse kein Fleisch" }
+- { prompt: "Two coffees please", answer: "Zwei Kaffee bitte" }
+- { prompt: "A glass of water please", answer: "Ein Glas Wasser bitte" }
+- { prompt: "Is the seat free?", answer: "Ist der Platz frei?" }
+- { prompt: "I am looking for my hotel", answer: "Ich suche mein Hotel" }
+- { prompt: "Turn left at the corner", answer: "Biegen Sie an der Ecke links ab" }
+- { prompt: "Go straight ahead", answer: "Gehen Sie geradeaus" }
+- { prompt: "The supermarket is on the right", answer: "Der Supermarkt ist rechts" }
+- { prompt: "I have a headache", answer: "Ich habe Kopfschmerzen" }
+- { prompt: "I am tired", answer: "Ich bin müde" }
+- { prompt: "I am cold", answer: "Mir ist kalt" }
+- { prompt: "It is raining today", answer: "Es regnet heute" }
+- { prompt: "The sun is shining", answer: "Die Sonne scheint" }
+- { prompt: "What is the weather like today?", answer: "Wie ist das Wetter heute?" }
+- { prompt: "In winter it snows often", answer: "Im Winter schneit es oft" }
+- { prompt: "My father is a doctor", answer: "Mein Vater ist Arzt" }
+- { prompt: "I have two brothers", answer: "Ich habe zwei Brüder" }
+- { prompt: "My sister is younger than me", answer: "Meine Schwester ist jünger als ich" }
+- { prompt: "We are going to visit our grandparents", answer: "Wir besuchen unsere Großeltern" }
+- { prompt: "I live in an apartment", answer: "Ich wohne in einer Wohnung" }
+- { prompt: "The apartment has three rooms", answer: "Die Wohnung hat drei Zimmer" }
+- { prompt: "I pay 800 euros rent", answer: "Ich zahle 800 Euro Miete" }
+- { prompt: "The kitchen is small", answer: "Die Küche ist klein" }
+- { prompt: "I work in an office", answer: "Ich arbeite in einem Büro" }
+- { prompt: "I start work at nine", answer: "Ich fange um neun Uhr mit der Arbeit an" }
+- { prompt: "I take the subway to work", answer: "Ich fahre mit der U-Bahn zur Arbeit" }
+- { prompt: "My office is near the station", answer: "Mein Büro ist in der Nähe des Bahnhofs" }
+- { prompt: "I take a break at twelve", answer: "Ich mache um zwölf Uhr Pause" }
+- { prompt: "I finish work at five", answer: "Ich höre um fünf Uhr mit der Arbeit auf" }
+- { prompt: "In the evening I watch TV", answer: "Am Abend schaue ich fern" }
+- { prompt: "I go to bed at ten", answer: "Ich gehe um zehn Uhr schlafen" }
+- { prompt: "On Saturdays I go to the market", answer: "Am Samstag gehe ich auf den Markt" }
+- { prompt: "I play football with friends", answer: "Ich spiele mit Freunden Fußball" }
+- { prompt: "My hobby is reading", answer: "Mein Hobby ist Lesen" }
+- { prompt: "I go swimming twice a week", answer: "Ich gehe zweimal pro Woche schwimmen" }
+- { prompt: "Do you want to come with me?", answer: "Willst du mitkommen?" }
+- { prompt: "Where are we meeting?", answer: "Wo treffen wir uns?" }
+- { prompt: "Let's meet at the café", answer: "Treffen wir uns im Café" }
+- { prompt: "I am a little late", answer: "Ich bin ein bisschen spät" }
+- { prompt: "Sorry, I have no time", answer: "Tut mir leid, ich habe keine Zeit" }
+- { prompt: "When does the film start?", answer: "Wann fängt der Film an?" }
+- { prompt: "The concert starts at eight", answer: "Das Konzert fängt um acht Uhr an" }
+- { prompt: "I would like to book a ticket", answer: "Ich möchte eine Karte buchen" }
+- { prompt: "Is there a table free?", answer: "Ist ein Tisch frei?" }
+- { prompt: "I have a reservation", answer: "Ich habe eine Reservierung" }
+- { prompt: "What do you recommend?", answer: "Was empfehlen Sie?" }
+- { prompt: "I am allergic to nuts", answer: "Ich bin allergisch gegen Nüsse" }
+- { prompt: "The service is very good", answer: "Der Service ist sehr gut" }
+- { prompt: "That was delicious", answer: "Das war sehr lecker" }
+- { prompt: "I would like to pay separately", answer: "Ich möchte getrennt bezahlen" }
+- { prompt: "Can I pay by card?", answer: "Kann ich mit Karte bezahlen?" }
+- { prompt: "I need a receipt please", answer: "Ich brauche bitte eine Quittung" }
+- { prompt: "The bus comes every ten minutes", answer: "Der Bus kommt alle zehn Minuten" }
+- { prompt: "Which platform does the train depart from?", answer: "Von welchem Gleis fährt der Zug ab?" }
+- { prompt: "I need to change trains in Frankfurt", answer: "Ich muss in Frankfurt umsteigen" }
+- { prompt: "How long does the journey take?", answer: "Wie lange dauert die Fahrt?" }
+- { prompt: "A return ticket to Berlin please", answer: "Einmal Berlin hin und zurück bitte" }
+- { prompt: "I would like to check in", answer: "Ich möchte mich anmelden" }
+- { prompt: "My room has a balcony", answer: "Mein Zimmer hat einen Balkon" }
+- { prompt: "Can I get a wake-up call at seven?", answer: "Kann ich einen Weckruf um sieben Uhr bekommen?" }
+- { prompt: "Where is the lift?", answer: "Wo ist der Aufzug?" }
+- { prompt: "I need a towel please", answer: "Ich brauche bitte ein Handtuch" }
+- { prompt: "I am looking for the post office", answer: "Ich suche die Post" }
+- { prompt: "I would like to send a parcel", answer: "Ich möchte ein Paket schicken" }
+- { prompt: "I need to open a bank account", answer: "Ich muss ein Konto eröffnen" }
+- { prompt: "I would like to withdraw money", answer: "Ich möchte Geld abheben" }
+- { prompt: "Can you help me fill out this form?", answer: "Können Sie mir helfen dieses Formular auszufüllen?" }
+- { prompt: "My German is not very good yet", answer: "Mein Deutsch ist noch nicht sehr gut" }
+- { prompt: "I am learning German", answer: "Ich lerne Deutsch" }
+- { prompt: "I have been in Germany for three months", answer: "Ich bin seit drei Monaten in Deutschland" }
+- { prompt: "I like living here", answer: "Ich wohne gern hier" }
+- { prompt: "The people here are very friendly", answer: "Die Menschen hier sind sehr freundlich" }
+- { prompt: "It is my birthday today", answer: "Heute habe ich Geburtstag" }
+- { prompt: "Happy birthday!", answer: "Herzlichen Glückwunsch zum Geburtstag!" }
+- { prompt: "I am going on holiday next week", answer: "Ich fahre nächste Woche in den Urlaub" }
+- { prompt: "We are flying to Spain", answer: "Wir fliegen nach Spanien" }
+- { prompt: "I have already packed my suitcase", answer: "Ich habe meinen Koffer schon gepackt" }
+- { prompt: "I hope the weather is good", answer: "Ich hoffe das Wetter ist schön" }

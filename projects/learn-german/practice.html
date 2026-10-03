@@ -492,7 +492,6 @@
         const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
         const SECTIONS = [
             { key: 'all',     label: '🎲 All sections' },
-            { key: 'blanks',  label: '📝 Fill in the Blanks' },
             { key: 'builder', label: '🔤 Sentence Builder' },
             { key: 'conj',    label: '🔁 Conjugation' },
             { key: 'errors',  label: '🚫 Error Spotting' },
@@ -1224,7 +1223,6 @@
             const addConj = () => DATA.conj.forEach(verb =>
                 entries.push({ type: 'conj', item: { verb, pronoun: PRONOUNS[Math.floor(Math.random() * PRONOUNS.length)] } }));
             if (section === 'all') {
-                DATA.blanks.forEach(item => entries.push({ type: 'blanks', item }));
                 DATA.builder.forEach(item => entries.push({ type: 'builder', item }));
                 addConj();
                 DATA.errors.forEach(item => entries.push({ type: 'errors', item }));
@@ -1449,7 +1447,7 @@
 
         // ── Data loading — YAML over http(s), FALLBACK_DATA on file:// (fetch fails there) ──
         async function loadPracticeData() {
-            const sections = ['blanks', 'builder', 'conj', 'errors', 'wfrage'];
+            const sections = ['builder', 'conj', 'errors', 'wfrage'];
             try {
                 const entries = await Promise.all(sections.map(async s => {
                     const r = await fetch(`./practice_exercises/${s}.yaml`, { cache: 'no-store' });

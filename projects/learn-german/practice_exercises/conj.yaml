@@ -100,3 +100,111 @@
   forms: { ich: stehe, du: stehst, "er/sie/es": steht, wir: stehen, ihr: steht, "sie/Sie": stehen }
 - inf: waschen
   forms: { ich: wasche, du: wäschst, "er/sie/es": wäscht, wir: waschen, ihr: wascht, "sie/Sie": waschen }
+- inf: tanzen
+  forms: { ich: tanze, du: tanzt, "er/sie/es": tanzt, wir: tanzen, ihr: tanzt, "sie/Sie": tanzen }
+- inf: feiern
+  forms: { ich: feiere, du: feierst, "er/sie/es": feiert, wir: feiern, ihr: feiert, "sie/Sie": feiern }
+- inf: bleiben
+  forms: { ich: bleibe, du: bleibst, "er/sie/es": bleibt, wir: bleiben, ihr: bleibt, "sie/Sie": bleiben }
+- inf: öffnen
+  forms: { ich: öffne, du: öffnest, "er/sie/es": öffnet, wir: öffnen, ihr: öffnet, "sie/Sie": öffnen }
+- inf: schließen
+  forms: { ich: schließe, du: schließt, "er/sie/es": schließt, wir: schließen, ihr: schließt, "sie/Sie": schließen }
+- inf: suchen
+  forms: { ich: suche, du: suchst, "er/sie/es": sucht, wir: suchen, ihr: sucht, "sie/Sie": suchen }
+- inf: verkaufen
+  forms: { ich: verkaufe, du: verkaufst, "er/sie/es": verkauft, wir: verkaufen, ihr: verkauft, "sie/Sie": verkaufen }
+- inf: mieten
+  forms: { ich: miete, du: mietest, "er/sie/es": mietet, wir: mieten, ihr: mietet, "sie/Sie": mieten }
+- inf: empfehlen
+  forms: { ich: empfehle, du: empfiehlst, "er/sie/es": empfiehlt, wir: empfehlen, ihr: empfehlt, "sie/Sie": empfehlen }
+- inf: telefonieren
+  forms: { ich: telefoniere, du: telefonierst, "er/sie/es": telefoniert, wir: telefonieren, ihr: telefoniert, "sie/Sie": telefonieren }
+- inf: wandern
+  forms: { ich: wandere, du: wanderst, "er/sie/es": wandert, wir: wandern, ihr: wandert, "sie/Sie": wandern }
+- inf: reisen
+  forms: { ich: reise, du: reist, "er/sie/es": reist, wir: reisen, ihr: reist, "sie/Sie": reisen }
+- inf: singen
+  forms: { ich: singe, du: singst, "er/sie/es": singt, wir: singen, ihr: singt, "sie/Sie": singen }
+- inf: fliegen
+  forms: { ich: fliege, du: fliegst, "er/sie/es": fliegt, wir: fliegen, ihr: fliegt, "sie/Sie": fliegen }
+- inf: schicken
+  forms: { ich: schicke, du: schickst, "er/sie/es": schickt, wir: schicken, ihr: schickt, "sie/Sie": schicken }
+- inf: denken
+  forms: { ich: denke, du: denkst, "er/sie/es": denkt, wir: denken, ihr: denkt, "sie/Sie": denken }
+- inf: vergessen
+  forms: { ich: vergesse, du: vergisst, "er/sie/es": vergisst, wir: vergessen, ihr: vergesst, "sie/Sie": vergessen }
+- inf: beginnen
+  forms: { ich: beginne, du: beginnst, "er/sie/es": beginnt, wir: beginnen, ihr: beginnt, "sie/Sie": beginnen }
+- inf: erklären
+  forms: { ich: erkläre, du: erklärst, "er/sie/es": erklärt, wir: erklären, ihr: erklärt, "sie/Sie": erklären }
+- inf: benutzen
+  forms: { ich: benutze, du: benutzt, "er/sie/es": benutzt, wir: benutzen, ihr: benutzt, "sie/Sie": benutzen }
+- inf: einladen
+  forms: { ich: lade ein, du: lädst ein, "er/sie/es": lädt ein, wir: laden ein, ihr: ladet ein, "sie/Sie": laden ein }
+- inf: aufstehen
+  forms: { ich: stehe auf, du: stehst auf, "er/sie/es": steht auf, wir: stehen auf, ihr: steht auf, "sie/Sie": stehen auf }
+- inf: ankommen
+  forms: { ich: komme an, du: kommst an, "er/sie/es": kommt an, wir: kommen an, ihr: kommt an, "sie/Sie": kommen an }
+- inf: abfahren
+  forms: { ich: fahre ab, du: fährst ab, "er/sie/es": fährt ab, wir: fahren ab, ihr: fahrt ab, "sie/Sie": fahren ab }
+- inf: anrufen
+  forms: { ich: rufe an, du: rufst an, "er/sie/es": ruft an, wir: rufen an, ihr: ruft an, "sie/Sie": rufen an }
+- inf: abholen
+  forms: { ich: hole ab, du: holst ab, "er/sie/es": holt ab, wir: holen ab, ihr: holt ab, "sie/Sie": holen ab }
+- inf: einkaufen
+  forms: { ich: kaufe ein, du: kaufst ein, "er/sie/es": kauft ein, wir: kaufen ein, ihr: kauft ein, "sie/Sie": kaufen ein }
+- inf: anfangen
+  forms: { ich: fange an, du: fängst an, "er/sie/es": fängt an, wir: fangen an, ihr: fangt an, "sie/Sie": fangen an }
+- inf: aufhören
+  forms: { ich: höre auf, du: hörst auf, "er/sie/es": hört auf, wir: hören auf, ihr: hört auf, "sie/Sie": hören auf }
+- inf: fernsehen
+  forms: { ich: sehe fern, du: siehst fern, "er/sie/es": sieht fern, wir: sehen fern, ihr: seht fern, "sie/Sie": sehen fern }
+- inf: einsteigen
+  forms: { ich: steige ein, du: steigst ein, "er/sie/es": steigt ein, wir: steigen ein, ihr: steigt ein, "sie/Sie": steigen ein }
+- inf: aussteigen
+  forms: { ich: steige aus, du: steigst aus, "er/sie/es": steigt aus, wir: steigen aus, ihr: steigt aus, "sie/Sie": steigen aus }
+- inf: umsteigen
+  forms: { ich: steige um, du: steigst um, "er/sie/es": steigt um, wir: steigen um, ihr: steigt um, "sie/Sie": steigen um }
+- inf: ausfüllen
+  forms: { ich: fülle aus, du: füllst aus, "er/sie/es": füllt aus, wir: füllen aus, ihr: füllt aus, "sie/Sie": füllen aus }
+- inf: zuhören
+  forms: { ich: höre zu, du: hörst zu, "er/sie/es": hört zu, wir: hören zu, ihr: hört zu, "sie/Sie": hören zu }
+- inf: aufmachen
+  forms: { ich: mache auf, du: machst auf, "er/sie/es": macht auf, wir: machen auf, ihr: macht auf, "sie/Sie": machen auf }
+- inf: anmelden
+  forms: { ich: melde an, du: meldest an, "er/sie/es": meldet an, wir: melden an, ihr: meldet an, "sie/Sie": melden an }
+- inf: vorstellen
+  forms: { ich: stelle vor, du: stellst vor, "er/sie/es": stellt vor, wir: stellen vor, ihr: stellt vor, "sie/Sie": stellen vor }
+- inf: kennenlernen
+  forms: { ich: lerne kennen, du: lernst kennen, "er/sie/es": lernt kennen, wir: lernen kennen, ihr: lernt kennen, "sie/Sie": lernen kennen }
+- inf: mitkommen
+  forms: { ich: komme mit, du: kommst mit, "er/sie/es": kommt mit, wir: kommen mit, ihr: kommt mit, "sie/Sie": kommen mit }
+- inf: mitbringen
+  forms: { ich: bringe mit, du: bringst mit, "er/sie/es": bringt mit, wir: bringen mit, ihr: bringt mit, "sie/Sie": bringen mit }
+- inf: ausgehen
+  forms: { ich: gehe aus, du: gehst aus, "er/sie/es": geht aus, wir: gehen aus, ihr: geht aus, "sie/Sie": gehen aus }
+- inf: zurückgehen
+  forms: { ich: gehe zurück, du: gehst zurück, "er/sie/es": geht zurück, wir: gehen zurück, ihr: geht zurück, "sie/Sie": gehen zurück }
+- inf: möchten
+  forms: { ich: möchte, du: möchtest, "er/sie/es": möchte, wir: möchten, ihr: möchtet, "sie/Sie": möchten }
+- inf: heiraten
+  forms: { ich: heirate, du: heiratest, "er/sie/es": heiratet, wir: heiraten, ihr: heiratet, "sie/Sie": heiraten }
+- inf: leben
+  forms: { ich: lebe, du: lebst, "er/sie/es": lebt, wir: leben, ihr: lebt, "sie/Sie": leben }
+- inf: liegen
+  forms: { ich: liege, du: liegst, "er/sie/es": liegt, wir: liegen, ihr: liegt, "sie/Sie": liegen }
+- inf: stellen
+  forms: { ich: stelle, du: stellst, "er/sie/es": stellt, wir: stellen, ihr: stellt, "sie/Sie": stellen }
+- inf: legen
+  forms: { ich: lege, du: legst, "er/sie/es": legt, wir: legen, ihr: legt, "sie/Sie": legen }
+- inf: reparieren
+  forms: { ich: repariere, du: reparierst, "er/sie/es": repariert, wir: reparieren, ihr: repariert, "sie/Sie": reparieren }
+- inf: reservieren
+  forms: { ich: reserviere, du: reservierst, "er/sie/es": reserviert, wir: reservieren, ihr: reserviert, "sie/Sie": reservieren }
+- inf: studieren
+  forms: { ich: studiere, du: studierst, "er/sie/es": studiert, wir: studieren, ihr: studiert, "sie/Sie": studieren }
+- inf: buchstabieren
+  forms: { ich: buchstabiere, du: buchstabierst, "er/sie/es": buchstabiert, wir: buchstabieren, ihr: buchstabiert, "sie/Sie": buchstabieren }
+- inf: funktionieren
+  forms: { ich: funktioniere, du: funktionierst, "er/sie/es": funktioniert, wir: funktionieren, ihr: funktioniert, "sie/Sie": funktionieren }
