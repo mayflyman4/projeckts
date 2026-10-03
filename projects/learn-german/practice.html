@@ -39,11 +39,11 @@
         html.dark {
             --card-bg: #1a1730;
             --card-shadow: 0 20px 60px rgba(0,0,0,0.55);
-            --text-primary: #E0E7FF;
-            --text-secondary: #9CA3AF;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
             --divider: #2D2B5E;
             --input-border: #4338CA;
-            --input-text: #E0E7FF;
+            --input-text: #F1F5F9;
             --input-bg: #211E47;
             --input-placeholder: #6366F1;
             --input-correct-bg: #064E3B; --input-correct-text: #6EE7B7; --input-correct-border: #10B981;
@@ -75,6 +75,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background 0.25s;
+        }
+        html.dark body {
+            background: linear-gradient(135deg, #0F0E1A 0%, #1a1730 100%);
         }
 
         .app-header {

@@ -42,13 +42,13 @@
         html.dark {
             --card-bg: #1a1730;
             --card-shadow: 0 20px 60px rgba(0,0,0,0.55);
-            --text-primary: #E0E7FF;
-            --text-secondary: #9CA3AF;
-            --text-tertiary: #D1D5DB;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --text-tertiary: #CBD5E1;
             --divider: #2D2B5E;
             --input-bg: #211E47;
             --input-border: #4338CA;
-            --input-text: #E0E7FF;
+            --input-text: #F1F5F9;
             --input-placeholder: #6366F1;
             --input-correct-bg: #064E3B; --input-correct-text: #6EE7B7; --input-correct-border: #10B981;
             --input-wrong-bg: #450A0A;   --input-wrong-text: #FCA5A5;  --input-wrong-border: #EF4444;
@@ -81,6 +81,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background 0.25s;
+        }
+        html.dark body {
+            background: linear-gradient(135deg, #0F0E1A 0%, #1a1730 100%);
         }
 
         /* ── Header ── */
@@ -849,7 +853,6 @@
             <span class="score-pill streak" id="streakPill">🔥 0</span>
             <span class="score-pill right" id="scoreRight">✓ 0</span>
             <span class="score-pill wrong" id="scoreWrong">✗ 0</span>
-            <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
         </div>
     </header>
 
@@ -859,6 +862,7 @@
             <button class="dir-seg-btn" type="button" data-dir="de2en" title="Prompt in German, type English">DE → EN</button>
         </div>
         <button class="auto-speak-toggle" id="autoSpeakToggle" type="button" title="Auto-play German audio on reveal">🔊 Auto</button>
+        <button class="auto-speak-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
     </div>
 
     <div class="tag-strip-wrapper" id="tagStripWrapper">
