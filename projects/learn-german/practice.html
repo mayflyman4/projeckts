@@ -446,6 +446,28 @@
             flex-shrink: 0;
         }
         .theme-toggle:hover { background: rgba(255,255,255,0.25); }
+
+        /* ── Quiz settings steppers ── */
+        .quiz-settings { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin: 4px 0; }
+        .stepper {
+            display: flex; align-items: center; gap: 0;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .stepper-btn {
+            background: none; border: none; color: var(--text-primary);
+            font-size: 20px; font-weight: 700; padding: 7px 14px;
+            cursor: pointer; line-height: 1; transition: background 0.15s;
+        }
+        .stepper-btn:hover { background: rgba(99,102,241,0.12); }
+        .stepper-btn:disabled { opacity: 0.3; cursor: default; }
+        .stepper-val {
+            font-size: 14px; font-weight: 700; color: var(--text-primary);
+            padding: 0 4px; min-width: 90px; text-align: center; line-height: 1.1;
+        }
+        .stepper-val span { display: block; font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-top: 1px; }
     </style>
 </head>
 <body>
@@ -481,11 +503,14 @@
             }
         })();
 
-        // ── Quiz constants ──
-        const QUIZ_LEN = 15;
-        const MAX_LIVES = 3;
-        const CHALLENGE_URL = 'https://mayflyman4.github.io/projeckts/projects/learn-german/practice.html';
-        const CHALLENGE_URL_DISPLAY = CHALLENGE_URL.replace(/^https?:\/\//, '');
+        // ── Quiz settings (user-adjustable; also read from ?q=&l= URL params) ──
+        const CHALLENGE_BASE = 'https://learngerman.cc/practice.html';
+        const quizSettings = { questions: 15, lives: 3 };
+        (function() {
+            const p = new URLSearchParams(location.search);
+            if (p.has('q')) quizSettings.questions = Math.min(50, Math.max(5, parseInt(p.get('q'), 10) || 15));
+            if (p.has('l')) quizSettings.lives    = Math.min(10, Math.max(1, parseInt(p.get('l'), 10) || 3));
+        })();
         // Touch devices: don't auto-focus inputs — it pops the on-screen keyboard over
         // half the screen before the user has even read the question. Let them tap in
         // when ready. Desktop keeps auto-focus since there's no keyboard takeover cost.
@@ -901,8 +926,9 @@
 
         // ── Quiz state ──
         const quiz = {
-            deck: [], len: QUIZ_LEN, idx: 0, lives: MAX_LIVES, correct: 0,
-            cardResults: [], startedAt: 0,
+            deck: [], len: quizSettings.questions, idx: 0,
+            lives: quizSettings.lives, maxLives: quizSettings.lives,
+            correct: 0, cardResults: [], startedAt: 0,
         };
 
         // Records one sub-answer's correctness within the current card. A card
@@ -1217,7 +1243,7 @@
             });
         }
 
-        // ── 5. Quiz controller — up to 15 questions, 3 lives, no clock during play ──
+        // ── 5. Quiz controller ──
         function buildDeck(section) {
             const entries = [];
             const addConj = () => DATA.conj.forEach(verb =>
@@ -1232,11 +1258,11 @@
             } else {
                 DATA[section].forEach(item => entries.push({ type: section, item }));
             }
-            return shuffle(entries).slice(0, QUIZ_LEN);
+            return shuffle(entries).slice(0, quizSettings.questions);
         }
 
         function updateHeader() {
-            livesPill.textContent = '❤️'.repeat(quiz.lives) + '🖤'.repeat(MAX_LIVES - quiz.lives);
+            livesPill.textContent = '❤️'.repeat(quiz.lives) + '🖤'.repeat(quiz.maxLives - quiz.lives);
             progressLabel.textContent = `Question ${Math.min(quiz.idx + 1, quiz.len)} / ${quiz.len}`;
             progressFill.style.width = `${(quiz.idx / quiz.len) * 100}%`;
         }
@@ -1271,7 +1297,8 @@
             quiz.deck = buildDeck(section);
             quiz.len = quiz.deck.length;
             quiz.idx = 0;
-            quiz.lives = MAX_LIVES;
+            quiz.lives = quizSettings.lives;
+            quiz.maxLives = quizSettings.lives;
             quiz.correct = 0;
             quiz.cardResults = [];
             quiz.startedAt = Date.now();
@@ -1292,13 +1319,37 @@
                 <div class="completion-card">
                     <div class="completion-emoji">🏆</div>
                     <div class="completion-title">A1 Challenge</div>
-                    <div class="completion-sub">${QUIZ_LEN} questions · 3 lives</div>
+                    <div class="quiz-settings">
+                        <div class="stepper">
+                            <button class="stepper-btn" id="qMinus" type="button">−</button>
+                            <div class="stepper-val" id="qVal">${quizSettings.questions}<span>questions</span></div>
+                            <button class="stepper-btn" id="qPlus" type="button">+</button>
+                        </div>
+                        <div class="stepper">
+                            <button class="stepper-btn" id="lMinus" type="button">−</button>
+                            <div class="stepper-val" id="lVal">${quizSettings.lives}<span>lives</span></div>
+                            <button class="stepper-btn" id="lPlus" type="button">+</button>
+                        </div>
+                    </div>
                     <div class="completion-sub">A wrong answer costs a life. Pick a mode to start.</div>
                     <div class="completion-btns">
                         ${SECTIONS.map(s => `<button class="${s.key === 'all' ? 'btn-retry' : 'btn-secondary'}"${s.key === 'all' ? ' id="btnStart"' : ''} data-section="${s.key}" type="button">${escapeHtml(s.label)}</button>`).join('')}
                     </div>
                 </div>
             `;
+            function updateSteppers() {
+                document.getElementById('qVal').innerHTML = `${quizSettings.questions}<span>questions</span>`;
+                document.getElementById('lVal').innerHTML = `${quizSettings.lives}<span>lives</span>`;
+                document.getElementById('qMinus').disabled = quizSettings.questions <= 5;
+                document.getElementById('qPlus').disabled  = quizSettings.questions >= 50;
+                document.getElementById('lMinus').disabled = quizSettings.lives <= 1;
+                document.getElementById('lPlus').disabled  = quizSettings.lives >= 10;
+            }
+            updateSteppers();
+            document.getElementById('qMinus').addEventListener('click', () => { quizSettings.questions = Math.max(5,  quizSettings.questions - 5); updateSteppers(); });
+            document.getElementById('qPlus').addEventListener('click',  () => { quizSettings.questions = Math.min(50, quizSettings.questions + 5); updateSteppers(); });
+            document.getElementById('lMinus').addEventListener('click', () => { quizSettings.lives = Math.max(1,  quizSettings.lives - 1); updateSteppers(); });
+            document.getElementById('lPlus').addEventListener('click',  () => { quizSettings.lives = Math.min(10, quizSettings.lives + 1); updateSteppers(); });
             contentWrap.querySelectorAll('[data-section]').forEach(btn => {
                 btn.addEventListener('click', () => startQuiz(btn.dataset.section));
             });
@@ -1312,12 +1363,14 @@
             const total = quiz.len;
             const pct = total ? Math.round((quiz.correct / total) * 100) : 0;
             const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪';
-            const livesUsed = MAX_LIVES - quiz.lives;
+            const livesUsed = quiz.maxLives - quiz.lives;
             const elapsedStr = formatTime(Date.now() - quiz.startedAt);
             const reasonText = {
                 complete: '🎉 Challenge complete!',
                 lives:    '💔 Out of lives!',
             }[reason];
+            const challengeUrl = `${CHALLENGE_BASE}?q=${quiz.len}&l=${quiz.maxLives}`;
+            const challengeUrlDisplay = challengeUrl.replace(/^https?:\/\//, '');
 
             contentWrap.innerHTML = `
                 <div class="completion-card">
@@ -1328,10 +1381,11 @@
                         <div class="completion-score-pill right">✓ ${quiz.correct} correct</div>
                         <div class="completion-score-pill wrong">${'❤️'.repeat(quiz.lives)}${'🖤'.repeat(livesUsed)}</div>
                     </div>
-                    <div class="completion-sub">${livesUsed} of ${MAX_LIVES} lives used · finished in ${elapsedStr}</div>
+                    <div class="completion-sub">${livesUsed} of ${quiz.maxLives} lives used · finished in ${elapsedStr}</div>
+                    <div class="completion-sub">⚙️ ${quiz.len} questions · ${quiz.maxLives} lives</div>
                     <div class="challenge-friend">
-                        <div class="completion-sub">🎯 Think you crushed it? Challenge a friend and see who reigns:</div>
-                        <div class="challenge-url">${escapeHtml(CHALLENGE_URL_DISPLAY)}</div>
+                        <div class="completion-sub">🎯 Challenge a friend with the same settings:</div>
+                        <div class="challenge-url">${escapeHtml(challengeUrlDisplay)}</div>
                     </div>
                     <div class="completion-btns">
                         <button class="btn-secondary" id="btnShare">📤 Share score</button>
@@ -1344,7 +1398,7 @@
                 const btn = e.currentTarget;
                 const original = btn.textContent;
                 btn.disabled = true;
-                const result = await shareScore({ correct: quiz.correct, total, livesUsed, timeStr: elapsedStr });
+                const result = await shareScore({ correct: quiz.correct, total, livesUsed, maxLives: quiz.maxLives, timeStr: elapsedStr, challengeUrl });
                 btn.disabled = false;
                 btn.textContent = result === 'shared' ? '✓ Shared!' : '✓ Saved — caption copied!';
                 setTimeout(() => { btn.textContent = original; }, 2200);
@@ -1357,7 +1411,7 @@
         // Note: no web API posts directly to a specific app like Instagram — the
         // OS share sheet (navigator.share) is the closest, and only exists on
         // secure contexts, so it won't appear when opened via file://. ──
-        function drawScoreCard({ correct, total, livesUsed, timeStr }) {
+        function drawScoreCard({ correct, total, livesUsed, maxLives, timeStr, challengeUrl }) {
             const canvas = document.createElement('canvas');
             canvas.width = 1080;
             canvas.height = 1080;
@@ -1381,30 +1435,30 @@
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             ctx.fillText('correct', 540, 555);
 
-            const hearts = '❤️'.repeat(Math.max(0, MAX_LIVES - livesUsed)) + '🖤'.repeat(livesUsed);
+            const hearts = '❤️'.repeat(Math.max(0, (maxLives || 3) - livesUsed)) + '🖤'.repeat(livesUsed);
             ctx.font = '64px -apple-system, sans-serif';
             ctx.fillStyle = 'white';
-            ctx.fillText(hearts, 540, 700);
+            ctx.fillText(hearts, 540, 680);
 
             ctx.font = '48px -apple-system, sans-serif';
-            ctx.fillText(`⏱ ${timeStr}`, 540, 790);
+            ctx.fillText(`⏱ ${timeStr}  ·  ${total} questions`, 540, 780);
 
             ctx.font = '700 40px -apple-system, sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
-            ctx.fillText('#LernDeutsch', 540, 900);
+            ctx.fillText('#LernDeutsch', 540, 880);
 
             ctx.font = '400 32px -apple-system, sans-serif';
-            ctx.fillText('Think you can beat me? Try it:', 540, 970);
+            ctx.fillText('Challenge me with the same settings:', 540, 960);
 
-            // Shrink the URL to fit the card width rather than letting it clip off the edge.
+            const urlDisplay = (challengeUrl || CHALLENGE_BASE).replace(/^https?:\/\//, '');
             let urlSize = 36;
             while (urlSize > 16) {
                 ctx.font = `600 ${urlSize}px ui-monospace, SFMono-Regular, monospace`;
-                if (ctx.measureText(CHALLENGE_URL_DISPLAY).width <= 960) break;
+                if (ctx.measureText(urlDisplay).width <= 960) break;
                 urlSize -= 2;
             }
             ctx.fillStyle = 'white';
-            ctx.fillText(CHALLENGE_URL_DISPLAY, 540, 1020);
+            ctx.fillText(urlDisplay, 540, 1020);
 
             return canvas;
         }
@@ -1427,7 +1481,7 @@
         async function shareScore(scoreInfo) {
             const canvas = drawScoreCard(scoreInfo);
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.total} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch\nThink you can beat me? Try it: ${CHALLENGE_URL}`;
+            const caption = `I scored ${scoreInfo.correct}/${scoreInfo.total} on the A1 German Challenge in ${scoreInfo.timeStr}! 🇩🇪 #LernDeutsch\nChallenge me with the same settings: ${scoreInfo.challengeUrl || CHALLENGE_BASE}`;
 
             if (blob) {
                 const file = new File([blob], 'a1-challenge.png', { type: 'image/png' });
