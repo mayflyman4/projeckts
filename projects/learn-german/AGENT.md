@@ -7,11 +7,15 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
 
 **Language split — English chrome, German content.** All UI chrome is written in **English**:
 titles, subtitles, buttons ("Check", "Next →", "Show example"), progress labels, hints,
-notices, result/completion screens, section names, topic labels. The **only** German text is
-the *learning content itself* — the German words, sentences, verbs, and example answers the
-learner is practicing (plus fixed proper terms like "W-Frage"). When adding or editing any
-section, match this: don't write UI copy in German even for a German-practice activity. The
-flashcard prompt pattern is the same idea — English prompt, German answer.
+notices, result/completion screens, section names. The German text is the *learning content
+itself* — the German words, sentences, verbs, and example answers the learner is practicing
+(plus fixed proper terms like "W-Frage"). When adding or editing any section, match this:
+don't write UI copy in German even for a German-practice activity. The flashcard prompt
+pattern is the same idea — English prompt, German answer.
+
+Exception: in **Make a Sentence**, the `theme` is treated as German *content* (it's the real
+exam's Thema card), so it's shown as "Thema: <German theme>" with a German value — not an
+English topic label. The surrounding chrome there is still English.
 
 ## Files
 
