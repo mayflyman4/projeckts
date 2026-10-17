@@ -23,8 +23,11 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
   fetches each `exercises/<tag>.yaml` → merges into `state.tags`. On fetch failure (i.e. `file://`),
   falls back whole-hog to the embedded `FALLBACK_TAGS` const — **keep that const in sync by hand**
   whenever you edit a file under `exercises/`.
-- **"Mock Test ↗"** in the header is just an external link
-  (`https://open-exam-prep.com/practice/telc-deutsch-a1`) — there is no embedded mock-exam mode.
+- **"Take Mock Test ▾"** in the header opens a small picker modal (`#mockModal`) listing
+  external exam links — there is no embedded mock-exam mode. The options are data-driven from the
+  `MOCK_TESTS` array in the inline script (`{label, note, url}`); **add a new exam by appending one
+  entry there** (the modal re-renders from it — no markup change needed). Currently: Telc A1
+  (`open-exam-prep.com`) and Goethe A1 Hören (`bfu.goethe.de/a1_sd1/hoeren.php`).
 - **"Challenge yourself"** pill next to it links to `practice.html`.
 - `localStorage` keys, all `lg_`-prefixed: `lg_history` (streak/session history), `lg_direction`
   (EN↔DE toggle), `lg_autospeak` (SpeechSynthesis auto-play).
