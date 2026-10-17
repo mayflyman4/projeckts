@@ -27,7 +27,8 @@ no npm, no framework**. Both must keep working when opened directly as a `file:/
   external exam links — there is no embedded mock-exam mode. The options are data-driven from the
   `MOCK_TESTS` array in the inline script (`{label, note, url}`); **add a new exam by appending one
   entry there** (the modal re-renders from it — no markup change needed). Currently: Goethe A1
-  (`bfu.goethe.de/a1_sd1/hoeren.php`) and Goethe A1 Model papers (`goethe.de/de/spr/prf/ueb/pa1.html`).
+  (`bfu.goethe.de/a1_sd1/hoeren.php`), Goethe A1 Model papers (`goethe.de/de/spr/prf/ueb/pa1.html`)
+  and Telc A1 (`open-exam-prep.com`).
 - **"Challenge yourself"** pill next to it links to `practice.html`.
 - `localStorage` keys, all `lg_`-prefixed: `lg_history` (streak/session history), `lg_direction`
   (EN↔DE toggle), `lg_autospeak` (SpeechSynthesis auto-play).
