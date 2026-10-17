@@ -361,6 +361,51 @@
         }
         .verb-prompt .pronoun { color: #7C3AED; }
 
+        /* Bilde einen Satz */
+        .satz-theme {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .satz-theme strong { color: var(--text-primary); }
+        .satz-word {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 800;
+            color: #7C3AED;
+            margin: -6px 0 2px;
+        }
+        .satz-notice {
+            display: flex;
+            gap: 6px;
+            font-size: 13px;
+            background: var(--result-warn-bg);
+            color: var(--result-warn-color);
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+        .satz-example {
+            margin-top: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--hint-bg);
+            border: 1px solid var(--hint-border);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .satz-example-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
         .chip.correct { background: var(--input-correct-bg); border-color: var(--input-correct-border); color: var(--input-correct-text); }
         .chip.wrong   { background: var(--input-wrong-bg);   border-color: var(--input-wrong-border);   color: var(--input-wrong-text); }
         .chip.disabled { pointer-events: none; opacity: 0.65; }
@@ -522,6 +567,7 @@
             { key: 'conj',    label: '🔁 Conjugation' },
             { key: 'errors',  label: '🚫 Error Spotting' },
             { key: 'wfrage',  label: '❓ W-Frage Builder' },
+            { key: 'satzbau', label: '✍️ Bilde einen Satz' },
         ];
 
         // ── Fallback exercise data — used when fetch fails (i.e. on file://). ──
@@ -891,6 +937,22 @@
                 { context: 'Ich sage meinen Namen am Telefon.', question: 'Was sagst du am Telefon?' },
                 { context: 'Ich gebe dem Verkäufer das Geld.', question: 'Wem gibst du das Geld?' },
             ],
+            satzbau: [
+                { theme: 'Einkaufen',          subject: 'Brot',      example: 'Ich kaufe jeden Morgen frisches Brot beim Bäcker.' },
+                { theme: 'Essen und Trinken',  subject: 'Kaffee',    example: 'Am Morgen trinke ich gern einen Kaffee mit Milch.' },
+                { theme: 'Familie',            subject: 'Schwester', example: 'Meine Schwester ist zwanzig Jahre alt und wohnt in Berlin.' },
+                { theme: 'Freizeit',           subject: 'Fußball',   example: 'Am Wochenende spiele ich mit meinen Freunden Fußball im Park.' },
+                { theme: 'Wohnen',             subject: 'Küche',     example: 'Unsere Küche ist klein, aber sehr hell.' },
+                { theme: 'Tagesablauf',        subject: 'aufstehen', example: 'Ich stehe von Montag bis Freitag um sechs Uhr auf.' },
+                { theme: 'Reisen',             subject: 'Zug',       example: 'Nächste Woche fahre ich mit dem Zug nach München.' },
+                { theme: 'Arbeit',             subject: 'Büro',      example: 'Mein Büro ist im dritten Stock und hat ein großes Fenster.' },
+                { theme: 'Wetter',             subject: 'Regen',     example: 'Heute gibt es viel Regen, deshalb bleibe ich zu Hause.' },
+                { theme: 'Gesundheit',         subject: 'Arzt',      example: 'Wenn ich krank bin, gehe ich zum Arzt.' },
+                { theme: 'Hobbys',             subject: 'Musik',     example: 'In meiner Freizeit höre ich gern Musik und spiele Gitarre.' },
+                { theme: 'Kleidung',           subject: 'Jacke',     example: 'Im Winter trage ich eine warme Jacke und einen Schal.' },
+                { theme: 'Verkehr',            subject: 'Bus',       example: 'Ich fahre jeden Tag mit dem Bus zur Arbeit.' },
+                { theme: 'Schule',             subject: 'lernen',    example: 'Ich lerne jeden Abend eine Stunde Deutsch.' },
+            ],
         };
 
         // Editable source of truth over http(s): practice_exercises/*.yaml.
@@ -1244,6 +1306,83 @@
             });
         }
 
+        // ── 6. Bilde einen Satz (A1-Sprechen style, NOT graded) ──
+        // Shows a theme + a subject word and asks the learner to write a sentence.
+        // There is deliberately no validation — the learner's sentence is free-form.
+        // Tapping "Beispiel zeigen" reveals a model sentence plus an explicit notice
+        // that the answer is NOT checked, so nobody assumes they were marked correct.
+        // Runs in its own ungraded loop (no lives, no score) rather than the quiz deck.
+        function renderSatzbau(item, onNext) {
+            contentWrap.innerHTML = `
+                <div class="card">
+                    <div class="card-title">Bilde einen Satz</div>
+                    <div class="card-sub">Schreib einen Satz zum Thema mit dem Wort — wie in der A1-Prüfung.</div>
+                    <div class="divider"></div>
+                    <div class="satz-theme">Thema: <strong>${escapeHtml(item.theme)}</strong></div>
+                    <div class="satz-word">${escapeHtml(item.subject)}</div>
+                    <input class="blank-input" id="satzInput" style="width:100%; text-align:left" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Dein Satz…">
+                    <div id="satzReveal"></div>
+                    <button class="btn-primary" id="checkBtn">Beispiel zeigen</button>
+                    <button class="btn-secondary" id="nextBtn" style="display:none">Weiter →</button>
+                </div>
+            `;
+
+            if (!IS_TOUCH) document.getElementById('satzInput').focus();
+
+            document.getElementById('checkBtn').addEventListener('click', () => {
+                document.getElementById('satzReveal').innerHTML = `
+                    <div class="satz-notice">ⓘ Dein Satz wird <strong>nicht geprüft</strong> — das ist nur ein Beispiel zum Vergleichen.</div>
+                    <div class="satz-example"><span class="satz-example-label">Beispiel</span>${escapeHtml(item.example)}</div>
+                `;
+                document.getElementById('checkBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'block';
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                onNext();
+            });
+        }
+
+        const satz = { deck: [], idx: 0, len: 0 };
+
+        function startSatzbau() {
+            satz.deck = shuffle(DATA.satzbau.slice()).slice(0, quizSettings.questions);
+            satz.len = satz.deck.length;
+            satz.idx = 0;
+            progressRow.style.display = 'block';
+            renderSatzCard();
+        }
+
+        function renderSatzCard() {
+            // Ungraded: progress only, no lives pill.
+            livesPill.textContent = '';
+            progressLabel.textContent = `Satz ${Math.min(satz.idx + 1, satz.len)} / ${satz.len}`;
+            progressFill.style.width = `${(satz.idx / satz.len) * 100}%`;
+            const onNext = () => {
+                satz.idx++;
+                if (satz.idx >= satz.len) renderSatzDone();
+                else renderSatzCard();
+            };
+            renderSatzbau(satz.deck[satz.idx], onNext);
+        }
+
+        function renderSatzDone() {
+            progressRow.style.display = 'none';
+            livesPill.textContent = '';
+            contentWrap.innerHTML = `
+                <div class="completion-card">
+                    <div class="completion-emoji">✍️</div>
+                    <div class="completion-title">Gut gemacht!</div>
+                    <div class="completion-highlight">Du hast <strong>${satz.len}</strong> Sätze geübt.</div>
+                    <div class="completion-sub">Diese Übung wird nicht bewertet — vergleiche deine Sätze mit den Beispielen.</div>
+                    <div class="completion-btns">
+                        <button class="btn-retry" id="btnRetry">Nochmal ↻</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('btnRetry').addEventListener('click', renderStart);
+        }
+
         // ── 5. Quiz controller ──
         function buildDeck(section) {
             const entries = [];
@@ -1352,7 +1491,10 @@
             document.getElementById('lMinus').addEventListener('click', () => { quizSettings.lives = Math.max(1,  quizSettings.lives - 1); updateSteppers(); });
             document.getElementById('lPlus').addEventListener('click',  () => { quizSettings.lives = Math.min(10, quizSettings.lives + 1); updateSteppers(); });
             contentWrap.querySelectorAll('[data-section]').forEach(btn => {
-                btn.addEventListener('click', () => startQuiz(btn.dataset.section));
+                btn.addEventListener('click', () => {
+                    if (btn.dataset.section === 'satzbau') startSatzbau();
+                    else startQuiz(btn.dataset.section);
+                });
             });
         }
 
@@ -1502,7 +1644,7 @@
 
         // ── Data loading — YAML over http(s), FALLBACK_DATA on file:// (fetch fails there) ──
         async function loadPracticeData() {
-            const sections = ['builder', 'conj', 'errors', 'wfrage'];
+            const sections = ['builder', 'conj', 'errors', 'wfrage', 'satzbau'];
             try {
                 const entries = await Promise.all(sections.map(async s => {
                     const r = await fetch(`./practice_exercises/${s}.yaml`, { cache: 'no-store' });
